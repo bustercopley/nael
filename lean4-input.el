@@ -174,7 +174,7 @@ order for the change to take effect."
                        (sexp :tag "Tweaking function"))))
 
 (defcustom lean4-input-data-directory
-  (expand-file-name "data/" (file-name-directory (or load-file-name (buffer-file-name))))
+  (file-name-directory (or load-file-name (buffer-file-name)))
   "Directory in which translations.json resides."
   :group 'lean4-input
   :type 'directory)
@@ -269,7 +269,7 @@ tasks as well."
                                         lean4-input-user-translations))
   (with-temp-buffer
     (insert-file-contents (expand-file-name
-                           "abbreviations.json"
+                           "lean4-abbreviations.json"
                            lean4-input-data-directory))
     (thread-last
       (let ((json-key-type 'string)) ;; make sure json key is a string.
