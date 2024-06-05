@@ -1,32 +1,45 @@
-;;; lean4-mode.el --- A major mode for the Lean language -*- lexical-binding: t -*-
+;;; lean4-mode.el --- A major mode for the Lean language  -*- lexical-binding: t; -*-
 
-;; Copyright (c) 2013, 2014 Microsoft Corporation. All rights reserved.
-;; Copyright (c) 2014, 2015 Soonho Kong. All rights reserved.
+;; Copyright (c) 2014 Microsoft Corporation. All rights reserved.
+;; Copyright (C) 2024 Free Software Foundation, Inc.
 
-;; Author: Leonardo de Moura <leonardo@microsoft.com>
-;;         Soonho Kong       <soonhok@cs.cmu.edu>
-;;         Gabriel Ebner     <gebner@gebner.org>
-;;         Sebastian Ullrich <sebasti@nullri.ch>
-;; Maintainer: Sebastian Ullrich <sebasti@nullri.ch>
-;; Created: Jan 09, 2014
+;; Author:
+;;   Adam Topaz <topaz@ualberta.ca>
+;;   Akira Komamura <akira.komamura@gmail.com>
+;;   Bao Zhiyuan
+;;   Daniel Selsam <daniel.selsam@protonmail.com>
+;;   Gabriel Ebner <gebner@gebner.org>
+;;   Henrik Böving <hargonix@gmail.com>
+;;   Hongyu Ouyang
+;;   Jakub Bartczuk <bartczukkuba@gmail.com>
+;;   Leonardo de Moura <leonardo@microsoft.com>
+;;   Mauricio Collares <mauricio@collares.org>
+;;   Mekeor Melire <mekeor@posteo.de>
+;;   Philip Kaludercic <philipk@posteo.net>
+;;   Richard Copley <buster@buster.me.uk>
+;;   Sebastian Ullrich <sebasti@nullri.ch>
+;;   Siddharth Bhat <siddu.druid@gmail.com>
+;;   Simon Hudon <simon.hudon@gmail.com>
+;;   Soonho Kong <soonhok@cs.cmu.edu>
+;;   Tomáš Skřivan <skrivantomas@seznam.cz>
+;;   Wojciech Nawrocki <wjnawrocki@protonmail.com>
+;;   Yael Dillies <yael.dillies@gmail.com>
+;;   Yury G. Kudryashov <urkud@urkud.name>
+;; Homepage: https://codeberg.org/mekeor/emacs-lean
 ;; Keywords: languages
-;; Package-Requires: ((emacs "27.1") (magit-section "2.90.1") (eglot "1.15") (markdown-mode "2.6"))
-;; URL: https://github.com/leanprover/lean4-mode
-;; SPDX-License-Identifier: Apache-2.0
+;; Maintainer: Mekeor Melire <mekeor@posteo.de>
+;; Package-Requires: ((emacs "27.1")
+;;                    (magit-section "2.90.1")
+;;                    (eglot "1.15")
+;;                    (markdown-mode "2.6"))
+;; SPDX-License-Identifier: Apache-2.0, GPL-3.0-or-later
+;; Version: 0.0.1
 
-;;; License:
+;; This file is not part of GNU Emacs.
 
-;; Licensed under the Apache License, Version 2.0 (the "License");
-;; you may not use this file except in compliance with the License.
-;; You may obtain a copy of the License at:
-;;
-;;     http://www.apache.org/licenses/LICENSE-2.0
-;;
-;; Unless required by applicable law or agreed to in writing, software
-;; distributed under the License is distributed on an "AS IS" BASIS,
-;; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-;; See the License for the specific language governing permissions and
-;; limitations under the License.
+;; Some parts of this source code are licensed under Apache-2.0,
+;; others are licensed under GNU General Public License version 3 or
+;; later.
 
 ;;; Commentary:
 
@@ -34,9 +47,6 @@
 
 ;; Provides highlighting, diagnostics, goal visualization,
 ;; and many other useful features for Lean users.
-
-;; See the README.md for more advanced features and the
-;; associated keybindings.
 
 ;;; Code:
 

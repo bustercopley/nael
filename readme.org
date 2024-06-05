@@ -1,0 +1,50 @@
+#+title: Lean for Emacs
+
+This source code repository provides a package for GNU Emacs that
+makes it support editing Lean (version 4) source code.
+
+* History
+
+1. Original: https://github.com/leanprover-community/lean4-mode
+2. Switched from =lsp-mode= to =eglot=: https://github.com/bustercopley/lean4-mode
+3. This repository further diverges from the original in an opinionated way.
+
+* Installation
+
+Before installing this package, make sure you have [[https://lean-lang.org/lean4/doc/setup.html][Lean 4 installed]].
+To install this package, proceed as usual: Clone the repository to
+your local persistent memory and add the file-path to its location to
+the ~load-path~ variable. You can then ~(require 'lean4-mode)~.
+
+* Test
+
+If things are working correctly, you should see the word =Lean 4= in
+Emacs' mode-line when you open a file with extension =.lean=. Emacs
+will ask you to identify the /project/ this file belongs to. If you
+then type
+
+#+begin_src lean
+#check id
+#+end_src
+
+the word ~#check~ will be underlined, and hovering over it will show
+you the type of ~id~.
+
+* Keymap
+
+| Key           | Function                                                                        |
+|---------------+---------------------------------------------------------------------------------|
+| =C-c C-k=     | show the keystroke needed to input the symbol under the cursor                  |
+| =C-c C-d=     | recompile and reload imports (~lean4-refresh-file-dependencies~)                |
+| =C-c C-x=     | execute Lean in stand-alone mode (~lean4-std-exe~)                              |
+| =C-c C-p C-l= | builds package with lake (~lean4-lake-build~)                                   |
+| =C-c C-i=     | toggle info view showing goals and errors at point (~lean4-toggle-info-buffer~) |
+
+* License
+
+The original =lean4-mode= is licensed under Apache-2.0. Additions and
+modifications made in this repository are licensed under GNU General
+Public License version 3 or later. (Yes, these licenses are compatible
+in this way.) Thus this repository contains code under both licenses.
+Since GPLv3+ is stricter than Apache2, you can simply treat the source
+code as a whole as if it were licensed under GPLv3+.
