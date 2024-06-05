@@ -40,7 +40,6 @@
 (require 'quail)
 (require 'cl-lib)
 (require 'subr-x)
-(require 'dash)
 (require 'map)
 
 ;; Quail is quite stateful, so be careful when editing this code.  Note
@@ -321,11 +320,14 @@ leanprover.github.io/tutorial/js/input-method.js"
       (get-buffer-create "*lean4-translations*")
     (let ((exclude-list '("\\newline")))
       (insert "var corrections = {")
-      (--each
-          (--filter (not (member (car it) exclude-list))
-                    (lean4-input-get-translations "Lean"))
-        (let* ((input (substring (car it) 1))
-               (outputs (cdr it)))
+      (dolist
+          (translation
+           (seq-filter
+            (lambda (t)
+              (not (member (car t) exclude-list)))
+            (lean4-input-get-translations "Lean")))
+        (let* ((input (substring (car translation) 1))
+               (outputs (cdr translation)))
           (insert (format "%s:\"" (prin1-to-string input)))
           (cond ((vectorp outputs)
                  (insert (elt outputs 0)))

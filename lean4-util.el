@@ -27,7 +27,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'dash)
 (require 'lean4-settings)
 
 (defun lean4-setup-rootdir ()
@@ -101,7 +100,7 @@ descending into subfolders.  This allows `wait-timeout' function to check the
 timer and kill the execution of this function."
   (let (result
         (entries
-         (-reject
+         (seq-remove
           (lambda (file)
             (or
              (equal (file-name-nondirectory file) ".")
@@ -131,8 +130,11 @@ timer and kill the execution of this function."
   "Find all files in PATH.
 Optionally filter files satisfying predicate FN and/or use RECURSIVE search."
   ;; It calls lean4--collect-entries instead of f--collect-entries
-  (let ((files (-select 'f-file? (lean4--collect-entries path recursive))))
-    (if fn (-select fn files) files)))
+  (let
+      ((files
+        (seq-keep #'file-regular-p
+                  (lean4--collect-entries path recursive))))
+    (if fn (seq-keep fn files) files)))
 
 (defmacro lean4-with-uri-buffers (server uri &rest body)
   (declare (indent 2)

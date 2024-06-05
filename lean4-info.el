@@ -31,7 +31,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'dash)
 (require 'lean4-syntax)
 (require 'lean4-settings)
 (require 'lean4-util)
@@ -73,7 +72,7 @@ Also choose settings used for the *Lean Goal* buffer."
 (defun lean4-toggle-info-buffer (buffer)
   "Create or delete BUFFER.
 The buffer is supposed to be the *Lean Goal* buffer."
-  (-if-let (window (get-buffer-window buffer))
+  (if-let ((window (get-buffer-window buffer)))
       (quit-window nil window)
     (lean4-ensure-info-buffer buffer)
     (display-buffer buffer)))
@@ -135,14 +134,26 @@ The buffer is supposed to be the *Lean Goal* buffer."
   (let ((inhibit-message t)
         (inhibit-read-only t))
     (when (lean4-info-buffer-active lean4-info-buffer-name)
-      (-let* ((deactivate-mark)         ; keep transient mark
-              (line (save-restriction (widen) (1- (line-number-at-pos nil t))))
-              (errors (lean4-info--diagnostics))
-              (errors (-sort (-on #'< #'lean4-info--diagnostic-end) errors))
-              ((errors-above errors)
-               (--split-with (< (lean4-info--diagnostic-end it) line) errors))
-              ((errors-here errors-below)
-               (--split-with (<= (lean4-info--diagnostic-start it) line) errors)))
+      (let* ((deactivate-mark) ; keep transient mark
+             (line
+              (save-restriction
+                (widen)
+                (1- (line-number-at-pos nil t))))
+             (errors
+              (seq-sort-by #'lean4-info--diagnostic-end #'<
+                           (lean4-info--diagnostics)))
+             (errors-above
+              (seq-take-while
+               (lambda (e) (< (lean4-info--diagnostic-end e) line))
+               errors))
+             (errors
+              (seq-drop errors (seq-length errors-above)))
+             (errors-here
+              (seq-take-while
+               (lambda (e) (<= (lean4-info--diagnostic-end e) line))
+               errors))
+             (errors-below
+              (seq-drop errors (seq-length errors-here))))
         (with-current-buffer lean4-info-buffer-name
           (erase-buffer)
           (magit-insert-section (magit-section 'root)
