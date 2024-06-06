@@ -70,9 +70,13 @@
       (let* ((reg (eglot--range-region (cl-getf item :range)))
              (ov (make-overlay (car reg) (cdr reg))))
         (overlay-put ov 'face 'lean4-fringe-face)
-        (overlay-put ov 'line-prefix
-                     (propertize " " 'display
-                                 `(left-fringe lean4-fringe-fringe-bitmap ,(lean4-fringe-fringe-face item))))
+        (overlay-put
+         ov 'line-prefix
+         (propertize
+          " " 'display
+          `(left-fringe
+            lean4-fringe-fringe-bitmap
+            ,(lean4-fringe-fringe-face item))))
         (overlay-put ov 'help-echo (format "processing..."))))))
 
 (defvar-local lean4-fringe-delay-timer nil)
@@ -83,12 +87,13 @@
     (unless (and lean4-fringe-delay-timer
                  (memq lean4-fringe-delay-timer timer-list))
       (setq lean4-fringe-delay-timer
-            (run-at-time 0.3 nil
-                         (lambda (buf)
-                           (with-current-buffer buf
-                             (lean4-fringe-update-progress-overlays)
-                             (setq lean4-fringe-delay-timer nil)))
-                         (current-buffer))))))
+            (run-at-time
+             0.3 nil
+             (lambda (buf)
+               (with-current-buffer buf
+                 (lean4-fringe-update-progress-overlays)
+                 (setq lean4-fringe-delay-timer nil)))
+             (current-buffer))))))
 
 (provide 'lean4-fringe)
 ;;; lean4-fringe.el ends here

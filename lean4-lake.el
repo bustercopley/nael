@@ -23,15 +23,18 @@
 (require 'lean4-settings)
 
 (defun lean4-lake-find-dir-in (dir)
-  "Find a parent directory of DIR with file \"lakefile.lean\"."
+  "Find a parent directory of DIR with file `lakefile.lean'."
   (when dir
-    (or (when (file-exists-p (expand-file-name "lakefile.lean" dir)) dir)
-	    (lean4-lake-find-dir-in (file-name-directory (directory-file-name dir))))))
+    (or (when (file-exists-p (expand-file-name "lakefile.lean" dir))
+          dir)
+	    (lean4-lake-find-dir-in
+         (file-name-directory (directory-file-name dir))))))
 
 (defun lean4-lake-find-dir ()
-  "Find a parent directory of the current file with file \"lakefile.lean\"."
+  "Find parent directory of current file with file `lakefile.lean'."
   (and (buffer-file-name)
-       (lean4-lake-find-dir-in (directory-file-name (buffer-file-name)))))
+       (lean4-lake-find-dir-in
+        (directory-file-name (buffer-file-name)))))
 
 (defun lean4-lake-find-dir-safe ()
   "Call `lean4-lake-find-dir', error on failure."
@@ -41,8 +44,11 @@
 (defun lean4-lake-build ()
   "Call lake build."
   (interactive)
-  (let ((default-directory (file-name-as-directory (lean4-lake-find-dir-safe))))
-    (compile (concat (lean4-get-executable lean4-lake-name) " build"))))
+  (let ((default-directory
+         (file-name-as-directory (lean4-lake-find-dir-safe))))
+    (compile
+     (concat (lean4-get-executable lean4-lake-name) " build"))))
 
 (provide 'lean4-lake)
+
 ;;; lean4-lake.el ends here

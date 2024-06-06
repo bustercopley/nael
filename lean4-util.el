@@ -23,8 +23,10 @@
 
 (defun lean4-setup-rootdir ()
   "Search for lean executable in variable `exec-path'.
-Try to find an executable named `lean4-executable-name' in variable `exec-path'.
-On succsess, return path to the directory with this executable."
+
+Try to find an executable named `lean4-executable-name' in variable
+`exec-path'.  On succsess, return path to the directory with this
+executable."
   (let ((root (executable-find lean4-executable-name)))
     (when root
       (setq lean4-rootdir
@@ -33,19 +35,25 @@ On succsess, return path to the directory with this executable."
     lean4-rootdir))
 
 (defun lean4-get-rootdir ()
-  "Search for lean executable in `lean4-rootdir' and variable `exec-path'.
+  "Search for lean executable in `lean4-rootdir' and `exec-path'.
+
 First try to find an executable named `lean4-executable-name' in
 `lean4-rootdir'.  On failure, search in variable `exec-path'."
   (if lean4-rootdir
-      (let ((lean4-path (expand-file-name lean4-executable-name (expand-file-name "bin" lean4-rootdir))))
+      (let ((lean4-path (expand-file-name
+                         lean4-executable-name
+                         (expand-file-name "bin" lean4-rootdir))))
         (unless (file-exists-p lean4-path)
-          (error "Incorrect `lean4-rootdir' value, path '%s' does not exist" lean4-path))
+          (error (concat "Incorrect `lean4-rootdir' value, "
+                         "path '%s' does not exist")
+                 lean4-path))
         lean4-rootdir)
     (or
      (lean4-setup-rootdir)
      (error
-      (concat "Lean was not found in the `exec-path' and `lean4-rootdir' is not defined. "
-              "Please set it via M-x customize-variable RET lean4-rootdir RET.")))))
+      (concat "Lean was not found in the `exec-path' and "
+              "`lean4-rootdir' is not defined.  Please set it via "
+              "M-x customize-variable RET lean4-rootdir RET.")))))
 
 (defun lean4-get-executable (exe-name)
   "Return fullpath of lean executable EXE-NAME."
@@ -54,6 +62,7 @@ First try to find an executable named `lean4-executable-name' in
 
 (defun lean4-line-offset (&optional pos)
   "Return the byte-offset of POS or current position.
+
 Counts from the beginning of the line."
   (interactive)
   (let* ((pos (or pos (point)))
@@ -74,22 +83,25 @@ Counts from the beginning of the line."
     (point)))
 
 (defun lean4-whitespace-cleanup ()
-  "Delete trailing whitespace if `lean4-delete-trailing-whitespace' is t."
+  "Delete trailing whitespace if `lean4-delete-trailing-whitespace'."
   (when lean4-delete-trailing-whitespace
       (delete-trailing-whitespace)))
 
 (defun lean4-in-comment-p ()
-  "Return t if a current point is inside of comment block.  Return nil otherwise."
+  "Return t iff a current point is inside of comment block.
+
+Return nil otherwise."
   (nth 4 (syntax-ppss)))
 
 ;; The following function is a slightly modified version of
-;; f--collect-entries written by Johan Andersson
-;; The URL is at https://github.com/rejeep/f.el/blob/master/f.el#L416-L435
+;; `f--collect-entries' written by Johan Andersson accessible at
+;; https://github.com/rejeep/f.el/blob/master/f.el#L416-L435
 (defun lean4--collect-entries (path recursive)
-  "Find all files in PATH.  If RECURSIVE, then descend into subfolders.
-This is a modified version of `f--collect-entries' that waits for 0.0001s before
-descending into subfolders.  This allows `wait-timeout' function to check the
-timer and kill the execution of this function."
+  "Find all files in PATH.  If RECURSIVE, descend into subfolders.
+
+This is a modified version of `f--collect-entries' that waits for
+0.0001s before descending into subfolders.  This allows `wait-timeout'
+function to check the timer and kill the execution of this function."
   (let (result
         (entries
          (seq-remove
@@ -110,7 +122,10 @@ timer and kill the execution of this function."
                   (setq result (cons entry result))
                 (when (file-directory-p entry)
                   (setq result (cons entry result))
-                  (setq result (append result (lean4--collect-entries entry recursive))))))
+                  (setq result
+                        (append
+                         result
+                         (lean4--collect-entries entry recursive))))))
             entries))
           (t (setq result entries)))
     result))
@@ -120,12 +135,12 @@ timer and kill the execution of this function."
 ;; https://github.com/rejeep/f.el/blob/master/f.el#L478-L481
 (defun lean4-find-files (path &optional fn recursive)
   "Find all files in PATH.
-Optionally filter files satisfying predicate FN and/or use RECURSIVE search."
-  ;; It calls lean4--collect-entries instead of f--collect-entries
-  (let
-      ((files
-        (seq-keep #'file-regular-p
-                  (lean4--collect-entries path recursive))))
+
+Optionally filter files satisfying predicate FN and/or use RECURSIVE
+search."
+  ;; It calls `lean4--collect-entries' instead of `f--collect-entries'
+  (let ((files (seq-keep #'file-regular-p
+                         (lean4--collect-entries path recursive))))
     (if fn (seq-keep fn files) files)))
 
 (defmacro lean4-with-uri-buffers (server uri &rest body)
@@ -134,14 +149,14 @@ Optionally filter files satisfying predicate FN and/or use RECURSIVE search."
   (let ((path-var (make-symbol "path")))
     `(let ((,path-var (abbreviate-file-name
                        (file-truename
-                        (eglot--uri-to-path ,uri)))))
+                        (eglot-uri-to-path ,uri)))))
        (dolist (buf (eglot--managed-buffers ,server))
          (when (buffer-live-p buf)
            (with-current-buffer buf
              (when (and buffer-file-name
-                        (string= buffer-file-truename
-                                 ,path-var))
+                        (string= buffer-file-truename ,path-var))
                ,@body)))))))
 
 (provide 'lean4-util)
+
 ;;; lean4-util.el ends here

@@ -36,12 +36,11 @@
 (require 'subr-x)
 (require 'map)
 
-;; Quail is quite stateful, so be careful when editing this code.  Note
-;; that with-temp-buffer is used below whenever buffer-local state is
-;; modified.
+;; Quail is quite stateful, so be careful when editing this code.
+;; Note that with-temp-buffer is used below whenever buffer-local
+;; state is modified.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Utility functions
+;;;; Utility functions
 
 (defun lean4-input-concat-map (f xs)
   "Concat (map F XS)."
@@ -63,8 +62,7 @@ First remove all space and newline characters."
       (setq seq (cons (+ from i) seq)))
     (concat (nreverse seq))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Functions used to tweak translation pairs
+;;;; Functions used to tweak translation pairs
 
 (defun lean4-input-compose (f g)
   "\\x -> concatMap F (G x)."
@@ -125,15 +123,16 @@ This suffix is dropped."
    (lean4-input-drop-end (length suffix))
    (lean4-input-suffix suffix)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Customization
+;;;; Customization
 
-;; The :set keyword is set to 'lean4-input-incorporate-changed-setting
-;; so that the input method gets updated immediately when users
-;; customize it. However, the setup functions cannot be run before all
-;; variables have been defined. Hence the :initialize keyword is set to
-;; 'custom-initialize-default to ensure that the setup is not performed
-;; until lean4-input-setup is called at the end of this file.
+;; The `:set' keyword is set to
+;; `lean4-input-incorporate-changed-setting' so that the input method
+;; gets updated immediately when users customize it. However, the
+;; setup functions cannot be run before all variables have been
+;; defined. Hence the `:initialize' keyword is set to
+;; `custom-initialize-default' to ensure that the setup is not
+;; performed until `lean4-input-setup' is called at the end of this
+;; file.
 
 (defgroup lean4-input nil
   "The Lean input method.
@@ -181,10 +180,11 @@ order for the change to take effect."
 
 (defcustom lean4-input-user-translations nil
   "A list of translations specific to the Lean input method.
-Each element is a pair (KEY-SEQUENCE-STRING . LIST-OF-TRANSLATION-STRINGS).
-All the translation strings are possible translations
-of the given key sequence; if there is more than one you can choose
-between them using the arrow keys.
+
+Each element is a pair (KEY-SEQUENCE-STRING
+. LIST-OF-TRANSLATION-STRINGS).  All the translation strings are
+possible translations of the given key sequence; if there is more than
+one you can choose between them using the arrow keys.
 
 These translation pairs are included first, before thoseinherited
 from other input methods."
@@ -194,15 +194,16 @@ from other input methods."
   :type '(repeat (cons (string :tag "Key sequence")
                        (repeat :tag "Translations" string))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Inspecting and modifying translation maps
+;;;; Inspecting and modifying translation maps
 
 (defun lean4-input-get-translations (qp)
   "Return all translations from the Quail package QP.
-Result is a list of pairs (KEY-SEQUENCE . TRANSLATION)
-that contains all translations from QP Except for those corresponding to ASCII."
+
+Result is a list of pairs (KEY-SEQUENCE . TRANSLATION) that contains
+all translations from QP Except for those corresponding to ASCII."
   (with-temp-buffer
-    (activate-input-method qp) ; To make sure that the package is loaded.
+    ;; Make sure that the package is loaded.
+    (activate-input-method qp)
     (unless (quail-package qp)
       (error "%s is not a Quail package" qp))
     (let ((decode-map (list 'decode-map)))
@@ -211,7 +212,8 @@ that contains all translations from QP Except for those corresponding to ASCII."
 
 (defun lean4-input-show-translations (qp)
   "Display all translations used by the Quail package QP (a string).
-\(Except for those corresponding to ASCII)."
+
+(Except for those corresponding to ASCII)."
   (interactive (list (read-input-method-name
                       "Quail input method (default %s): " "Lean")))
   (let ((buf (concat "*" qp " input method translations*")))
@@ -222,6 +224,7 @@ that contains all translations from QP Except for those corresponding to ASCII."
 
 (defun lean4-input-add-translations (trans)
   "Add the given translations TRANS to the Lean input method.
+
 TRANS is a list of pairs (KEY-SEQUENCE . TRANSLATION).  The
 translations are appended to the current translations."
   (with-temp-buffer
@@ -234,6 +237,7 @@ translations are appended to the current translations."
 
 (defun lean4-input-inherit-package (qp &optional fun)
   "Inherit translations from the Quail package QP.
+
 Add all translations from the Quail package QP (except for those
 corresponding to ASCII) to the list of Lean Quail rules.
 
@@ -245,36 +249,40 @@ a list of such pairs."
      (if fun (lean4-input-concat-map fun trans)
        trans))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Setting up the input method
+;;;; Setting up the input method
 
 (defvar json-key-type)
 (declare-function json-read "json")
 
 (defun lean4-input-setup ()
   "Set up the Lean input method.
-Use customisable variables and parent input methods to setup Lean input method."
 
+Use customisable variables and parent input methods to setup Lean
+input method."
   ;; Create (or reset) the input method.
   (with-temp-buffer
-    (quail-define-package "Lean" "UTF-8" "∏" t ; guidance
+    (quail-define-package
+     "Lean" "UTF-8" "∏" t ;; guidance
      "Lean input method.
-The purpose of this input method is to edit Lean programs, but
-since it is highly customisable it can be made useful for other
-tasks as well."
-     nil nil nil nil nil nil t ; maximum-shortest
-     ))
 
-  (lean4-input-add-translations (mapcar (lambda (tr) (cons (car tr) (vconcat (cdr tr))))
-                                        lean4-input-user-translations))
+The purpose of this input method is to edit Lean programs, but since
+it is highly customisable it can be made useful for other tasks as
+well."
+     nil nil nil nil nil nil t)) ;; maximum-shortest
+
+  (lean4-input-add-translations
+   (mapcar (lambda (tr) (cons (car tr) (vconcat (cdr tr))))
+           lean4-input-user-translations))
   (with-temp-buffer
     (insert-file-contents (expand-file-name
                            "lean4-abbreviations.json"
                            lean4-input-data-directory))
     (thread-last
-      (let ((json-key-type 'string)) ;; make sure json key is a string.
+      ;; make sure json key is a string.
+      (let ((json-key-type 'string))
         ;; Prefer emacs native support implemented in C (since 27.1).
-        ;; Back-up is still useful in case Emacs in not compiled `--with-json`.
+        ;; Back-up is still useful in case Emacs in not compiled
+        ;; `--with-json'.
         (if (fboundp 'json-parse-buffer)
             (json-parse-buffer)
           (require 'json)
@@ -284,7 +292,7 @@ tasks as well."
       lean4-input-add-translations))
   (dolist (def lean4-input-inherit)
     (lean4-input-inherit-package (car def)
-                                (eval (cdr def)))))
+                                 (eval (cdr def)))))
 
 (defun lean4-input-incorporate-changed-setting (sym val)
   "Update the Lean input method.
@@ -298,14 +306,9 @@ Suitable for use in the :set field of `defcustom'."
 (cl-eval-when (load eval)
   (lean4-input-setup))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Administrative details
-
-(provide 'lean4-input)
-;;; lean4-input.el ends here
-
 (defun lean4-input-export-translations ()
   "Export the current translations in a javascript format.
+
 Print (input, output) pairs in Javascript format to the buffer
 *lean4-translations*.  The output can be copy-pasted to
 leanprover.github.io/tutorial/js/input-method.js"
@@ -334,3 +337,7 @@ leanprover.github.io/tutorial/js/input-method.js"
   (lean4-input-export-translations)
   (with-current-buffer "*lean4-translations*"
     (princ (buffer-string))))
+
+(provide 'lean4-input)
+
+;;; lean4-input.el ends here

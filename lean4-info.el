@@ -37,7 +37,8 @@
 This mode is only used in temporary buffers, for fontification."
   :syntax-table lean4-syntax-table
   :group 'lean
-  (set (make-local-variable 'font-lock-defaults) lean4-info-font-lock-defaults))
+  (set (make-local-variable 'font-lock-defaults)
+       lean4-info-font-lock-defaults))
 
 (declare-function lean4--idle-invalidate "lean4-mode")
 
@@ -50,8 +51,8 @@ Also choose settings used for the *Lean Goal* buffer."
       (buffer-disable-undo)
       (add-hook 'window-configuration-change-hook
                 #'lean4--idle-invalidate nil t)
-      (add-hook 'eldoc-documentation-functions #'lean4-info-eldoc-function
-                nil t)
+      (add-hook 'eldoc-documentation-functions
+                #'lean4-info-eldoc-function nil t)
       (eldoc-mode)
       (set-input-method "Lean")
       (set-syntax-table lean4-syntax-table)
@@ -66,7 +67,7 @@ The buffer is supposed to be the *Lean Goal* buffer."
     (display-buffer buffer)))
 
 (defun lean4-info-buffer-active (buffer)
-  "Check whether the given info BUFFER should show info for the current buffer."
+  "Check if given info BUFFER should show info for current buffer."
   (and
    ;; info buffer visible (on any frame)
    (get-buffer-window buffer t)
@@ -82,9 +83,10 @@ The buffer is supposed to be the *Lean Goal* buffer."
 
 (defun lean4-info--diagnostics ()
   (nreverse
-   (cl-loop for diag in (flymake-diagnostics)
-            when (cdr (assoc 'eglot-lsp-diag (eglot--diag-data diag)))
-            collect it)))
+   (cl-loop
+    for diag in (flymake-diagnostics)
+    when (cdr (assoc 'eglot-lsp-diag (eglot--diag-data diag)))
+    collect it)))
 
 (defun lean4-info--diagnostic-start (diagnostic)
   (eglot--dbind ((Range) start) (cl-getf diagnostic :fullRange)
@@ -115,7 +117,8 @@ The buffer is supposed to be the *Lean Goal* buffer."
               (eglot--dbind ((Diagnostic) message range) e
                 (eglot--dbind ((Range) start) range
                   (eglot--dbind ((Position) line character) start
-                    (magit-insert-heading (format "%d:%d" (1+ line) character))
+                    (magit-insert-heading
+                      (format "%d:%d" (1+ line) character))
                     (insert message "\n")))))))))))
 
 (defun lean4-info-buffer-redisplay ()
@@ -153,29 +156,39 @@ The buffer is supposed to be the *Lean Goal* buffer."
                     (if (> (length goals) 0)
                         (seq-doseq (g goals)
                           (magit-insert-section (magit-section)
-                            (insert (lean4-info--fontify-string g) "\n\n")))
+                            (insert
+                             (lean4-info--fontify-string g) "\n\n")))
                       (insert "goals accomplished\n\n"))))))
             (when lean4-info--term-goal
               (magit-insert-section (magit-section 'term-goal)
                 (magit-insert-heading "Expected type:")
                 (let ((term-goal lean4-info--term-goal))
                   (magit-insert-section-body
-                    (insert (lean4-info--fontify-string term-goal) "\n\n")))))
-            (lean4-mk-message-section 'errors-here "Messages here:" errors-here)
-            (lean4-mk-message-section 'errors-below "Messages below:" errors-below)
-            (lean4-mk-message-section 'errors-above "Messages above:" errors-above)
+                    (insert
+                     (lean4-info--fontify-string term-goal)
+                     "\n\n")))))
+            (lean4-mk-message-section
+             'errors-here "Messages here:" errors-here)
+            (lean4-mk-message-section
+             'errors-below "Messages below:" errors-below)
+            (lean4-mk-message-section
+             'errors-above "Messages above:" errors-above)
             (when lean4-highlight-inaccessible-names
               (goto-char 1)
               (save-match-data
-                (while (re-search-forward "\\(\\sw+\\)✝\\([¹²³⁴-⁹⁰]*\\)" nil t)
+                (while
+                    (re-search-forward
+                     "\\(\\sw+\\)✝\\([¹²³⁴-⁹⁰]*\\)" nil t)
                   (replace-match
-                   (propertize (concat (match-string-no-properties 1)
-                                         (match-string-no-properties 2))
-                               'font-lock-face 'font-lock-comment-face)
+                   (propertize
+                    (concat (match-string-no-properties 1)
+                            (match-string-no-properties 2))
+                    'font-lock-face 'font-lock-comment-face)
                    'fixedcase 'literal))))))))))
 
 (defcustom lean4-info-plain t
   "If t, then use plain text for info buffer.
+
 If nil, then enable \"hover docs\" in the info buffer.  This is
 an experimental feature that requires further testing."
   :type
@@ -192,6 +205,7 @@ an experimental feature that requires further testing."
 
 (defun lean4--rpc-connect (&optional buf)
   "Initiate an rpc connection.
+
 This sets the variables lean4--rpc-*."
   (unless buf (setq buf (current-buffer)))
   (with-current-buffer buf
@@ -199,10 +213,12 @@ This sets the variables lean4--rpc-*."
         ((server (eglot-current-server))
          (textdoc-pos (eglot--TextDocumentPositionParams))
          (uri (plist-get (plist-get textdoc-pos :textDocument) :uri))
-         (response (jsonrpc-request server :$/lean/rpc/connect `(:uri ,uri)))
+         (response
+          (jsonrpc-request server :$/lean/rpc/connect `(:uri ,uri)))
          (sessionId (plist-get response :sessionId)))
       (setq lean4--rpc-server server)
-      (setq lean4--rpc-textDocument (plist-get textdoc-pos :textDocument))
+      (setq lean4--rpc-textDocument
+            (plist-get textdoc-pos :textDocument))
       (setq lean4--rpc-position (plist-get textdoc-pos :position))
       (setq lean4--rpc-sessionId sessionId)
       (unless lean4--rpc-timer
@@ -212,9 +228,11 @@ This sets the variables lean4--rpc-*."
 (defun lean4-info--rpc-keepalive ()
   (when lean4--rpc-server
     (condition-case nil
-        (jsonrpc-notify lean4--rpc-server :$/lean/rpc/keepAlive
-                        `(:uri ,(plist-get lean4--rpc-textDocument :uri)
-                               :sessionId ,lean4--rpc-sessionId))
+        (jsonrpc-notify
+         lean4--rpc-server
+         :$/lean/rpc/keepAlive
+         `(:uri ,(plist-get lean4--rpc-textDocument :uri)
+                :sessionId ,lean4--rpc-sessionId))
       (error (cancel-timer lean4--rpc-timer)
              (setq lean4--rpc-timer nil)
              (setq lean4--rpc-server nil)
@@ -224,12 +242,13 @@ This sets the variables lean4--rpc-*."
 
 (defun lean4-info-parse-goal (goal)
   "Parse GOAL into propertized string."
-  (let* ((userName (plist-get goal :userName))
-         (type (plist-get goal :type))
-         (hyps (plist-get goal :hyps))
-         (goalPrefix (plist-get goal :goalPrefix))
-         (ctx (plist-get goal :ctx))
-         (p (plist-get ctx :p)))
+  (let*
+      ((userName (plist-get goal :userName))
+       (type (plist-get goal :type))
+       (hyps (plist-get goal :hyps))
+       (goalPrefix (plist-get goal :goalPrefix))
+       (ctx (plist-get goal :ctx))
+       (p (plist-get ctx :p)))
     (concat
      (when userName (concat "case " userName "\n"))
      (mapconcat (lambda (hyp)
@@ -303,16 +322,19 @@ PS is a list of tag IDs."
                 (setq lean4-info--goals goals)
                 (setq lean4-info--term-goal term-goal)
                 (lean4-info-buffer-redisplay))))))
-    (when (and server (lean4-info-buffer-active lean4-info-buffer-name))
+    (when (and server
+               (lean4-info-buffer-active lean4-info-buffer-name))
       (if lean4-info-plain
           (progn
             (jsonrpc-async-request
-             server :$/lean/plainGoal (eglot--TextDocumentPositionParams)
+             server :$/lean/plainGoal
+             (eglot--TextDocumentPositionParams)
              :success-fn (lambda (result)
                            (setq goals (cl-getf result :goals))
                            (funcall handle-response)))
             (jsonrpc-async-request
-             server :$/lean/plainTermGoal (eglot--TextDocumentPositionParams)
+             server :$/lean/plainTermGoal
+             (eglot--TextDocumentPositionParams)
              :success-fn (lambda (result)
                            (setq term-goal (cl-getf result :goal))
                            (funcall handle-response))))
@@ -322,31 +344,34 @@ PS is a list of tag IDs."
         (lean4--rpc-connect) ;; sets the variables lean4--rpc-*
         (jsonrpc-async-request
          server :$/lean/rpc/call
-         `(:method "Lean.Widget.getInteractiveGoals"
-                   :sessionId ,lean4--rpc-sessionId
-                   :textDocument ,lean4--rpc-textDocument
-                   :position ,lean4--rpc-position
-                   :params (:textDocument ,lean4--rpc-textDocument
-                                          :position ,lean4--rpc-position
-                                          ))
+         (list
+          :method "Lean.Widget.getInteractiveGoals"
+          :sessionId lean4--rpc-sessionId
+          :textDocument lean4--rpc-textDocument
+          :position lean4--rpc-position
+          :params (list :textDocument lean4--rpc-textDocument
+                        :position lean4--rpc-position))
          :success-fn
          (lambda (result)
-           (setq goals (when result
-                         (vconcat (mapcar #'lean4-info-parse-goal
-                                          (cl-getf result :goals)))))
+           (setq goals
+                 (when result
+                   (vconcat
+                    (mapcar #'lean4-info-parse-goal
+                            (cl-getf result :goals)))))
            (funcall handle-response)))
         (jsonrpc-async-request
          server :$/lean/rpc/call
-         `(:method "Lean.Widget.getInteractiveTermGoal"
-                   :sessionId ,lean4--rpc-sessionId
-                   :textDocument ,lean4--rpc-textDocument
-                   :position ,lean4--rpc-position
-                   :params (:textDocument ,lean4--rpc-textDocument
-                                          :position ,lean4--rpc-position
-                                          ))
+         (list
+          :method "Lean.Widget.getInteractiveTermGoal"
+          :sessionId lean4--rpc-sessionId
+          :textDocument lean4--rpc-textDocument
+          :position lean4--rpc-position
+          :params (list :textDocument lean4--rpc-textDocument
+                        :position lean4--rpc-position))
          :success-fn
          (lambda (result)
-           (setq term-goal (when result (lean4-info-parse-goal result)))
+           (setq term-goal
+                 (when result (lean4-info-parse-goal result)))
            (funcall handle-response)))))))
 
 (defun lean4-toggle-info ()
@@ -357,6 +382,7 @@ PS is a list of tag IDs."
 
 (defun lean4-info--widget-region (&optional pos)
   "Return the region of the widget at POS.
+
 POS defaults to the current point."
   (unless pos (setq pos (point)))
   (when-let ((ps (get-text-property pos 'lean4-p)))
@@ -366,16 +392,23 @@ POS defaults to the current point."
       (while (and start
                   (< start (point-max))
                   (not (member p (get-text-property start 'lean4-p))))
-        (setq start (next-single-property-change start 'lean4-p nil (point-max))))
+        (setq start
+              (next-single-property-change
+               start 'lean4-p nil (point-max))))
       (while (and end
                   (> end (point-min))
                   (not (member p (get-text-property end 'lean4-p))))
-        (setq end (previous-single-property-change end 'lean4-p nil (point-min))))
-      (setq end (next-single-property-change end 'lean4-p nil (point-max)))
+        (setq end
+              (previous-single-property-change
+               end 'lean4-p nil (point-min))))
+      (setq end
+            (next-single-property-change
+             end 'lean4-p nil (point-max)))
       (cons start end))))
 
 (defun lean4-info-eldoc-function (cb)
   "Eldoc function for info buffer.
+
 CB is the callback function provided by Eldoc."
   (unless lean4-info-plain
     (let* ((pos (point))
@@ -388,28 +421,37 @@ CB is the callback function provided by Eldoc."
       (when (and lean4--rpc-server p)
         (jsonrpc-async-request
          lean4--rpc-server :$/lean/rpc/call
-         `(:method "Lean.Widget.InteractiveDiagnostics.infoToInteractive"
-                   :sessionId ,lean4--rpc-sessionId
-                   :textDocument ,lean4--rpc-textDocument
-                   :position ,lean4--rpc-position
-                   :params (:p ,p))
+         (list
+          :method (concat "Lean.Widget.InteractiveDiagnostics."
+                          "infoToInteractive")
+          :sessionId lean4--rpc-sessionId
+          :textDocument lean4--rpc-textDocument
+          :position lean4--rpc-position
+          :params (list :p p))
          :success-fn
          (lambda (result)
-           (with-current-buffer (get-buffer-create "*DebugInfoResults*")
+           (with-current-buffer
+               (get-buffer-create "*DebugInfoResults*")
              (erase-buffer)
              (insert (format "result: %s" result)))
            (let* ((doc (plist-get result :doc))
-                  (type (lean4-info-parse-type (plist-get result :type)
-                                               nil))
-                  (expr (lean4-info-parse-expr (plist-get result :exprExplicit)))
+                  (type (lean4-info-parse-type
+                         (plist-get result :type)
+                         nil))
+                  (expr (lean4-info-parse-expr
+                         (plist-get result :exprExplicit)))
                   (expr-type (and type expr (concat expr " : " type)))
                   (sep (when (and expr-type doc)
                          "\n")))
-             (funcall cb
-                      (concat expr-type sep doc)
-                      :echo (concat expr-type sep
-                                    (when doc
-                                      (substring doc 0 (string-match-p "\n" doc))))))))))))
+             (funcall
+              cb (concat expr-type sep doc)
+              :echo
+              (concat
+               expr-type sep
+               (when doc
+                 (substring
+                  doc 0 (string-match-p "\n" doc))))))))))))
 
 (provide 'lean4-info)
+
 ;;; lean4-info.el ends here

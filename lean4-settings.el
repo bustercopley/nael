@@ -23,9 +23,7 @@
 (defgroup lean4 nil
   "Lean 4 programming language and theorem prover."
   :prefix "lean4-"
-  :group 'languages
-  :link '(url-link :tag "Website" "http://leanprover.github.io")
-  :link '(url-link :tag "Github"  "https://github.com/leanprover/lean4"))
+  :group 'languages)
 
 (defgroup lean4-keybinding nil
   "Keybindings for lean4-mode."
@@ -45,7 +43,7 @@
   "Default executable name of Lake.")
 
 (defcustom lean4-rootdir nil
-  "Full pathname of lean root directory.  It should be defined by user."
+  "Full pathname of lean root directory.  User should define it."
   :group 'lean
   :type 'string)
 
@@ -67,7 +65,8 @@
 (defcustom lean4-timeout-limit 100000
   "Deterministic timeout limit.
 
-It is approximately the maximum number of memory allocations in thousands."
+It is approximately the maximum number of memory allocations in
+thousands."
   :group 'lean
   :type 'number)
 
@@ -78,6 +77,7 @@ It is approximately the maximum number of memory allocations in thousands."
 
 (defcustom lean4-delete-trailing-whitespace nil
   "Automatically delete trailing shitespace.
+
 Set this variable to true to automatically delete trailing
 whitespace when a buffer is loaded from a file or when it is
 written."
@@ -86,8 +86,10 @@ written."
 
 (defcustom lean4-highlight-inaccessible-names t
   "Use font to highlight inaccessible names.
-Set this variable to t to highlight inaccessible names in the info display
-using `font-lock-comment-face' instead of the `✝` suffix used by Lean."
+
+Set this variable to t to highlight inaccessible names in the info
+display using `font-lock-comment-face' instead of the `✝` suffix used
+by Lean."
   :group 'lean
   :type 'boolean)
 
@@ -99,9 +101,10 @@ using `font-lock-comment-face' instead of the `✝` suffix used by Lean."
 
 (defcustom lean4-autodetect-lean3 nil
   "Autodetect Lean version.
-Use elan to check if current project uses Lean 3 or Lean 4 and initialize the
-right mode when visiting a file.  If elan has a default Lean version, Lean files
-outside a project will default to that mode."
+
+Use elan to check if current project uses Lean 3 or Lean 4 and
+initialize the right mode when visiting a file.  If elan has a default
+Lean version, Lean files outside a project will default to that mode."
   :group 'lean
   :type 'boolean)
 
@@ -112,35 +115,45 @@ outside a project will default to that mode."
 
 (defcustom lean4-enable-file-watchers nil
   "Honour requests from the server to watch for file modifications.
-This is disabled by default because the server wants to watch \"**/*.ilean\",
-and in many cases there are too many directories to watch each individually."
+
+This is disabled by default because the server wants to watch
+\"**/*.ilean\", and in many cases there are too many directories to
+watch each individually."
   :group 'lean4
   :type 'boolean)
 
 (defcustom lean4-keybinding-std-exe1 (kbd "C-c C-x")
   "Main Keybinding for `lean4-std-exe'."
   :group 'lean4-keybinding :type 'key-sequence)
+
 (defcustom lean4-keybinding-std-exe2 (kbd "C-c C-l")
   "Alternative Keybinding for `lean4-std-exe'."
   :group 'lean4-keybinding  :type 'key-sequence)
+
 (defcustom lean4-keybinding-show-key (kbd "C-c C-k")
   "Lean Keybinding for `quail-show-key'."
   :group 'lean4-keybinding  :type 'key-sequence)
+
 (defcustom lean4-keybinding-server-restart (kbd "C-c C-r")
   "Lean Keybinding for server-restart."
   :group 'lean4-keybinding  :type 'key-sequence)
+
 (defcustom lean4-keybinding-auto-complete (kbd "S-SPC")
   "Lean Keybinding for auto completion."
   :group 'lean4-keybinding  :type 'key-sequence)
+
 (defcustom lean4-keybinding-lean4-toggle-info (kbd "C-c C-i")
   "Lean Keybinding for `lean4-toggle-info'."
   :group 'lean4-keybinding  :type 'key-sequence)
+
 (defcustom lean4-keybinding-lake-build (kbd "C-c C-p C-l")
   "Lean Keybinding for `lean4-lake-build'."
   :group 'lean4-keybinding :type 'key-sequence)
+
 (defcustom lean4-keybinding-refresh-file-dependencies (kbd "C-c C-d")
   "Lean Keybinding for `lean4-refresh-file-dependencies'."
   :group 'lean4-keybinding :type 'key-sequence)
 
 (provide 'lean4-settings)
+
 ;;; lean4-settings.el ends here
