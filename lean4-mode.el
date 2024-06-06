@@ -374,7 +374,7 @@ Invokes `lean4-mode-hook'."
 
 ;; Eglot init
 (defun lean4--server-class-init (&optional _interactive)
-  (cons 'lean4-eglot-lsp-server "lake serve"))
+  (cons 'lean4-eglot-lsp-server '("lake" "serve")))
 
 (push (cons 'lean4-mode #'lean4--server-class-init)
       eglot-server-programs)
