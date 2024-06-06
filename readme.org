@@ -1,4 +1,6 @@
-#+title: Lean for Emacs
+#+title: WIP: Lean for Emacs
+
+*THIS PACKAGE IS BROKEN.  DO NOT USE IT.*
 
 This source code repository provides a package for GNU Emacs that
 makes it support editing Lean (version 4) source code.
