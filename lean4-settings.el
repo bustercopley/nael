@@ -30,21 +30,6 @@
   :prefix "lean4-"
   :group 'lean)
 
-(defcustom lean4-rootdir nil
-  "Full pathname of lean root directory.  User should define it."
-  :group 'lean
-  :type 'string)
-
-(defcustom lean4-executable-name "lean"
-  "Name of lean executable."
-  :group 'lean
-  :type 'string)
-
-(defcustom lean4-lake-name "lake"
-  "Name of lake executable."
-  :group 'lake
-  :type 'string)
-
 (defcustom lean4-memory-limit 1024
   "Memory limit for lean process in megabytes."
   :group 'lean

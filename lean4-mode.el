@@ -103,13 +103,8 @@ extension as FILE-NAME."
           'lean4-create-temp-in-system-tempdir))))
     (compile
      (lean4-compile-string
-	  (if use-lake
-          (shell-quote-argument
-           (expand-file-name (lean4-get-executable lean4-lake-name)))
-        nil)
-      (shell-quote-argument
-       (expand-file-name
-        (lean4-get-executable lean4-executable-name)))
+	  (if use-lake "lake" nil)
+      "lean"
       (or arg "")
       (shell-quote-argument (expand-file-name target-file-name))))
     ;; restore old value
@@ -357,8 +352,7 @@ Invokes `lean4-mode-hook'."
 (defun lean4--version ()
   "Return Lean version as a list `(MAJOR MINOR PATCH)'."
   (with-temp-buffer
-    (call-process (lean4-get-executable "lean")
-                  nil (list t nil) nil "-v")
+    (call-process "lean" nil (list t nil) nil "-v")
     (goto-char (point-min))
     (re-search-forward
      (rx bol "Lean (version " (group (+ digit) (+ "." (+ digit)))))
@@ -381,24 +375,9 @@ Invokes `lean4-mode-hook'."
 ;;;###autoload
 (modify-coding-system-alist 'file "\\.lean\\'" 'utf-8)
 
-(defun lean4--server-cmd ()
-  "Return Lean server command.
-
-If found lake version at least 3.1.0, then return '/path/to/lake
-serve', otherwise return '/path/to/lean --server'."
-  (condition-case nil
-      (if (string-version-lessp
-           (car
-            (process-lines (lean4-get-executable "lake") "--version"))
-           "3.1.0")
-          `(,(lean4-get-executable lean4-executable-name) "--server")
-        `(,(lean4-get-executable "lake") "serve"))
-    (error
-     `(,(lean4-get-executable lean4-executable-name) "--server"))))
-
 ;; Eglot init
 (defun lean4--server-class-init (&optional _interactive)
-  (cons 'lean4-eglot-lsp-server (lean4--server-cmd)))
+  (cons 'lean4-eglot-lsp-server "lake serve"))
 
 (push (cons 'lean4-mode #'lean4--server-class-init)
       eglot-server-programs)

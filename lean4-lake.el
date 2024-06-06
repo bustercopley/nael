@@ -46,8 +46,7 @@
   (interactive)
   (let ((default-directory
          (file-name-as-directory (lean4-lake-find-dir-safe))))
-    (compile
-     (concat (lean4-get-executable lean4-lake-name) " build"))))
+    (compile "lake build")))
 
 (provide 'lean4-lake)
 
