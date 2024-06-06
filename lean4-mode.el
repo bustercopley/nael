@@ -66,9 +66,6 @@
 (require 'lean4-syntax)
 (require 'lean4-util)
 
-;; TODO: Get rid of this by never calling `lean-mode'.
-(declare-function lean-mode "ext:lean-mode")
-
 (defun lean4-compile-string (lake-name exe-name args file-name)
   "Command to run EXE-NAME with extra ARGS and FILE-NAME.
 
