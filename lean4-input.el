@@ -320,8 +320,8 @@ leanprover.github.io/tutorial/js/input-method.js"
       (dolist
           (translation
            (seq-filter
-            (lambda (t)
-              (not (member (car t) exclude-list)))
+            (lambda (tn)
+              (not (member (car tn) exclude-list)))
             (lean4-input-get-translations "Lean")))
         (let* ((input (substring (car translation) 1))
                (outputs (cdr translation)))

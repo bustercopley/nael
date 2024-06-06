@@ -59,7 +59,6 @@
 
 (require 'markdown-mode)
 
-(require 'lean4-dev)
 (require 'lean4-eri)
 (require 'lean4-info)
 (require 'lean4-lake)
