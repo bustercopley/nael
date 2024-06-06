@@ -30,29 +30,17 @@
   :prefix "lean4-"
   :group 'lean)
 
-(defconst lean4-default-executable-name
-  (cl-case system-type
-    (windows-nt "lean.exe")
-    (t          "lean"))
-  "Default executable name of Lean.")
-
-(defconst lean4-default-lake-name
-  (cl-case system-type
-    (windows-nt "lake.exe")
-    (t          "lake"))
-  "Default executable name of Lake.")
-
 (defcustom lean4-rootdir nil
   "Full pathname of lean root directory.  User should define it."
   :group 'lean
   :type 'string)
 
-(defcustom lean4-executable-name lean4-default-executable-name
+(defcustom lean4-executable-name "lean"
   "Name of lean executable."
   :group 'lean
   :type 'string)
 
-(defcustom lean4-lake-name lean4-default-lake-name
+(defcustom lean4-lake-name "lake"
   "Name of lake executable."
   :group 'lake
   :type 'string)
