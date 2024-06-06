@@ -61,7 +61,6 @@
 
 (require 'lean4-dev)
 (require 'lean4-eri)
-(require 'lean4-fringe)
 (require 'lean4-info)
 (require 'lean4-lake)
 (require 'lean4-settings)
@@ -372,20 +371,12 @@ Invokes `lean4-mode-hook'."
   (message "Lean %s"
            (mapconcat #'number-to-string (lean4--version) ".")))
 
-;;;###autoload
-(defun lean4-select-mode ()
-  "Automatically select mode (Lean 3 vs Lean 4)."
-  (if (and lean4-autodetect-lean3
-           (eq 3 (car (lean4--version))))
-      (lean-mode)
-    (lean4-mode)))
-
 ;; Automatically use lean4-mode for .lean files.
 ;;;###autoload
-(push '("\\.lean\\'" . lean4-select-mode) auto-mode-alist)
+(push '("\\.lean\\'" . lean4-mode) auto-mode-alist)
 
 ;;;###autoload
-(add-to-list 'markdown-code-lang-modes '("lean" . lean4-select-mode))
+(add-to-list 'markdown-code-lang-modes '("lean" . lean4-mode))
 
 ;; Use utf-8 encoding
 ;;;###autoload
@@ -416,14 +407,6 @@ serve', otherwise return '/path/to/lean --server'."
 (defclass lean4-eglot-lsp-server (eglot-lsp-server) nil
   :documentation "Eglot LSP server subclass for the Lean 4 server.")
 
-(cl-defmethod eglot-handle-notification
-  ((server lean4-eglot-lsp-server)
-   (_method (eql $/lean/fileProgress))
-   &key textDocument processing)
-  "Handle notification $/lean/fileProgress."
-  (eglot--dbind ((VersionedTextDocumentIdentifier) uri) textDocument
-    (lean4-fringe-update server processing uri)))
-
 ;; We call `lean4-info-buffer-refresh' and `flymake-start' from a
 ;; timer to reduce nesting of synchronous json requests, with a
 ;; (short) nonzero delay in case the server sends diagnostics
@@ -436,9 +419,11 @@ serve', otherwise return '/path/to/lean --server'."
     (flymake-start)))
 
 (cl-defmethod eglot-handle-notification
-  :after ((server lean4-eglot-lsp-server)
-          (_method (eql textDocument/publishDiagnostics))
-          &key uri &allow-other-keys)
+  :after
+  ((server lean4-eglot-lsp-server)
+   (_ (eql textDocument/publishDiagnostics))
+   &key uri
+   &allow-other-keys)
   "Handle notification textDocument/publishDiagnostics."
   (unless lean4--diagnostics-pending
     (setq lean4--diagnostics-pending t)

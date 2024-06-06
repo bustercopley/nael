@@ -38,8 +38,10 @@
     "universe" "universes" "unless" "unsafe" "using"
     "using_well_founded" "variable" "variables" "where" "with")
   "Lean keywords ending with `word' (not symbol).")
+
 (defconst lean4-keywords1-regexp
-  (eval `(rx word-start (or ,@lean4-keywords1) word-end)))
+  (rx-to-string `(seq word-start (or ,@lean4-keywords1) word-end)))
+
 (defconst lean4-constants
   '("!" "#" "$" "&&" "*" "+" "+c" "+f" "+n" "-" "->" "/" "/" "/\\"
     ":=" "<" "<->" "<=" "=" "==" ">" ">=" "@" "\\/" "^c" "||" "~" "¬"
@@ -49,20 +51,29 @@
     "⬝" "⬝e" "⬝h" "⬝hp" "⬝i" "⬝o" "⬝op" "⬝ph" "⬝po" "⬝pv" "⬝r" "⬝v"
     "⬝vp" "𝔸")
   "Lean constants.")
-(defconst lean4-constants-regexp (regexp-opt lean4-constants))
+
+(defconst lean4-constants-regexp
+  (regexp-opt lean4-constants))
+
 (defconst lean4-numerals-regexp
   (rx word-start
       (one-or-more digit)
       (optional (and "." (zero-or-more digit)))
       word-end))
 
-(defconst lean4-warnings '("sorry") "Lean warnings.")
+(defconst lean4-warnings
+  '("sorry")
+  "Lean warnings.")
+
 (defconst lean4-warnings-regexp
-  (eval `(rx word-start (or ,@lean4-warnings) word-end)))
-(defconst lean4-debugging '("unreachable" "panic" "assert" "dbgTrace")
+  (rx-to-string `(seq word-start (or ,@lean4-warnings) word-end)))
+
+(defconst lean4-debugging
+  '("unreachable" "panic" "assert" "dbgTrace")
   "Lean debugging.")
+
 (defconst lean4-debugging-regexp
-  (eval `(rx word-start (or ,@lean4-debugging))))
+  (rx-to-string `(seq word-start (or ,@lean4-debugging))))
 
 (defconst lean4-syntax-table
   (let ((st (make-syntax-table)))
@@ -212,7 +223,7 @@
     (list
      "\\(set_option\\)[ \t]*\\([^ \t\n]*\\)"
      '(2 'font-lock-constant-face))
-    (cons 'lean4-keywords1-regexp 'font-lock-keyword-face)
+    (cons lean4-keywords1-regexp 'font-lock-keyword-face)
     (list
      (rx word-start (group "example") ".")
      '(1 'font-lock-keyword-face))
@@ -231,16 +242,16 @@
     (cons "\"[^\"]*\"" 'font-lock-string-face)
 
     ;; ;; Constants
-    (cons 'lean4-constants-regexp 'font-lock-constant-face)
-    (cons 'lean4-numerals-regexp  'font-lock-constant-face)
+    (cons lean4-constants-regexp 'font-lock-constant-face)
+    (cons lean4-numerals-regexp  'font-lock-constant-face)
 
     ;; place holder
     (cons (rx symbol-start "_" symbol-end)
           'font-lock-preprocessor-face)
 
     ;; warnings
-    (cons 'lean4-warnings-regexp  'font-lock-warning-face)
-    (cons 'lean4-debugging-regexp 'font-lock-warning-face)
+    (cons lean4-warnings-regexp  'font-lock-warning-face)
+    (cons lean4-debugging-regexp 'font-lock-warning-face)
 
     ;; escaped identifiers
     (list

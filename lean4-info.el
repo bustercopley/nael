@@ -19,11 +19,13 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'eglot)
+
+(require 'magit-section)
+
 (require 'lean4-syntax)
 (require 'lean4-settings)
 (require 'lean4-util)
-(require 'eglot)
-(require 'magit-section)
 
 (defgroup lean4-info nil
   "Lean Info."
@@ -34,6 +36,7 @@
 ;;;###autoload
 (define-derived-mode lean4-info-mode prog-mode "Lean-Info"
   "Helper mode for Lean 4 info buffer.
+
 This mode is only used in temporary buffers, for fontification."
   :syntax-table lean4-syntax-table
   :group 'lean
@@ -44,6 +47,7 @@ This mode is only used in temporary buffers, for fontification."
 
 (defun lean4-ensure-info-buffer (buffer)
   "Create BUFFER if it does not exist.
+
 Also choose settings used for the *Lean Goal* buffer."
   (unless (get-buffer buffer)
     (with-current-buffer (get-buffer-create buffer)
