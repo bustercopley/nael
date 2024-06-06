@@ -343,11 +343,8 @@ Invokes `lean4-mode-hook'."
   ;; (abbrev-mode 1)
   (when buffer-file-name
     (let ((lean4--workspace-message-enabled t))
-      (if (lean4-project-find buffer-file-truename)
-          (progn
-            (eglot-ensure)
-            (add-hook 'before-save-hook
-                      #'lean4-whitespace-cleanup nil 'local))))))
+      (when (lean4-project-find buffer-file-truename)
+        (eglot-ensure)))))
 
 (defun lean4--version ()
   "Return Lean version as a list `(MAJOR MINOR PATCH)'."

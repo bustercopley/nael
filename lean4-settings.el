@@ -30,54 +30,12 @@
   :prefix "lean4-"
   :group 'lean)
 
-(defcustom lean4-memory-limit 1024
-  "Memory limit for lean process in megabytes."
-  :group 'lean
-  :type 'number)
-
-(defcustom lean4-timeout-limit 100000
-  "Deterministic timeout limit.
-
-It is approximately the maximum number of memory allocations in
-thousands."
-  :group 'lean
-  :type 'number)
-
-(defcustom lean4-extra-arguments nil
-  "Extra command-line arguments to the lean process."
-  :group 'lean
-  :type '(list string))
-
-(defcustom lean4-delete-trailing-whitespace nil
-  "Automatically delete trailing shitespace.
-
-Set this variable to true to automatically delete trailing
-whitespace when a buffer is loaded from a file or when it is
-written."
-  :group 'lean
-  :type 'boolean)
-
 (defcustom lean4-highlight-inaccessible-names t
   "Use font to highlight inaccessible names.
 
-Set this variable to t to highlight inaccessible names in the info
-display using `font-lock-comment-face' instead of the `✝` suffix used
+Set this variable to `t' to highlight inaccessible names in the info
+display using `font-lock-comment-face' instead of the `✝' suffix used
 by Lean."
-  :group 'lean
-  :type 'boolean)
-
-(defcustom lean4-show-file-progress t
-  "Highlight file progress in the current buffer."
-  :group 'lean
-  :type 'boolean)
-
-
-(defcustom lean4-autodetect-lean3 nil
-  "Autodetect Lean version.
-
-Use elan to check if current project uses Lean 3 or Lean 4 and
-initialize the right mode when visiting a file.  If elan has a default
-Lean version, Lean files outside a project will default to that mode."
   :group 'lean
   :type 'boolean)
 
@@ -90,7 +48,7 @@ Lean version, Lean files outside a project will default to that mode."
   "Honour requests from the server to watch for file modifications.
 
 This is disabled by default because the server wants to watch
-\"**/*.ilean\", and in many cases there are too many directories to
+`**/*.ilean', and in many cases there are too many directories to
 watch each individually."
   :group 'lean4
   :type 'boolean)

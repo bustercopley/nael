@@ -44,11 +44,6 @@ Counts from the beginning of the line."
     (move-to-column c)
     (point)))
 
-(defun lean4-whitespace-cleanup ()
-  "Delete trailing whitespace if `lean4-delete-trailing-whitespace'."
-  (when lean4-delete-trailing-whitespace
-      (delete-trailing-whitespace)))
-
 (defun lean4-in-comment-p ()
   "Return t iff a current point is inside of comment block.
 
