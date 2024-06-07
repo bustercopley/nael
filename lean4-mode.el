@@ -60,7 +60,6 @@
 (require 'markdown-mode)
 
 (require 'lean4-info)
-(require 'lean4-lake)
 (require 'lean4-settings)
 (require 'lean4-syntax)
 (require 'lean4-util)
@@ -82,16 +81,24 @@ extension as FILE-NAME."
   (make-temp-file
    (or prefix "flymake") nil (file-name-extension file-name)))
 
+(defun lean4-lake-root ()
+  "Find parent directory of current file with file `lakefile.lean'."
+  (and-let* ((bfn (buffer-file-name)))
+    (locate-dominating-file bfn "lakefile.lean")))
+
+(defun lean4-lake-build ()
+  "Call lake build."
+  (interactive)
+  (if-let ((default-directory (lean4-lake-root)))
+      (compile "lake build")))
+
 (defun lean4-execute (&optional arg)
   "Execute Lean in the current buffer with an optional argument ARG."
   (interactive)
   (when (called-interactively-p 'any)
     (setq arg (read-string "arg: " arg)))
   (let*
-      ((cc compile-command)
-	   (dd default-directory)
-	   (use-lake (lean4-lake-find-dir))
-	   (default-directory (if use-lake (lean4-lake-find-dir) dd))
+      ((default-directory (or (lean4-lake-root) default-directory))
        (target-file-name
         (or
          (buffer-file-name)
@@ -102,10 +109,7 @@ extension as FILE-NAME."
 	  (if use-lake "lake" nil)
       "lean"
       (or arg "")
-      (shell-quote-argument (expand-file-name target-file-name))))
-    ;; restore old value
-    (setq compile-command cc)
-    (setq default-directory dd)))
+      (shell-quote-argument (expand-file-name target-file-name))))))
 
 (defun lean4-refresh-file-dependencies ()
   "Refresh the file dependencies.
@@ -121,12 +125,12 @@ file, recompiling, and reloading all imports."
 
 (defvar-keymap lean4-mode-map
   :parent prog-mode-map
-  "C-c C-x"     #'lean4-execute
-  "C-c C-l"     #'lean4-execute
-  "C-c C-k"     #'quail-show-key
-  "C-c C-i"     #'lean4-toggle-info
-  "C-c C-p C-l" #'lean4-lake-build
-  "C-c C-d"     #'lean4-refresh-file-dependencies)
+  "C-c C-x" #'lean4-execute
+  "C-c C-l" #'lean4-execute
+  "C-c C-k" #'quail-show-key
+  "C-c C-i" #'lean4-toggle-info
+  "C-c C-b" #'lean4-lake-build
+  "C-c C-d" #'lean4-refresh-file-dependencies)
 
 (easy-menu-define lean4-mode-menu lean4-mode-map
   "Menu for the Lean major mode."
