@@ -60,9 +60,25 @@
 (require 'markdown-mode)
 
 (require 'lean4-info)
-(require 'lean4-settings)
 (require 'lean4-syntax)
 (require 'lean4-util)
+
+(defgroup lean4 nil
+  "Lean 4 programming language and theorem prover."
+  :prefix "lean4-"
+  :group 'languages)
+
+(defcustom lean4-idle-delay 0.3
+  "Interval for `lean4-idle-hook' functions."
+  :type 'number :group 'lean4)
+
+(defcustom lean4-enable-file-watchers nil
+  "Honour requests from the server to watch for file modifications.
+
+This is disabled by default because the server wants to watch
+`**/*.ilean', and in many cases there are too many directories to
+watch each individually."
+  :group 'lean4 :type 'boolean)
 
 (defun lean4-compile-string (lake-name exe-name args file-name)
   "Command to run EXE-NAME with extra ARGS and FILE-NAME.
@@ -93,6 +109,7 @@ extension as FILE-NAME."
 (defun lean4-execute (&optional arg)
   "Execute Lean in the current buffer with an optional argument ARG."
   (interactive)
+  ;; TODO: Move this inside the (interactive ...) form.
   (when (called-interactively-p 'any)
     (setq arg (read-string "arg: " arg)))
   (let*
@@ -112,16 +129,6 @@ extension as FILE-NAME."
       (or arg "")
       (shell-quote-argument (expand-file-name target-file-name))))))
 
-(defun lean4-refresh-file-dependencies ()
-  "Refresh the file dependencies.
-
-This function restarts the server subprocess for the current
-file, recompiling, and reloading all imports."
-  (interactive)
-  (when eglot--managed-mode
-    (eglot--signal-textDocument/didClose)
-    (eglot--signal-textDocument/didOpen)))
-
 (define-abbrev-table 'lean4-abbrev-table nil)
 
 (defvar-keymap lean4-mode-map
@@ -130,8 +137,7 @@ file, recompiling, and reloading all imports."
   "C-c C-l" #'lean4-execute
   "C-c C-k" #'quail-show-key
   "C-c C-i" #'lean4-toggle-info
-  "C-c C-b" #'lean4-lake-build
-  "C-c C-d" #'lean4-refresh-file-dependencies)
+  "C-c C-b" #'lean4-lake-build)
 
 (easy-menu-define lean4-mode-menu lean4-mode-map
   "Menu for the Lean major mode."

@@ -20,8 +20,6 @@
 
 (require 'cl-lib)
 
-(require 'lean4-settings)
-
 (defun lean4-line-offset (&optional pos)
   "Return the byte-offset of POS or current position.
 
