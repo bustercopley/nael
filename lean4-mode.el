@@ -210,21 +210,6 @@ Invokes `lean4-mode-hook'."
   ;; diagnostics.
   (setq-local next-error-function #'flymake-goto-next-error))
 
-(defun lean4--version ()
-  "Return Lean version as a list `(MAJOR MINOR PATCH)'."
-  (with-temp-buffer
-    (call-process "lean" nil (list t nil) nil "-v")
-    (goto-char (point-min))
-    (re-search-forward
-     (rx bol "Lean (version " (group (+ digit) (+ "." (+ digit)))))
-    (version-to-list (match-string 1))))
-
-(defun lean4-show-version ()
-  "Print Lean 4 version."
-  (interactive)
-  (message "Lean %s"
-           (mapconcat #'number-to-string (lean4--version) ".")))
-
 ;;;###autoload
 (setf (alist-get "\\.lean\\'" auto-mode-alist nil nil #'equal)
       'lean4-mode)
