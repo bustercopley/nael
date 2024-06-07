@@ -68,6 +68,11 @@ Maintenance:
 Features:
 
 - Better "show goal here".
+- Fix =lean4-info=, i.e. =*Lean Goal*= buffer.  (It does not work
+  right now.  I guess, I broke it.)
+- Support fontification via semantic tokens from the language server,
+  based on [[https://codeberg.org/eownerdead/eglot-semantic-tokens][this]] or [[https://codeberg.org/harald/eglot-semtok][this]] package, or even help the former being [[https://github.com/joaotavora/eglot/pull/839][merged]]
+  into Eglot.
 
 ** License
 
