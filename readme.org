@@ -67,7 +67,6 @@ Maintenance:
 
 Features:
 
-- Better "show goal here".
 - Fix =lean4-info=, i.e. =*Lean Goal*= buffer.  (It does not work
   right now.  I guess, I broke it.)
 - Support fontification via semantic tokens from the language server,
