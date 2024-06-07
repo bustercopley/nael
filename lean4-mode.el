@@ -59,7 +59,6 @@
 
 (require 'markdown-mode)
 
-(require 'lean4-eri)
 (require 'lean4-info)
 (require 'lean4-lake)
 (require 'lean4-settings)
@@ -108,11 +107,6 @@ extension as FILE-NAME."
     (setq compile-command cc)
     (setq default-directory dd)))
 
-(defun lean4-std-exe ()
-  "Execute Lean in the current buffer."
-  (interactive)
-  (lean4-execute))
-
 (defun lean4-refresh-file-dependencies ()
   "Refresh the file dependencies.
 
@@ -123,25 +117,12 @@ file, recompiling, and reloading all imports."
     (eglot--signal-textDocument/didClose)
     (eglot--signal-textDocument/didOpen)))
 
-(defun lean4-indent-line ()
-  "Lean 4 indent line function.
-
-If point is at the end of the current indentation, use
-`lean4-eri-indent'; or if point is before that position, move it
-there; or do nothing, to allow tab completion (if configured)."
-  (let ((cur-column (current-column))
-        (cur-indent (current-indentation)))
-    (cond ((= cur-column cur-indent)
-           (lean4-eri-indent))
-          ((< cur-column cur-indent)
-           (move-to-column cur-indent)))))
-
 (define-abbrev-table 'lean4-abbrev-table nil)
 
 (defvar-keymap lean4-mode-map
   :parent prog-mode-map
-  "C-c C-x"     #'lean4-std-exe
-  "C-c C-l"     #'lean4-std-exe
+  "C-c C-x"     #'lean4-execute
+  "C-c C-l"     #'lean4-execute
   "C-c C-k"     #'quail-show-key
   "C-c C-i"     #'lean4-toggle-info
   "C-c C-p C-l" #'lean4-lake-build
@@ -304,7 +285,6 @@ Invokes `lean4-mode-hook'."
   (set 'compilation-mode-font-lock-keywords '())
   (require 'lean4-input)
   (set-input-method "Lean")
-  (setq-local indent-line-function 'lean4-indent-line)
   ;; Inhibit flymake from starting automatically. Since diagnostics
   ;; are updated only by the language server, we call `flymake-start'
   ;; on their receipt.

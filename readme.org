@@ -62,6 +62,7 @@ Maintenance:
 - Rely on =project.el= rather than reimplementing some of its
   features.
 - Evaluate if the =(cl-defmethod eglot-...)= are needed.
+- Rework indentation (=lean4-eri.el=).
 
 Features:
 
