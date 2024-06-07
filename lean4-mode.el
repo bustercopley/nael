@@ -59,6 +59,7 @@
 
 (require 'markdown-mode)
 
+(require 'lean4-input)
 (require 'lean4-info)
 (require 'lean4-syntax)
 (require 'lean4-util)
@@ -129,8 +130,6 @@ extension as FILE-NAME."
       (or arg "")
       (shell-quote-argument (expand-file-name target-file-name))))))
 
-(define-abbrev-table 'lean4-abbrev-table nil)
-
 (defvar-keymap lean4-mode-map
   :parent prog-mode-map
   "C-c C-x" #'lean4-execute
@@ -191,20 +190,15 @@ extension as FILE-NAME."
 \\{lean4-mode-map}
 Invokes `lean4-mode-hook'."
   :syntax-table lean4-syntax-table
-  :abbrev-table lean4-abbrev-table
   :group 'lean4
-  (set (make-local-variable 'comment-start) "--")
-  (set (make-local-variable 'comment-start-skip) "[-/]-[ \t]*")
-  (set (make-local-variable 'comment-end) "")
-  (set (make-local-variable 'comment-end-skip)
-       "[ \t]*\\(-/\\|\\s>\\)")
-  (set (make-local-variable 'comment-padding) 1)
-  (set (make-local-variable 'comment-use-syntax) t)
-  (set (make-local-variable 'font-lock-defaults)
-       lean4-font-lock-defaults)
-  (set (make-local-variable 'indent-tabs-mode) nil)
-  (set 'compilation-mode-font-lock-keywords '())
-  (require 'lean4-input)
+  (setq-local comment-start "--")
+  (setq-local comment-start-skip "[-/]-[ \t]*")
+  (setq-local comment-end "")
+  (setq-local comment-end-skip "[ \t]*\\(-/\\|\\s>\\)")
+  (setq-local comment-padding 1)
+  (setq-local comment-use-syntax t)
+  (setq-local compilation-mode-font-lock-keywords nil)
+  (setq-local font-lock-defaults lean4-font-lock-defaults)
   (set-input-method "Lean")
   ;; Inhibit flymake from starting automatically. Since diagnostics
   ;; are updated only by the language server, we call `flymake-start'
@@ -214,7 +208,7 @@ Invokes `lean4-mode-hook'."
   (setq-local flymake-start-on-save-buffer nil)
   ;; Let the `next-error' and `previous-error' commands navigate
   ;; diagnostics.
-  (setq-local next-error-function 'flymake-goto-next-error))
+  (setq-local next-error-function #'flymake-goto-next-error))
 
 (defun lean4--version ()
   "Return Lean version as a list `(MAJOR MINOR PATCH)'."
