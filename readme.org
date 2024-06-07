@@ -59,6 +59,7 @@ accomplishments.)
 Maintenance:
 
 - Remove the JSON file for abbreviations. (WIP)
+- Add =lakefile= to ~project-vc-extra-root-markers~ or so. (WIP)
 - Rely on =project.el= rather than reimplementing some of its
   features.
 - Evaluate if the =(cl-defmethod eglot-...)= are needed.

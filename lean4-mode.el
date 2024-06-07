@@ -81,15 +81,13 @@ extension as FILE-NAME."
   (make-temp-file
    (or prefix "flymake") nil (file-name-extension file-name)))
 
-(defun lean4-lake-root ()
-  "Find parent directory of current file with file `lakefile.lean'."
-  (and-let* ((bfn (buffer-file-name)))
-    (locate-dominating-file bfn "lakefile.lean")))
+;; TODO: User should make this evaluate themselves explicitely.
+(add-to-list 'project-vc-extra-root-markers "lakefile.lean")
 
 (defun lean4-lake-build ()
   "Call lake build."
   (interactive)
-  (if-let ((default-directory (lean4-lake-root)))
+  (if-let ((default-directory (project-root (project-current))))
       (compile "lake build")))
 
 (defun lean4-execute (&optional arg)
@@ -98,16 +96,18 @@ extension as FILE-NAME."
   (when (called-interactively-p 'any)
     (setq arg (read-string "arg: " arg)))
   (let*
-      ((lake-root (lean4-lake-root))
-       (default-directory (or lake-root default-directory))
+      ((root (project-root (project-current)))
+       (use-lake
+        (file-exists-p (file-name-concat root "lakefile.lean")))
+       (default-directory (if use-lake root default-directory))
        (target-file-name
         (or
          (buffer-file-name)
          (flymake-proc-init-create-temp-buffer-copy
-          'lean4-create-temp-in-system-tempdir))))
+          #'lean4-create-temp-in-system-tempdir))))
     (compile
      (lean4-compile-string
-	  (if lake-root "lake" nil)
+	  (and use-lake "lake")
       "lean"
       (or arg "")
       (shell-quote-argument (expand-file-name target-file-name))))))
@@ -184,91 +184,6 @@ The functions are run only once for each time Emacs becomes idle.")
 
 (lean4--start-idle-timer)
 
-(cl-defmethod project-root ((project (head lake)))
-  "Pair ('lake . DIR) is Lean project whose root directory is DIR.
-
-This will allow us to use Emacs when a repo contains multiple lean
-packages."
-  (cdr project))
-
-(defcustom lean4-workspace-exclusions nil
-  "Set of directories in which not to start a Lean 4 language server."
-  :group 'lean4
-  :type '(repeat directory))
-
-(defcustom lean4-workspace-roots nil
-  "A set of directories in which to start a Lean 4 language server."
-  :group 'lean4
-  :type '(repeat directory))
-
-(defvar lean4--workspace-message-enabled nil)
-
-(defun lean4-project-find (file-name)
-  "Find the workspace root directory for a Lean 4 file.
-
-Files under the same root directory use the same instance of
-the Lean 4 language server.
-
-Look up the directory hierarchy starting from FILE-NAME for the
-first member of `lean4-workspace-roots' or
-`lean4-workspace-exclusions'. If no such directory is found,
-search again and use the *last* directory containing a file
-\"lean-toolchain\". If the second search fails, or if the search
-encounters a member of `lean4-workspace-exclusions', do not start
-a language server instance."
-  (when (or (bound-and-true-p eglot-lsp-context)
-            lean4--workspace-message-enabled)
-    (let*
-        ((normalize
-          (lambda (dir) (abbreviate-file-name (file-truename dir))))
-         (roots (mapcar normalize lean4-workspace-roots))
-         (excls (mapcar normalize lean4-workspace-exclusions))
-         (ignore-case (file-name-case-insensitive-p file-name))
-         (contains
-          (lambda (file-name list)
-            (seq-some
-             (lambda (f)
-               (if ignore-case
-                   (string-equal-ignore-case file-name f)
-                 (string-equal file-name f)))
-             list)))
-         root
-         excluded)
-      ;; Search for configured roots and exclusions.
-      (if-let
-          ((dir
-            (locate-dominating-file
-             file-name
-             (lambda (file-name)
-               (when (file-directory-p file-name)
-                 (or (funcall contains file-name roots)
-                     (setq excluded
-                           (funcall contains file-name excls))))))))
-          (unless excluded (setq root dir))
-        ;; Configured directory not found.  Now search for a toolchain
-        ;; file.
-        (while-let
-            ((dir
-              (locate-dominating-file file-name "lean-toolchain")))
-          ;; We found a toolchain file, but maybe it belongs to a
-          ;; package.  Continue looking until there are no more
-          ;; toolchain files.
-          (setq root dir)
-          (setq file-name
-                (file-name-directory (directory-file-name dir)))))
-      (if root
-          (cons 'lake root)
-        (when (and lean4--workspace-message-enabled (not excluded))
-          (message
-           (concat
-            "File does not belong to a workspace and no lakefile "
-            "found.  Customize the variables `lean4-workspace-roots' "
-            "and `lean4-workspace-exclusions' to define "
-            "workspaces."))
-          nil)))))
-
-(push #'lean4-project-find project-find-functions)
-
 ;;;###autoload
 (define-derived-mode lean4-mode prog-mode "Lean 4"
   "Major mode for Lean.
@@ -298,14 +213,7 @@ Invokes `lean4-mode-hook'."
   (setq-local flymake-start-on-save-buffer nil)
   ;; Let the `next-error' and `previous-error' commands navigate
   ;; diagnostics.
-  (setq-local next-error-function 'flymake-goto-next-error)
-  (if (fboundp 'electric-indent-local-mode)
-      (electric-indent-local-mode -1))
-  ;; (abbrev-mode 1)
-  (when buffer-file-name
-    (let ((lean4--workspace-message-enabled t))
-      (when (lean4-project-find buffer-file-truename)
-        (eglot-ensure)))))
+  (setq-local next-error-function 'flymake-goto-next-error))
 
 (defun lean4--version ()
   "Return Lean version as a list `(MAJOR MINOR PATCH)'."
