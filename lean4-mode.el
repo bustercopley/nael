@@ -141,11 +141,6 @@ file, recompiling, and reloading all imports."
     ["Restart lean process" eglot-reconnect         t]
     ["Customize lean4-mode" (customize-group 'lean) t]))
 
-(defvar lean4-idle-hook nil
-  "Hook run after Emacs has been idle for `lean4-idle-delay' seconds.
-
-The functions are run only once for each time Emacs becomes idle.")
-
 (defvar lean4--idle-timer nil)
 (defvar lean4--idle-buffer nil)
 (defvar lean4--idle-tick nil)
@@ -230,23 +225,14 @@ Invokes `lean4-mode-hook'."
   (message "Lean %s"
            (mapconcat #'number-to-string (lean4--version) ".")))
 
-;; Automatically use lean4-mode for .lean files.
 ;;;###autoload
-(push '("\\.lean\\'" . lean4-mode) auto-mode-alist)
+(setf (alist-get "\\.lean\\'" auto-mode-alist) 'lean4-mode)
 
 ;;;###autoload
-(add-to-list 'markdown-code-lang-modes '("lean" . lean4-mode))
+(setf (alist-get "lean" markdown-code-lang-modes) 'lean4-mode)
 
-;; Use utf-8 encoding
-;;;###autoload
-(modify-coding-system-alist 'file "\\.lean\\'" 'utf-8)
-
-;; Eglot init
-(defun lean4--server-class-init (&optional _interactive)
-  (cons 'lean4-eglot-lsp-server '("lake" "serve")))
-
-(push (cons 'lean4-mode #'lean4--server-class-init)
-      eglot-server-programs)
+(setf (alist-get lean4-mode eglot-server-programs)
+      '(lean4-eglot-lsp-server . ("lake" "serve")))
 
 (defclass lean4-eglot-lsp-server (eglot-lsp-server) nil
   :documentation "Eglot LSP server subclass for the Lean 4 server.")
@@ -295,7 +281,7 @@ Invokes `lean4-mode-hook'."
 (defun lean4-mode--before--eglot-read-execute-code-action (args)
   "Before advicing `eglot--read-execute-code-action' for Lean server.
 
-For \"Try this\" quickfixes, append the new text to the title, so the
+For `Try this' quickfixes, append the new text to the title, so the
 user knows which item is which."
   (when (eq (type-of (eglot-current-server)) 'lean4-eglot-lsp-server)
     (dolist (action (car args))

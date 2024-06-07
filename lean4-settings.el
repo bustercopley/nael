@@ -40,7 +40,7 @@ by Lean."
   :type 'boolean)
 
 (defcustom lean4-idle-delay 0.3
-  "Interval for `lean4-idle-hook` functions."
+  "Interval for `lean4-idle-hook' functions."
   :type 'number
   :group 'lean4-mode)
 
