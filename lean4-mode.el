@@ -226,12 +226,14 @@ Invokes `lean4-mode-hook'."
            (mapconcat #'number-to-string (lean4--version) ".")))
 
 ;;;###autoload
-(setf (alist-get "\\.lean\\'" auto-mode-alist) 'lean4-mode)
+(setf (alist-get "\\.lean\\'" auto-mode-alist nil nil #'equal)
+      'lean4-mode)
 
 ;;;###autoload
-(setf (alist-get "lean" markdown-code-lang-modes) 'lean4-mode)
+(setf (alist-get "lean" markdown-code-lang-modes nil nil #'equal)
+      'lean4-mode)
 
-(setf (alist-get lean4-mode eglot-server-programs)
+(setf (alist-get 'lean4-mode eglot-server-programs)
       '(lean4-eglot-lsp-server . ("lake" "serve")))
 
 (defclass lean4-eglot-lsp-server (eglot-lsp-server) nil
