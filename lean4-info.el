@@ -46,7 +46,7 @@ by Lean."
 
 This mode is only used in temporary buffers, for fontification."
   :syntax-table lean4-syntax-table
-  :group 'lean
+  :group 'lean4
   (set (make-local-variable 'font-lock-defaults)
        lean4-info-font-lock-defaults))
 

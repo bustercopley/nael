@@ -70,7 +70,7 @@
 
 (defcustom lean4-idle-delay 0.3
   "Interval for `lean4-idle-hook' functions."
-  :type 'number :group 'lean4)
+  :group 'lean4 :type 'number)
 
 (defcustom lean4-enable-file-watchers nil
   "Honour requests from the server to watch for file modifications.
@@ -192,7 +192,7 @@ extension as FILE-NAME."
 Invokes `lean4-mode-hook'."
   :syntax-table lean4-syntax-table
   :abbrev-table lean4-abbrev-table
-  :group 'lean
+  :group 'lean4
   (set (make-local-variable 'comment-start) "--")
   (set (make-local-variable 'comment-start-skip) "[-/]-[ \t]*")
   (set (make-local-variable 'comment-end) "")
