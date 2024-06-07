@@ -172,71 +172,64 @@
 (defconst lean4-font-lock-defaults
   (list
    (list
-    (list
-     (rx word-start "attribute" word-end
-         (zero-or-more whitespace)
-         (group
-          (one-or-more "[" (zero-or-more (not (any "]")))
-                       "]" (zero-or-more whitespace))))
-     '(1 'font-lock-preprocessor-face))
-    (list
-     (rx (group "@[" (zero-or-more (not (any "]"))) "]"))
-     '(1 'font-lock-preprocessor-face))
-    (list
-     (rx
-      (group "#"
-             (or "eval" "print" "reduce" "help" "check" "lang"
-                 "check_failure" "synth")))
-     '(1 'font-lock-keyword-face))
+    (list (rx word-start "attribute" word-end
+              (zero-or-more whitespace)
+              (group
+               (one-or-more "[" (zero-or-more (not (any "]")))
+                            "]" (zero-or-more whitespace))))
+          '(1 'font-lock-preprocessor-face))
+    (list (rx (group "@[" (zero-or-more (not (any "]"))) "]"))
+          '(1 'font-lock-preprocessor-face))
+    (list (rx (group "#"
+                     (or "eval" "print" "reduce" "help" "check" "lang"
+                         "check_failure" "synth")))
+          '(1 'font-lock-keyword-face))
 
     ;; mutual definitions "names"
-    (list
-     (rx word-start "mutual" word-end
-         (zero-or-more whitespace)
-         word-start (or "inductive" "definition" "def") word-end
-         (group (zero-or-more (not (any " \t\n\r{([,")))
-                (zero-or-more (zero-or-more whitespace) ","
-                              (zero-or-more whitespace)
-                              (not (any " \t\n\r{([,")))))
-     '(1 'font-lock-function-name-face))
+    (list (rx word-start "mutual" word-end
+              (zero-or-more whitespace)
+              word-start (or "inductive" "definition" "def") word-end
+              (group (zero-or-more (not (any " \t\n\r{([,")))
+                     (zero-or-more (zero-or-more whitespace) ","
+                                   (zero-or-more whitespace)
+                                   (not (any " \t\n\r{([,")))))
+          '(1 'font-lock-function-name-face))
 
     ;; declarations
-    (list
-     (rx word-start
-         (group
-          (or "inductive"
-              (group "class" (zero-or-more whitespace) "inductive")
-              "instance" "structure" "class" "theorem" "axiom"
-              "lemma" "definition" "def" "constant"))
-         word-end (zero-or-more whitespace)
-         (group
-          (zero-or-more "{" (zero-or-more (not (any "}")))
-                        "}" (zero-or-more whitespace)))
-         (zero-or-more whitespace)
-         (group (zero-or-more (not (any " \t\n\r{([")))))
-     '(4 'font-lock-function-name-face))
+    (list (rx word-start
+              (group
+               (or "inductive"
+                   (group "class" (zero-or-more whitespace)
+                          "inductive")
+                   "instance" "structure" "class" "theorem"
+                   "axiom" "lemma" "definition" "def" "constant"))
+              word-end (zero-or-more whitespace)
+              (group (zero-or-more "{" (zero-or-more (not (any "}")))
+                                   "}" (zero-or-more whitespace)))
+              (zero-or-more whitespace)
+              (group (zero-or-more (not (any " \t\n\r{([")))))
+          '(4 'font-lock-function-name-face))
 
     ;; Constants which have a keyword as subterm
-    (cons (rx (or "∘if")) 'font-lock-constant-face)
+    (cons (rx (or "∘if"))
+          'font-lock-constant-face)
 
     ;; Keywords
-    (list
-     "\\(set_option\\)[ \t]*\\([^ \t\n]*\\)"
-     '(2 'font-lock-constant-face))
-    (cons lean4-keywords1-regexp 'font-lock-keyword-face)
-    (list
-     (rx word-start (group "example") ".")
-     '(1 'font-lock-keyword-face))
-    (cons (rx (or "∎")) 'font-lock-keyword-face)
+    (list "\\(set_option\\)[ \t]*\\([^ \t\n]*\\)"
+          '(2 'font-lock-constant-face))
+    (cons lean4-keywords1-regexp
+          'font-lock-keyword-face)
+    (list (rx word-start (group "example") ".")
+          '(1 'font-lock-keyword-face))
+    (cons (rx (or "∎"))
+          'font-lock-keyword-face)
 
     ;; Types
-    (cons
-     (rx word-start
-         (or "Prop" "Type" "Type*" "Sort" "Sort*") symbol-end)
-     'font-lock-type-face)
-    (list
-     (rx word-start (group (or "Prop" "Type" "Sort")) ".")
-     '(1 'font-lock-type-face))
+    (cons (rx word-start (or "Prop" "Type" "Type*" "Sort" "Sort*")
+              symbol-end)
+          'font-lock-type-face)
+    (list (rx word-start (group (or "Prop" "Type" "Sort")) ".")
+          '(1 'font-lock-type-face))
 
     ;; String
     (cons "\"[^\"]*\"" 'font-lock-string-face)
@@ -254,13 +247,11 @@
     (cons lean4-debugging-regexp 'font-lock-warning-face)
 
     ;; escaped identifiers
-    (list
-     (rx (and (group "«")
-              (group (one-or-more (not (any "»"))))
-              (group "»")))
-     '(1 font-lock-comment-face t)
-     '(2 nil t)
-     '(3 font-lock-comment-face t)))))
+    (list (rx (and (group "«") (group (one-or-more (not (any "»"))))
+                   (group "»")))
+          '(1 font-lock-comment-face t)
+          '(2 nil t)
+          '(3 font-lock-comment-face t)))))
 
 ;; Syntax Highlighting for Lean Info Mode
 (defconst lean4-info-font-lock-defaults
