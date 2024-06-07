@@ -32,13 +32,13 @@ you the type of ~id~.
 
 ** Keymap
 
-| Key           | Function                                                                        |
-|---------------+---------------------------------------------------------------------------------|
-| =C-c C-k=     | show the keystroke needed to input the symbol under the cursor                  |
-| =C-c C-d=     | recompile and reload imports (~lean4-refresh-file-dependencies~)                |
-| =C-c C-x=     | execute Lean in stand-alone mode (~lean4-std-exe~)                              |
-| =C-c C-p C-l= | builds package with lake (~lean4-lake-build~)                                   |
-| =C-c C-i=     | toggle info view showing goals and errors at point (~lean4-toggle-info-buffer~) |
+| Key       | Description                                                    | Command                           |
+|-----------+----------------------------------------------------------------+-----------------------------------|
+| =C-c C-k= | show the keystroke needed to input the symbol under the cursor | ~quail-show-key~                  |
+| =C-c C-d= | recompile and reload imports                                   | ~lean4-refresh-file-dependencies~ |
+| =C-c C-x= | execute Lean in stand-alone mode                               | ~lean4-std-exe~                   |
+| =C-c C-b= | builds package with lake                                       | ~lean4-lake-build~                |
+| =C-c C-i= | toggle info view showing goals and errors at point             | ~lean4-toggle-info-buffer~        |
 
 * About
 
