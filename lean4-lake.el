@@ -19,8 +19,8 @@
 
 ;;; Code:
 
-(require 'lean4-util)
 (require 'lean4-settings)
+(require 'lean4-util)
 
 (defun lean4-lake-find-dir-in (dir)
   "Find a parent directory of DIR with file `lakefile.lean'."

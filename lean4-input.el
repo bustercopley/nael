@@ -31,10 +31,10 @@
 
 ;;; Code:
 
-(require 'quail)
 (require 'cl-lib)
-(require 'subr-x)
 (require 'map)
+(require 'quail)
+(require 'subr-x)
 
 ;; Quail is quite stateful, so be careful when editing this code.
 ;; Note that with-temp-buffer is used below whenever buffer-local
