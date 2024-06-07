@@ -98,7 +98,8 @@ extension as FILE-NAME."
   (when (called-interactively-p 'any)
     (setq arg (read-string "arg: " arg)))
   (let*
-      ((default-directory (or (lean4-lake-root) default-directory))
+      ((lake-root (lean4-lake-root))
+       (default-directory (or lake-root default-directory))
        (target-file-name
         (or
          (buffer-file-name)
@@ -106,7 +107,7 @@ extension as FILE-NAME."
           'lean4-create-temp-in-system-tempdir))))
     (compile
      (lean4-compile-string
-	  (if use-lake "lake" nil)
+	  (if lake-root "lake" nil)
       "lean"
       (or arg "")
       (shell-quote-argument (expand-file-name target-file-name))))))
