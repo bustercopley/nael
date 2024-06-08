@@ -231,9 +231,17 @@ Invokes `nael-mode-hook'."
 (defvar nael--diagnostics-pending nil)
 (defun nael--handle-diagnostics (server uri)
   (setq nael--diagnostics-pending nil)
-  (nael-with-uri-buffers server uri
-    (nael-info-buffer-refresh)
-    (flymake-start)))
+  (let
+      ((path
+        (abbreviate-file-name
+         (file-truename (eglot-uri-to-path uri)))))
+    (dolist (buf (eglot--managed-buffers server))
+      (when (buffer-live-p buf)
+        (with-current-buffer buf
+          (when
+              (and buffer-file-name
+                   (string= buffer-file-truename path))
+            (nael-info-buffer-refresh) (flymake-start)))))))
 
 (cl-defmethod eglot-handle-notification
   :after
