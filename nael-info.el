@@ -24,7 +24,6 @@
 (require 'magit-section)
 
 (require 'nael-syntax)
-(require 'nael-util)
 
 (defgroup nael-info nil
   "Lean Info."
@@ -38,8 +37,27 @@ display using `font-lock-comment-face' instead of the `✝' suffix used
 by Lean."
   :group 'nael :type 'boolean)
 
-;; Lean Info Mode (for "*nael-info*" buffer)
-;; Automode List
+(defvar nael-info-font-lock-defaults
+  (list
+   (append
+    (list
+     (list (rx
+            (group
+             (one-or-more
+              symbol-start (one-or-more (any "₀-₉" word)) symbol-end
+              (zero-or-more space)))
+            ":")
+           '(1 font-lock-variable-name-face))
+     (cons (rx space ":" space)
+           'font-lock-keyword-face)
+     (cons (rx "⊢" space)
+           'font-lock-keyword-face)
+     (list (rx "[" (group "stale") "]")
+           '(1 font-lock-warning-face))
+     (cons (rx line-start "No Goal" line-end)
+           'font-lock-constant-face))
+    (car nael-font-lock-defaults))))
+
 ;;;###autoload
 (define-derived-mode nael-info-mode prog-mode "Nael-Info"
   "Helper mode for Nael info buffer.
@@ -50,8 +68,6 @@ This mode is only used in temporary buffers, for fontification."
   (set (make-local-variable 'font-lock-defaults)
        nael-info-font-lock-defaults))
 
-(declare-function nael--idle-invalidate "nael-mode")
-
 (defun nael-ensure-info-buffer (buffer)
   "Create BUFFER if it does not exist.
 
@@ -60,8 +76,6 @@ Also choose settings used for the *Lean Goal* buffer."
     (with-current-buffer (get-buffer-create buffer)
       (magit-section-mode)
       (buffer-disable-undo)
-      (add-hook 'window-configuration-change-hook
-                #'nael--idle-invalidate nil t)
       (add-hook 'eldoc-documentation-functions
                 #'nael-info-eldoc-function nil t)
       (eldoc-mode)
@@ -71,7 +85,8 @@ Also choose settings used for the *Lean Goal* buffer."
 
 (defun nael-toggle-info-buffer (buffer)
   "Create or delete BUFFER.
-The buffer is supposed to be the *Lean Goal* buffer."
+
+The buffer is supposed to be the `*Lean Goal*' buffer."
   (if-let ((window (get-buffer-window buffer)))
       (quit-window nil window)
     (nael-ensure-info-buffer buffer)
@@ -198,10 +213,10 @@ The buffer is supposed to be the *Lean Goal* buffer."
                    'fixedcase 'literal))))))))))
 
 (defcustom nael-info-plain t
-  "If t, then use plain text for info buffer.
+  "If `t', then use plain text for info buffer.
 
-If nil, then enable \"hover docs\" in the info buffer.  This is
-an experimental feature that requires further testing."
+If `nil', then enable \"hover docs\" in the info buffer.  This is an
+experimental feature that requires further testing."
   :type
   '(choice
     (const :tag "Plain text" t)
