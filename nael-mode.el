@@ -62,7 +62,6 @@
 (require 'nael-input)
 (require 'nael-info)
 (require 'nael-syntax)
-(require 'nael-util)
 
 (defgroup nael nil
   "Lean programming language and theorem prover."
