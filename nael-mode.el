@@ -69,10 +69,6 @@
   :prefix "nael-"
   :group 'languages)
 
-(defcustom nael-idle-delay 0.3
-  "Interval for `nael-idle-hook' functions."
-  :group 'nael :type 'number)
-
 (defcustom nael-enable-file-watchers nil
   "Honour requests from the server to watch for file modifications.
 
@@ -80,23 +76,6 @@ This is disabled by default because the server wants to watch
 `**/*.ilean', and in many cases there are too many directories to
 watch each individually."
   :group 'nael :type 'boolean)
-
-(defun nael-compile-string (lake-name exe-name args file-name)
-  "Command to run EXE-NAME with extra ARGS and FILE-NAME.
-
-If LAKE-NAME is nonempty, then prepend \"LAKE-NAME env\" to the
-command \"EXE-NAME ARGS FILE-NAME\"."
-  (if lake-name
-      (format "%s env %s %s %s" lake-name exe-name args file-name)
-      (format "%s %s %s" exe-name args file-name)))
-
-(defun nael-create-temp-in-system-tempdir (file-name prefix)
-  "Create a temp lean file and return its name.
-
-The new file has prefix PREFIX (defaults to `flymake') and the same
-extension as FILE-NAME."
-  (make-temp-file
-   (or prefix "flymake") nil (file-name-extension file-name)))
 
 ;; TODO: User should make this evaluate themselves explicitely.
 (add-to-list 'project-vc-extra-root-markers "lakefile.lean")
@@ -122,13 +101,108 @@ extension as FILE-NAME."
         (or
          (buffer-file-name)
          (flymake-proc-init-create-temp-buffer-copy
-          #'nael-create-temp-in-system-tempdir))))
+          (lambda (file-name prefix)
+            (make-temp-file (or prefix "flymake") nil
+                            (file-name-extension file-name)))))))
     (compile
-     (nael-compile-string
-	  (and use-lake "lake")
-      "lean"
+     (format
+      (concat (if use-lake "lake env lean" "lean") "%s %s")
       (or arg "")
       (shell-quote-argument (expand-file-name target-file-name))))))
+
+(defvar nael-mode-syntax-table
+  (let ((table (make-syntax-table)))
+    ;; Matching parens
+    (modify-syntax-entry ?\[ "(]" table)
+    (modify-syntax-entry ?\] ")[" table)
+    (modify-syntax-entry ?\{ "(}" table)
+    (modify-syntax-entry ?\} "){" table)
+
+    ;; comment
+    (modify-syntax-entry ?/ ". 14nb" table)
+    (modify-syntax-entry ?- ". 123" table)
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?« "<" table)
+    (modify-syntax-entry ?» ">" table)
+
+    ;; Word constituent
+    (dolist
+        (chr
+         '( ?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m
+            ?n ?o ?p ?q ?r ?s ?t ?u ?v ?w ?x ?y ?z
+            ?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L ?M
+            ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
+      (modify-syntax-entry chr "w" table))
+    (dolist
+        (chr
+         '( ?0 ?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
+      (modify-syntax-entry chr "w" table))
+    (dolist
+        (chr
+         '( ?α ?β ?γ ?δ ?ε ?ζ ?η ?θ ?ι ?κ ;;?λ
+            ?μ ?ν ?ξ ?ο ?π ?ρ ?ς ?σ ?τ ?υ
+            ?φ ?χ ?ψ ?ω))
+      (modify-syntax-entry chr "w" table))
+    (dolist
+        (chr
+         '( ?ϊ ?ϋ ?ό ?ύ ?ώ ?Ϗ ?ϐ ?ϑ ?ϒ ?ϓ ?ϔ ?ϕ ?ϖ
+            ?ϗ ?Ϙ ?ϙ ?Ϛ ?ϛ ?Ϝ ?ϝ ?Ϟ ?ϟ ?Ϡ ?ϡ ?Ϣ ?ϣ
+            ?Ϥ ?ϥ ?Ϧ ?ϧ ?Ϩ ?ϩ ?Ϫ ?ϫ ?Ϭ ?ϭ ?Ϯ ?ϯ ?ϰ
+            ?ϱ ?ϲ ?ϳ ?ϴ ?ϵ ?϶ ?Ϸ ?ϸ ?Ϲ ?Ϻ ?ϻ))
+      (modify-syntax-entry chr "w" table))
+    (dolist
+        (chr
+         '( ?ἀ ?ἁ ?ἂ ?ἃ ?ἄ ?ἅ ?ἆ ?ἇ ?Ἀ ?Ἁ ?Ἂ ?Ἃ ?Ἄ
+            ?Ἅ ?Ἆ ?Ἇ ?ἐ ?ἑ ?ἒ ?ἓ ?ἔ ?ἕ ?἖ ?἗ ?Ἐ ?Ἑ
+            ?Ἒ ?Ἓ ?Ἔ ?Ἕ ?἞ ?἟ ?ἠ ?ἡ ?ἢ ?ἣ ?ἤ ?ἥ
+            ?ἦ ?ἧ ?Ἠ ?Ἡ ?Ἢ ?Ἣ ?Ἤ ?Ἥ ?Ἦ ?Ἧ ?ἰ ?ἱ
+            ?ἲ ?ἳ ?ἴ ?ἵ ?ἶ ?ἷ ?Ἰ ?Ἱ ?Ἲ ?Ἳ ?Ἴ ?Ἵ ?Ἶ ?Ἷ
+            ?ὀ ?ὁ ?ὂ ?ὃ ?ὄ ?ὅ ?὆ ?὇ ?Ὀ ?Ὁ ?Ὂ ?Ὃ
+            ?Ὄ ?Ὅ ?὎ ?὏ ?ὐ ?ὑ ?ὒ ?ὓ ?ὔ ?ὕ ?ὖ ?ὗ
+            ?὘ ?Ὑ ?὚ ?Ὓ ?὜ ?Ὕ ?὞ ?Ὗ ?ὠ ?ὡ ?ὢ
+            ?ὣ ?ὤ ?ὥ ?ὦ ?ὧ ?Ὠ ?Ὡ ?Ὢ ?Ὣ ?Ὤ ?Ὥ ?Ὦ
+            ?Ὧ ?ὰ ?ά ?ὲ ?έ ?ὴ ?ή ?ὶ ?ί ?ὸ ?ό ?ὺ ?ύ ?ὼ
+            ?ώ ?὾ ?὿ ?ᾀ ?ᾁ ?ᾂ ?ᾃ ?ᾄ ?ᾅ ?ᾆ ?ᾇ ?ᾈ
+            ?ᾉ ?ᾊ ?ᾋ ?ᾌ ?ᾍ ?ᾎ ?ᾏ ?ᾐ ?ᾑ ?ᾒ ?ᾓ ?ᾔ
+            ?ᾕ ?ᾖ ?ᾗ ?ᾘ ?ᾙ ?ᾚ ?ᾛ ?ᾜ ?ᾝ ?ᾞ ?ᾟ ?ᾠ ?ᾡ ?ᾢ
+            ?ᾣ ?ᾤ ?ᾥ ?ᾦ ?ᾧ ?ᾨ ?ᾩ ?ᾪ ?ᾫ ?ᾬ ?ᾭ ?ᾮ ?ᾯ ?ᾰ
+            ?ᾱ ?ᾲ ?ᾳ ?ᾴ ?᾵ ?ᾶ ?ᾷ ?Ᾰ ?Ᾱ ?Ὰ ?Ά ?ᾼ ?᾽
+            ?ι ?᾿ ?῀ ?῁ ?ῂ ?ῃ ?ῄ ?῅ ?ῆ ?ῇ ?Ὲ ?Έ ?Ὴ
+            ?Ή ?ῌ ?῍ ?῎ ?῏ ?ῐ ?ῑ ?ῒ ?ΐ ?῔ ?῕ ?ῖ ?ῗ
+            ?Ῐ ?Ῑ ?Ὶ ?Ί ?῜ ?῝ ?῞ ?῟ ?ῠ ?ῡ ?ῢ ?ΰ ?ῤ ?ῥ
+            ?ῦ ?ῧ ?Ῠ ?Ῡ ?Ὺ ?Ύ ?Ῥ ?῭ ?΅ ?` ?῰ ?῱ ?ῲ ?ῳ
+            ?ῴ ?῵ ?ῶ ?ῷ ?Ὸ ?Ό ?Ὼ ?Ώ ?ῼ ?´ ?῾))
+      (modify-syntax-entry chr "w" table))
+    (dolist
+        (chr
+         '( ?℀ ?℁ ?ℂ ?℃ ?℄ ?℅ ?℆ ?ℇ ?℈ ?℉ ?ℊ ?ℋ ?ℌ ?ℍ ?ℎ
+            ?ℏ ?ℐ ?ℑ ?ℒ ?ℓ ?℔ ?ℕ ?№ ?℗ ?℘ ?ℙ ?ℚ ?ℛ ?ℜ ?ℝ
+            ?℞ ?℟ ?℠ ?℡ ?™ ?℣ ?ℤ ?℥ ?Ω ?℧ ?ℨ ?℩ ?K ?Å ?ℬ
+            ?ℭ ?℮ ?ℯ ?ℰ ?ℱ ?Ⅎ ?ℳ ?ℴ ?ℵ ?ℶ ?ℷ ?ℸ ?ℹ ?℺ ?℻
+            ?ℼ ?ℽ ?ℾ ?ℿ ?⅀ ?⅁ ?⅂ ?⅃ ?⅄ ?ⅅ ?ⅆ ?ⅇ ?ⅈ ?ⅉ ?⅊
+            ?⅋ ?⅌ ?⅍ ?ⅎ ?⅏))
+      (modify-syntax-entry chr "w" table))
+    (dolist
+        (chr
+         '( ?₁ ?₂ ?₃ ?₄ ?₅ ?₆ ?₇ ?₈ ?₉ ?₀
+            ?ₐ ?ₑ ?ₒ ?ₓ ?ₔ ?ₕ ?ₖ ?ₗ ?ₘ ?ₙ ?ₚ ?ₛ ?ₜ
+            ?' ?_ ?! ??))
+      (modify-syntax-entry chr "w" table))
+
+    ;; Lean operator chars
+    (dolist
+        (chr (string-to-list "#$%&*+<=>@^|~:"))
+      (modify-syntax-entry chr "." table))
+
+    ;; Whitespace is whitespace
+    (modify-syntax-entry ?\  " " table)
+    (modify-syntax-entry ?\t " " table)
+
+    ;; Strings
+    (modify-syntax-entry ?\" "\"" table)
+    (modify-syntax-entry ?\\ "/" table)
+
+    table))
 
 (defvar-keymap nael-mode-map
   :parent prog-mode-map
@@ -146,68 +220,41 @@ extension as FILE-NAME."
     ["Restart lean process" eglot-reconnect         t]
     ["Customize nael-mode" (customize-group 'lean) t]))
 
-(defvar nael--idle-timer nil)
-(defvar nael--idle-buffer nil)
-(defvar nael--idle-tick nil)
-
-(defun nael--idle-invalidate ()
-  "Cause `nael--idle-function' to act as if something has changed.
-
-...when next run."
-  (setq nael--idle-buffer nil))
-
-(defun nael--idle-function ()
-  (when (eq major-mode 'nael-mode)
-    (let ((old-buffer nael--idle-buffer)
-          (old-tick nael--idle-tick))
-      (setq nael--idle-buffer (current-buffer))
-      (setq nael--idle-tick (buffer-modified-tick))
-      ;; If the user has switched buffer or the buffer is not
-      ;; modified, refresh the info buffer now. Otherwise (if the
-      ;; buffer is modified), do nothing: we will refresh the info
-      ;; buffer later, from Eglot's internal
-      ;; `eglot--document-changed-hook'.
-      (when (or (not (eq nael--idle-buffer old-buffer))
-                (eq nael--idle-tick old-tick))
-        (nael-info-buffer-refresh)))))
-
-(defun nael--start-idle-timer ()
-  (unless nael--idle-timer
-    (setq nael--idle-timer
-          (run-with-idle-timer nael-idle-delay t
-                               #'nael--idle-function))))
-
-(defun nael--cancel-idle-timer ()
-  (when nael--idle-timer
-    (cancel-timer nael--idle-timer)
-    (setq nael--idle-timer nil)))
-
-(nael--start-idle-timer)
-
 ;;;###autoload
 (define-derived-mode nael-mode prog-mode "Nael"
-  "Major mode for Lean.
-\\{nael-mode-map}
-Invokes `nael-mode-hook'."
-  :syntax-table nael-syntax-table
-  :group 'nael
-  (setq-local comment-start "--")
-  (setq-local comment-start-skip "[-/]-[ \t]*")
-  (setq-local comment-end "")
-  (setq-local comment-end-skip "[ \t]*\\(-/\\|\\s>\\)")
-  (setq-local comment-padding 1)
-  (setq-local comment-use-syntax t)
-  (setq-local compilation-mode-font-lock-keywords nil)
-  (setq-local font-lock-defaults nael-font-lock-defaults)
+  "Major mode for editing Lean files.
+
+\\{nael-mode-map}"
+
+  ;; Input:
   (set-input-method "Lean")
-  ;; Inhibit flymake from starting automatically. Since diagnostics
-  ;; are updated only by the language server, we call `flymake-start'
-  ;; on their receipt.
+
+  ;; Comments:
+  (setq-local comment-end
+              "")
+  (setq-local comment-end-skip
+              "[ \t]*\\(-/\\|\\s>\\)")
+  (setq-local comment-padding
+              1)
+  (setq-local comment-start
+              "--")
+  (setq-local comment-start-skip
+              "[-/]-[ \t]*")
+  (setq-local comment-use-syntax
+              t)
+
+  ;; Fontification:
+  (setq-local compilation-mode-font-lock-keywords
+              nil)
+  (setq-local font-lock-defaults
+              nael-font-lock-defaults)
+
+  ;; Flymake: Inhibit flymake from starting automatically. Since
+  ;; diagnostics are updated only by the language server, we call
+  ;; `flymake-start' on their receipt.
   (setq-local flymake-no-changes-timeout nil)
   (setq-local flymake-start-on-flymake-mode nil)
   (setq-local flymake-start-on-save-buffer nil)
-  ;; Let the `next-error' and `previous-error' commands navigate
-  ;; diagnostics.
   (setq-local next-error-function #'flymake-goto-next-error))
 
 ;;;###autoload
@@ -223,36 +270,6 @@ Invokes `nael-mode-hook'."
 
 (defclass nael-eglot-lsp-server (eglot-lsp-server) nil
   :documentation "Subclass of `eglot-lsp-server' specifically for Nael")
-
-;; We call `nael-info-buffer-refresh' and `flymake-start' from a
-;; timer to reduce nesting of synchronous json requests, with a
-;; (short) nonzero delay in case the server sends diagnostics
-;; excessively frequently.
-(defvar nael--diagnostics-pending nil)
-(defun nael--handle-diagnostics (server uri)
-  (setq nael--diagnostics-pending nil)
-  (let
-      ((path
-        (abbreviate-file-name
-         (file-truename (eglot-uri-to-path uri)))))
-    (dolist (buf (eglot--managed-buffers server))
-      (when (buffer-live-p buf)
-        (with-current-buffer buf
-          (when
-              (and buffer-file-name
-                   (string= buffer-file-truename path))
-            (nael-info-buffer-refresh) (flymake-start)))))))
-
-(cl-defmethod eglot-handle-notification
-  :after
-  ((server nael-eglot-lsp-server)
-   (_ (eql textDocument/publishDiagnostics))
-   &key uri
-   &allow-other-keys)
-  "Handle notification textDocument/publishDiagnostics."
-  (unless nael--diagnostics-pending
-    (setq nael--diagnostics-pending t)
-    (run-with-timer 0.05 nil #'nael--handle-diagnostics server uri)))
 
 (cl-defmethod eglot-register-capability
   ((_server nael-eglot-lsp-server)
