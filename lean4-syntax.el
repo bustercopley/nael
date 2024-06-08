@@ -1,4 +1,4 @@
-;;; lean4-syntax.el --- Syntax table for lean4-mode -*- lexical-binding: t; -*-
+;;; nael-syntax.el --- Syntax table for nael-mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 Microsoft Corporation. All rights reserved.
 ;; Copyright (C) 2024 Free Software Foundation, Inc.
@@ -14,13 +14,13 @@
 
 ;;; Commentary:
 
-;; This library defines syntaxes for `lean4-mode'.
+;; This library defines syntaxes for `nael-mode'.
 
 ;;; Code:
 
 (require 'rx)
 
-(defconst lean4-keywords1
+(defconst nael-keywords1
   '(
     "abbrev" "at" "attribute" "attributes" "axiom" "begin" "break"
     "builtin_initialize" "by" "cases" "catch" "class" "constant"
@@ -39,10 +39,10 @@
     "using_well_founded" "variable" "variables" "where" "with")
   "Lean keywords ending with `word' (not symbol).")
 
-(defconst lean4-keywords1-regexp
-  (rx-to-string `(seq word-start (or ,@lean4-keywords1) word-end)))
+(defconst nael-keywords1-regexp
+  (rx-to-string `(seq word-start (or ,@nael-keywords1) word-end)))
 
-(defconst lean4-constants
+(defconst nael-constants
   '("!" "#" "$" "&&" "*" "+" "+c" "+f" "+n" "-" "->" "/" "/" "/\\"
     ":=" "<" "<->" "<=" "=" "==" ">" ">=" "@" "\\/" "^c" "||" "~" "¬"
     "×" "×c" "×f" "×n" "Π" "Σ" "λ" "⁻¹" "ℂ" "ℕ" "ℕ₋₂" "ℚ" "ℝ" "ℤ" "→"
@@ -52,30 +52,30 @@
     "⬝vp" "𝔸")
   "Lean constants.")
 
-(defconst lean4-constants-regexp
-  (regexp-opt lean4-constants))
+(defconst nael-constants-regexp
+  (regexp-opt nael-constants))
 
-(defconst lean4-numerals-regexp
+(defconst nael-numerals-regexp
   (rx word-start
       (one-or-more digit)
       (optional (and "." (zero-or-more digit)))
       word-end))
 
-(defconst lean4-warnings
+(defconst nael-warnings
   '("sorry")
   "Lean warnings.")
 
-(defconst lean4-warnings-regexp
-  (rx-to-string `(seq word-start (or ,@lean4-warnings) word-end)))
+(defconst nael-warnings-regexp
+  (rx-to-string `(seq word-start (or ,@nael-warnings) word-end)))
 
-(defconst lean4-debugging
+(defconst nael-debugging
   '("unreachable" "panic" "assert" "dbgTrace")
   "Lean debugging.")
 
-(defconst lean4-debugging-regexp
-  (rx-to-string `(seq word-start (or ,@lean4-debugging))))
+(defconst nael-debugging-regexp
+  (rx-to-string `(seq word-start (or ,@nael-debugging))))
 
-(defconst lean4-syntax-table
+(defconst nael-syntax-table
   (let ((st (make-syntax-table)))
     ;; Matching parens
     (modify-syntax-entry ?\[ "(]" st)
@@ -169,7 +169,7 @@
 
     st))
 
-(defconst lean4-font-lock-defaults
+(defconst nael-font-lock-defaults
   (list
    (list
     (list (rx word-start "attribute" word-end
@@ -217,7 +217,7 @@
     ;; Keywords
     (list "\\(set_option\\)[ \t]*\\([^ \t\n]*\\)"
           '(2 'font-lock-constant-face))
-    (cons lean4-keywords1-regexp
+    (cons nael-keywords1-regexp
           'font-lock-keyword-face)
     (list (rx word-start (group "example") ".")
           '(1 'font-lock-keyword-face))
@@ -235,16 +235,16 @@
     (cons "\"[^\"]*\"" 'font-lock-string-face)
 
     ;; ;; Constants
-    (cons lean4-constants-regexp 'font-lock-constant-face)
-    (cons lean4-numerals-regexp  'font-lock-constant-face)
+    (cons nael-constants-regexp 'font-lock-constant-face)
+    (cons nael-numerals-regexp  'font-lock-constant-face)
 
     ;; place holder
     (cons (rx symbol-start "_" symbol-end)
           'font-lock-preprocessor-face)
 
     ;; warnings
-    (cons lean4-warnings-regexp  'font-lock-warning-face)
-    (cons lean4-debugging-regexp 'font-lock-warning-face)
+    (cons nael-warnings-regexp  'font-lock-warning-face)
+    (cons nael-debugging-regexp 'font-lock-warning-face)
 
     ;; escaped identifiers
     (list (rx (and (group "«") (group (one-or-more (not (any "»"))))
@@ -254,7 +254,7 @@
           '(3 font-lock-comment-face t)))))
 
 ;; Syntax Highlighting for Lean Info Mode
-(defconst lean4-info-font-lock-defaults
+(defconst nael-info-font-lock-defaults
   (list
    (append
     (list
@@ -267,8 +267,8 @@
      (cons (rx "⊢" white) 'font-lock-keyword-face)
      (list (rx "[" (group "stale") "]") '(1 font-lock-warning-face))
      (cons (rx bol "No Goal" eol) 'font-lock-constant-face))
-    (car lean4-font-lock-defaults))))
+    (car nael-font-lock-defaults))))
 
-(provide 'lean4-syntax)
+(provide 'nael-syntax)
 
-;;; lean4-syntax.el ends here
+;;; nael-syntax.el ends here

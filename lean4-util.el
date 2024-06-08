@@ -1,4 +1,4 @@
-;;; lean4-util.el --- Utilities for lean4-mode -*- lexical-binding: t; -*-
+;;; nael-util.el --- Utilities for nael-mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 Microsoft Corporation. All rights reserved.
 ;; Copyright (C) 2024 Free Software Foundation, Inc.
@@ -14,13 +14,13 @@
 
 ;;; Commentary:
 
-;; This library provides utilities for `lean4-mode'.
+;; This library provides utilities for `nael-mode'.
 
 ;;; Code:
 
 (require 'cl-lib)
 
-(defun lean4-line-offset (&optional pos)
+(defun nael-line-offset (&optional pos)
   "Return the byte-offset of POS or current position.
 
 Counts from the beginning of the line."
@@ -33,7 +33,7 @@ Counts from the beginning of the line."
             (point))))
     (- pos bol-pos)))
 
-(defun lean4-pos-at-line-col (l c)
+(defun nael-pos-at-line-col (l c)
   "Return the point of the given line L and column C."
   ;; http://emacs.stackexchange.com/a/8083
   (save-excursion
@@ -42,7 +42,7 @@ Counts from the beginning of the line."
     (move-to-column c)
     (point)))
 
-(defun lean4-in-comment-p ()
+(defun nael-in-comment-p ()
   "Return t iff a current point is inside of comment block.
 
 Return nil otherwise."
@@ -51,7 +51,7 @@ Return nil otherwise."
 ;; The following function is a slightly modified version of
 ;; `f--collect-entries' written by Johan Andersson accessible at
 ;; https://github.com/rejeep/f.el/blob/master/f.el#L416-L435
-(defun lean4--collect-entries (path recursive)
+(defun nael--collect-entries (path recursive)
   "Find all files in PATH.  If RECURSIVE, descend into subfolders.
 
 This is a modified version of `f--collect-entries' that waits for
@@ -80,7 +80,7 @@ function to check the timer and kill the execution of this function."
                   (setq result
                         (append
                          result
-                         (lean4--collect-entries entry recursive))))))
+                         (nael--collect-entries entry recursive))))))
             entries))
           (t (setq result entries)))
     result))
@@ -88,17 +88,17 @@ function to check the timer and kill the execution of this function."
 ;; The following function is a slightly modified version of
 ;; f-files function written by Johan Andersson The URL is at
 ;; https://github.com/rejeep/f.el/blob/master/f.el#L478-L481
-(defun lean4-find-files (path &optional fn recursive)
+(defun nael-find-files (path &optional fn recursive)
   "Find all files in PATH.
 
 Optionally filter files satisfying predicate FN and/or use RECURSIVE
 search."
-  ;; It calls `lean4--collect-entries' instead of `f--collect-entries'
+  ;; It calls `nael--collect-entries' instead of `f--collect-entries'
   (let ((files (seq-keep #'file-regular-p
-                         (lean4--collect-entries path recursive))))
+                         (nael--collect-entries path recursive))))
     (if fn (seq-keep fn files) files)))
 
-(defmacro lean4-with-uri-buffers (server uri &rest body)
+(defmacro nael-with-uri-buffers (server uri &rest body)
   (declare (indent 2)
            (debug (form form &rest form)))
   (let ((path-var (make-symbol "path")))
@@ -112,6 +112,6 @@ search."
                         (string= buffer-file-truename ,path-var))
                ,@body)))))))
 
-(provide 'lean4-util)
+(provide 'nael-util)
 
-;;; lean4-util.el ends here
+;;; nael-util.el ends here

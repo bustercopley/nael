@@ -1,4 +1,4 @@
-;;; lean4-info.el --- Emacs mode for Lean theorem prover -*- lexical-binding: t; -*-
+;;; nael-info.el --- Emacs mode for Lean theorem prover -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 Microsoft Corporation. All rights reserved.
 ;; Copyright (C) 2024 Free Software Foundation, Inc.
@@ -14,7 +14,7 @@
 
 ;;; Commentary:
 
-;; This library provides an advanced LSP feature for `lean4-mode'.
+;; This library provides an advanced LSP feature for `nael-mode'.
 
 ;;; Code:
 
@@ -23,36 +23,36 @@
 
 (require 'magit-section)
 
-(require 'lean4-syntax)
-(require 'lean4-util)
+(require 'nael-syntax)
+(require 'nael-util)
 
-(defgroup lean4-info nil
+(defgroup nael-info nil
   "Lean Info."
-  :group 'lean4)
+  :group 'nael)
 
-(defcustom lean4-highlight-inaccessible-names t
+(defcustom nael-highlight-inaccessible-names t
   "Use font to highlight inaccessible names.
 
 Set this variable to `t' to highlight inaccessible names in the info
 display using `font-lock-comment-face' instead of the `✝' suffix used
 by Lean."
-  :group 'lean4 :type 'boolean)
+  :group 'nael :type 'boolean)
 
-;; Lean Info Mode (for "*lean4-info*" buffer)
+;; Lean Info Mode (for "*nael-info*" buffer)
 ;; Automode List
 ;;;###autoload
-(define-derived-mode lean4-info-mode prog-mode "Lean-Info"
-  "Helper mode for Lean 4 info buffer.
+(define-derived-mode nael-info-mode prog-mode "Nael-Info"
+  "Helper mode for Nael info buffer.
 
 This mode is only used in temporary buffers, for fontification."
-  :syntax-table lean4-syntax-table
-  :group 'lean4
+  :syntax-table nael-syntax-table
+  :group 'nael
   (set (make-local-variable 'font-lock-defaults)
-       lean4-info-font-lock-defaults))
+       nael-info-font-lock-defaults))
 
-(declare-function lean4--idle-invalidate "lean4-mode")
+(declare-function nael--idle-invalidate "nael-mode")
 
-(defun lean4-ensure-info-buffer (buffer)
+(defun nael-ensure-info-buffer (buffer)
   "Create BUFFER if it does not exist.
 
 Also choose settings used for the *Lean Goal* buffer."
@@ -61,23 +61,23 @@ Also choose settings used for the *Lean Goal* buffer."
       (magit-section-mode)
       (buffer-disable-undo)
       (add-hook 'window-configuration-change-hook
-                #'lean4--idle-invalidate nil t)
+                #'nael--idle-invalidate nil t)
       (add-hook 'eldoc-documentation-functions
-                #'lean4-info-eldoc-function nil t)
+                #'nael-info-eldoc-function nil t)
       (eldoc-mode)
       (set-input-method "Lean")
-      (set-syntax-table lean4-syntax-table)
+      (set-syntax-table nael-syntax-table)
       (setq buffer-read-only t))))
 
-(defun lean4-toggle-info-buffer (buffer)
+(defun nael-toggle-info-buffer (buffer)
   "Create or delete BUFFER.
 The buffer is supposed to be the *Lean Goal* buffer."
   (if-let ((window (get-buffer-window buffer)))
       (quit-window nil window)
-    (lean4-ensure-info-buffer buffer)
+    (nael-ensure-info-buffer buffer)
     (display-buffer buffer)))
 
-(defun lean4-info-buffer-active (buffer)
+(defun nael-info-buffer-active (buffer)
   "Check if given info BUFFER should show info for current buffer."
   (and
    ;; info buffer visible (on any frame)
@@ -87,36 +87,36 @@ The buffer is supposed to be the *Lean Goal* buffer."
    ;; current buffer is visiting a file
    buffer-file-name))
 
-(defconst lean4-info-buffer-name "*Lean Goal*")
+(defconst nael-info-buffer-name "*Nael Goal*")
 
-(defvar lean4-info--goals nil)
-(defvar lean4-info--term-goal nil)
+(defvar nael-info--goals nil)
+(defvar nael-info--term-goal nil)
 
-(defun lean4-info--diagnostics ()
+(defun nael-info--diagnostics ()
   (nreverse
    (cl-loop
     for diag in (flymake-diagnostics)
     when (cdr (assoc 'eglot-lsp-diag (eglot--diag-data diag)))
     collect it)))
 
-(defun lean4-info--diagnostic-start (diagnostic)
+(defun nael-info--diagnostic-start (diagnostic)
   (eglot--dbind ((Range) start) (cl-getf diagnostic :fullRange)
     (eglot--dbind ((Position) line) start
       line)))
 
-(defun lean4-info--diagnostic-end (diagnostic)
+(defun nael-info--diagnostic-end (diagnostic)
   (eglot--dbind ((Range) end) (cl-getf diagnostic :fullRange)
     (eglot--dbind ((Position) line) end
       line)))
 
-(defun lean4-info--fontify-string (s)
+(defun nael-info--fontify-string (s)
   (with-temp-buffer
-    (lean4-info-mode)
+    (nael-info-mode)
     (insert s)
     (font-lock-ensure)
     (buffer-string)))
 
-(defun lean4-mk-message-section (value caption errors)
+(defun nael-mk-message-section (value caption errors)
   "Add a section with caption CAPTION and contents ERRORS."
   (when errors
     (magit-insert-section (magit-section value)
@@ -132,59 +132,59 @@ The buffer is supposed to be the *Lean Goal* buffer."
                       (format "%d:%d" (1+ line) character))
                     (insert message "\n")))))))))))
 
-(defun lean4-info-buffer-redisplay ()
+(defun nael-info-buffer-redisplay ()
   (let ((inhibit-message t)
         (inhibit-read-only t))
-    (when (lean4-info-buffer-active lean4-info-buffer-name)
+    (when (nael-info-buffer-active nael-info-buffer-name)
       (let* ((deactivate-mark) ; keep transient mark
              (line
               (save-restriction
                 (widen)
                 (1- (line-number-at-pos nil t))))
              (errors
-              (seq-sort-by #'lean4-info--diagnostic-end #'<
-                           (lean4-info--diagnostics)))
+              (seq-sort-by #'nael-info--diagnostic-end #'<
+                           (nael-info--diagnostics)))
              (errors-above
               (seq-take-while
-               (lambda (e) (< (lean4-info--diagnostic-end e) line))
+               (lambda (e) (< (nael-info--diagnostic-end e) line))
                errors))
              (errors
               (seq-drop errors (seq-length errors-above)))
              (errors-here
               (seq-take-while
-               (lambda (e) (<= (lean4-info--diagnostic-end e) line))
+               (lambda (e) (<= (nael-info--diagnostic-end e) line))
                errors))
              (errors-below
               (seq-drop errors (seq-length errors-here))))
-        (with-current-buffer lean4-info-buffer-name
+        (with-current-buffer nael-info-buffer-name
           (erase-buffer)
           (magit-insert-section (magit-section 'root)
-            (when lean4-info--goals
+            (when nael-info--goals
               (magit-insert-section (magit-section 'goals)
                 (magit-insert-heading "Goals:")
-                (let ((goals lean4-info--goals))
+                (let ((goals nael-info--goals))
                   (magit-insert-section-body
                     (if (> (length goals) 0)
                         (seq-doseq (g goals)
                           (magit-insert-section (magit-section)
                             (insert
-                             (lean4-info--fontify-string g) "\n\n")))
+                             (nael-info--fontify-string g) "\n\n")))
                       (insert "goals accomplished\n\n"))))))
-            (when lean4-info--term-goal
+            (when nael-info--term-goal
               (magit-insert-section (magit-section 'term-goal)
                 (magit-insert-heading "Expected type:")
-                (let ((term-goal lean4-info--term-goal))
+                (let ((term-goal nael-info--term-goal))
                   (magit-insert-section-body
                     (insert
-                     (lean4-info--fontify-string term-goal)
+                     (nael-info--fontify-string term-goal)
                      "\n\n")))))
-            (lean4-mk-message-section
+            (nael-mk-message-section
              'errors-here "Messages here:" errors-here)
-            (lean4-mk-message-section
+            (nael-mk-message-section
              'errors-below "Messages below:" errors-below)
-            (lean4-mk-message-section
+            (nael-mk-message-section
              'errors-above "Messages above:" errors-above)
-            (when lean4-highlight-inaccessible-names
+            (when nael-highlight-inaccessible-names
               (goto-char 1)
               (save-match-data
                 (while
@@ -197,7 +197,7 @@ The buffer is supposed to be the *Lean Goal* buffer."
                     'font-lock-face 'font-lock-comment-face)
                    'fixedcase 'literal))))))))))
 
-(defcustom lean4-info-plain t
+(defcustom nael-info-plain t
   "If t, then use plain text for info buffer.
 
 If nil, then enable \"hover docs\" in the info buffer.  This is
@@ -206,18 +206,18 @@ an experimental feature that requires further testing."
   '(choice
     (const :tag "Plain text" t)
     (const :tag "Hover docs" nil))
-  :group 'lean4)
+  :group 'nael)
 
-(defvar lean4--rpc-server nil)
-(defvar lean4--rpc-textDocument nil)
-(defvar lean4--rpc-position nil)
-(defvar lean4--rpc-sessionId nil)
-(defvar lean4--rpc-timer nil)
+(defvar nael--rpc-server nil)
+(defvar nael--rpc-textDocument nil)
+(defvar nael--rpc-position nil)
+(defvar nael--rpc-sessionId nil)
+(defvar nael--rpc-timer nil)
 
-(defun lean4--rpc-connect (&optional buf)
+(defun nael--rpc-connect (&optional buf)
   "Initiate an rpc connection.
 
-This sets the variables lean4--rpc-*."
+This sets the variables nael--rpc-*."
   (unless buf (setq buf (current-buffer)))
   (with-current-buffer buf
     (let*
@@ -227,31 +227,31 @@ This sets the variables lean4--rpc-*."
          (response
           (jsonrpc-request server :$/lean/rpc/connect `(:uri ,uri)))
          (sessionId (plist-get response :sessionId)))
-      (setq lean4--rpc-server server)
-      (setq lean4--rpc-textDocument
+      (setq nael--rpc-server server)
+      (setq nael--rpc-textDocument
             (plist-get textdoc-pos :textDocument))
-      (setq lean4--rpc-position (plist-get textdoc-pos :position))
-      (setq lean4--rpc-sessionId sessionId)
-      (unless lean4--rpc-timer
-        (setq lean4--rpc-timer
-              (run-with-timer 0 5 #'lean4-info--rpc-keepalive))))))
+      (setq nael--rpc-position (plist-get textdoc-pos :position))
+      (setq nael--rpc-sessionId sessionId)
+      (unless nael--rpc-timer
+        (setq nael--rpc-timer
+              (run-with-timer 0 5 #'nael-info--rpc-keepalive))))))
 
-(defun lean4-info--rpc-keepalive ()
-  (when lean4--rpc-server
+(defun nael-info--rpc-keepalive ()
+  (when nael--rpc-server
     (condition-case nil
         (jsonrpc-notify
-         lean4--rpc-server
+         nael--rpc-server
          :$/lean/rpc/keepAlive
-         `(:uri ,(plist-get lean4--rpc-textDocument :uri)
-                :sessionId ,lean4--rpc-sessionId))
-      (error (cancel-timer lean4--rpc-timer)
-             (setq lean4--rpc-timer nil)
-             (setq lean4--rpc-server nil)
-             (setq lean4--rpc-textDocument nil)
-             (setq lean4--rpc-position nil)
-             (setq lean4--rpc-sessionId nil)))))
+         `(:uri ,(plist-get nael--rpc-textDocument :uri)
+                :sessionId ,nael--rpc-sessionId))
+      (error (cancel-timer nael--rpc-timer)
+             (setq nael--rpc-timer nil)
+             (setq nael--rpc-server nil)
+             (setq nael--rpc-textDocument nil)
+             (setq nael--rpc-position nil)
+             (setq nael--rpc-sessionId nil)))))
 
-(defun lean4-info-parse-goal (goal)
+(defun nael-info-parse-goal (goal)
   "Parse GOAL into propertized string."
   (let*
       ((userName (plist-get goal :userName))
@@ -263,57 +263,57 @@ This sets the variables lean4--rpc-*."
     (concat
      (when userName (concat "case " userName "\n"))
      (mapconcat (lambda (hyp)
-                  (lean4-info-parse-hyp hyp (list p)))
+                  (nael-info-parse-hyp hyp (list p)))
                 hyps "\n")
      "\n"
      goalPrefix
-     (lean4-info-parse-type type (list p)))))
+     (nael-info-parse-type type (list p)))))
 
-(defun lean4-info-parse-hyp (hyp ps)
+(defun nael-info-parse-hyp (hyp ps)
   "Parse hypothesis HYP into propertized string.
 PS is a list of tag IDs."
   (let* ((type (plist-get hyp :type))
          (names (plist-get hyp :names)))
     (concat (mapconcat #'identity names
-                       (propertize " " 'lean4-p ps))
-            (propertize " : " 'lean4-p ps)
-            (lean4-info-parse-type type ps))))
+                       (propertize " " 'nael-p ps))
+            (propertize " : " 'nael-p ps)
+            (nael-info-parse-type type ps))))
 
-(defun lean4-info-parse-type (type ps)
+(defun nael-info-parse-type (type ps)
   "Parse TYPE into propertized string.
 PS is a list of tag IDs."
   (let* ((tag (plist-get type :tag)))
-    (lean4-info-parse-tag tag ps)))
+    (nael-info-parse-tag tag ps)))
 
-(defun lean4-info-parse-tag (tag ps)
+(defun nael-info-parse-tag (tag ps)
   "Parse TAG into propertized string.
 PS is a list of tag IDs."
   (let* ((tag0 (aref tag 0))
          (info (plist-get tag0 :info))
          (p (plist-get info :p))
          (tag1 (aref tag 1)))
-    (lean4-info-parse-expr tag1 (cons p ps))))
+    (nael-info-parse-expr tag1 (cons p ps))))
 
-(defun lean4-info-parse-expr (expr &optional ps)
+(defun nael-info-parse-expr (expr &optional ps)
   "Parse EXPR into propertized string.
 PS is a list of tag IDs."
   (cond
    ((equal (car expr) :text)
     (if ps
-        (propertize (cadr expr) 'lean4-p ps)
+        (propertize (cadr expr) 'nael-p ps)
       (cadr expr)))
    ((equal (car expr) :append)
     (mapconcat (lambda (item)
                  (cond
                   ((equal (car item) :text)
                    (if ps
-                       (propertize (cadr item) 'lean4-p ps)
+                       (propertize (cadr item) 'nael-p ps)
                      (cadr item)))
                   ((equal (car item) :tag)
-                   (lean4-info-parse-tag (cadr item) ps))))
+                   (nael-info-parse-tag (cadr item) ps))))
                (cadr expr)))))
 
-(defun lean4-info-buffer-refresh ()
+(defun nael-info-buffer-refresh ()
   "Refresh the *Lean Goal* buffer."
   (let* ((server (eglot-current-server))
          (buf (current-buffer))
@@ -330,12 +330,12 @@ PS is a list of tag IDs."
                 (insert (format "goals: %s\n" goals))
                 (insert (format "term-goal: %s\n" term-goal)))
               (with-current-buffer buf
-                (setq lean4-info--goals goals)
-                (setq lean4-info--term-goal term-goal)
-                (lean4-info-buffer-redisplay))))))
+                (setq nael-info--goals goals)
+                (setq nael-info--term-goal term-goal)
+                (nael-info-buffer-redisplay))))))
     (when (and server
-               (lean4-info-buffer-active lean4-info-buffer-name))
-      (if lean4-info-plain
+               (nael-info-buffer-active nael-info-buffer-name))
+      (if nael-info-plain
           (progn
             (jsonrpc-async-request
              server :$/lean/plainGoal
@@ -352,92 +352,92 @@ PS is a list of tag IDs."
         ;; It might be more elegant to do the following once, when we
         ;; switch to a lean buffer, but putting it here seems more
         ;; robust.
-        (lean4--rpc-connect) ;; sets the variables lean4--rpc-*
+        (nael--rpc-connect) ;; sets the variables nael--rpc-*
         (jsonrpc-async-request
          server :$/lean/rpc/call
          (list
           :method "Lean.Widget.getInteractiveGoals"
-          :sessionId lean4--rpc-sessionId
-          :textDocument lean4--rpc-textDocument
-          :position lean4--rpc-position
-          :params (list :textDocument lean4--rpc-textDocument
-                        :position lean4--rpc-position))
+          :sessionId nael--rpc-sessionId
+          :textDocument nael--rpc-textDocument
+          :position nael--rpc-position
+          :params (list :textDocument nael--rpc-textDocument
+                        :position nael--rpc-position))
          :success-fn
          (lambda (result)
            (setq goals
                  (when result
                    (vconcat
-                    (mapcar #'lean4-info-parse-goal
+                    (mapcar #'nael-info-parse-goal
                             (cl-getf result :goals)))))
            (funcall handle-response)))
         (jsonrpc-async-request
          server :$/lean/rpc/call
          (list
           :method "Lean.Widget.getInteractiveTermGoal"
-          :sessionId lean4--rpc-sessionId
-          :textDocument lean4--rpc-textDocument
-          :position lean4--rpc-position
-          :params (list :textDocument lean4--rpc-textDocument
-                        :position lean4--rpc-position))
+          :sessionId nael--rpc-sessionId
+          :textDocument nael--rpc-textDocument
+          :position nael--rpc-position
+          :params (list :textDocument nael--rpc-textDocument
+                        :position nael--rpc-position))
          :success-fn
          (lambda (result)
            (setq term-goal
-                 (when result (lean4-info-parse-goal result)))
+                 (when result (nael-info-parse-goal result)))
            (funcall handle-response)))))))
 
-(defun lean4-toggle-info ()
+(defun nael-toggle-info ()
   "Show infos at the current point."
   (interactive)
-  (lean4-toggle-info-buffer lean4-info-buffer-name)
-  (lean4-info-buffer-refresh))
+  (nael-toggle-info-buffer nael-info-buffer-name)
+  (nael-info-buffer-refresh))
 
-(defun lean4-info--widget-region (&optional pos)
+(defun nael-info--widget-region (&optional pos)
   "Return the region of the widget at POS.
 
 POS defaults to the current point."
   (unless pos (setq pos (point)))
-  (when-let ((ps (get-text-property pos 'lean4-p)))
+  (when-let ((ps (get-text-property pos 'nael-p)))
     (let ((p (car ps))
           (start (point-min))
           (end (point-max)))
       (while (and start
                   (< start (point-max))
-                  (not (member p (get-text-property start 'lean4-p))))
+                  (not (member p (get-text-property start 'nael-p))))
         (setq start
               (next-single-property-change
-               start 'lean4-p nil (point-max))))
+               start 'nael-p nil (point-max))))
       (while (and end
                   (> end (point-min))
-                  (not (member p (get-text-property end 'lean4-p))))
+                  (not (member p (get-text-property end 'nael-p))))
         (setq end
               (previous-single-property-change
-               end 'lean4-p nil (point-min))))
+               end 'nael-p nil (point-min))))
       (setq end
             (next-single-property-change
-             end 'lean4-p nil (point-max)))
+             end 'nael-p nil (point-max)))
       (cons start end))))
 
-(defun lean4-info-eldoc-function (cb)
+(defun nael-info-eldoc-function (cb)
   "Eldoc function for info buffer.
 
 CB is the callback function provided by Eldoc."
-  (unless lean4-info-plain
+  (unless nael-info-plain
     (let* ((pos (point))
-           (p (car (get-text-property pos 'lean4-p))))
-      (let* ((region (lean4-info--widget-region pos))
+           (p (car (get-text-property pos 'nael-p))))
+      (let* ((region (nael-info--widget-region pos))
              (min (car region))
              (max (cdr region)))
         (when (and min max)
           (pulse-momentary-highlight-region min max)))
-      (when (and lean4--rpc-server p)
+      (when (and nael--rpc-server p)
         (jsonrpc-async-request
-         lean4--rpc-server :$/lean/rpc/call
+         nael--rpc-server :$/lean/rpc/call
          (list
           :method (concat "Lean.Widget.InteractiveDiagnostics."
                           "infoToInteractive")
-          :sessionId lean4--rpc-sessionId
-          :textDocument lean4--rpc-textDocument
-          :position lean4--rpc-position
+          :sessionId nael--rpc-sessionId
+          :textDocument nael--rpc-textDocument
+          :position nael--rpc-position
           :params (list :p p))
          :success-fn
          (lambda (result)
@@ -446,10 +446,10 @@ CB is the callback function provided by Eldoc."
              (erase-buffer)
              (insert (format "result: %s" result)))
            (let* ((doc (plist-get result :doc))
-                  (type (lean4-info-parse-type
+                  (type (nael-info-parse-type
                          (plist-get result :type)
                          nil))
-                  (expr (lean4-info-parse-expr
+                  (expr (nael-info-parse-expr
                          (plist-get result :exprExplicit)))
                   (expr-type (and type expr (concat expr " : " type)))
                   (sep (when (and expr-type doc)
@@ -463,6 +463,6 @@ CB is the callback function provided by Eldoc."
                  (substring
                   doc 0 (string-match-p "\n" doc))))))))))))
 
-(provide 'lean4-info)
+(provide 'nael-info)
 
-;;; lean4-info.el ends here
+;;; nael-info.el ends here
