@@ -92,7 +92,7 @@
                "universes" "unless" "unsafe" "using"
                "using_well_founded" "variable" "variables" "where"
                "with")
-              word-end))
+              word-end)
     'font-lock-keyword-face)
    (list (rx word-start (group "example") ".")
          '(1 'font-lock-keyword-face))
@@ -142,7 +142,7 @@
              (group "»"))
          '(1 font-lock-comment-face t)
          '(2 nil t)
-         '(3 font-lock-comment-face t))))
+         '(3 font-lock-comment-face t)))))
 
 (provide 'nael-syntax)
 
