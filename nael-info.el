@@ -63,7 +63,7 @@ by Lean."
   "Helper mode for Nael info buffer.
 
 This mode is only used in temporary buffers, for fontification."
-  :syntax-table nael-syntax-table
+  :syntax-table nael-mode-syntax-table
   :group 'nael
   (set (make-local-variable 'font-lock-defaults)
        nael-info-font-lock-defaults))
@@ -80,7 +80,7 @@ Also choose settings used for the *Lean Goal* buffer."
                 #'nael-info-eldoc-function nil t)
       (eldoc-mode)
       (set-input-method "Lean")
-      (set-syntax-table nael-syntax-table)
+      (set-syntax-table nael-mode-syntax-table)
       (setq buffer-read-only t))))
 
 (defun nael-toggle-info-buffer (buffer)
