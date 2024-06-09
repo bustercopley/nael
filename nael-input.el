@@ -246,7 +246,7 @@ a list of such pairs."
 
 ;; TODO: Research how to optimize this.  It'd be good if we did not
 ;; put all of these translations in a linked list in memory.
-(defcustom nael-input-translations
+(defvar nael-input-translations
   '(("!!" . ["‼"])
     ("!" . ["¡"])
     ("!?" . ["⁉"])
