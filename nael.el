@@ -1,4 +1,4 @@
-;;; nael-mode.el --- A major mode for the Lean language  -*- lexical-binding: t; -*-
+;;; nael.el --- Major mode for Lean -*- lexical-binding: t; -*-
 
 ;; Copyright (c) 2014 Microsoft Corporation. All rights reserved.
 ;; Copyright (C) 2024 Free Software Foundation, Inc.
