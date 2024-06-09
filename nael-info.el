@@ -65,8 +65,24 @@ by Lean."
 This mode is only used in temporary buffers, for fontification."
   :syntax-table nael-mode-syntax-table
   :group 'nael
-  (set (make-local-variable 'font-lock-defaults)
-       nael-info-font-lock-defaults))
+
+  ;; Fontification:
+  (setq-local font-lock-defaults
+              nael-info-font-lock-defaults)
+
+  ;; Comments (needed to make `hs-minor-mode' not error):
+  (setq-local comment-end
+              "")
+  (setq-local comment-end-skip
+              "[ \t]*\\(-/\\|\\s>\\)")
+  (setq-local comment-padding
+              1)
+  (setq-local comment-start
+              "--")
+  (setq-local comment-start-skip
+              "[-/]-[ \t]*")
+  (setq-local comment-use-syntax
+              t))
 
 (defun nael-ensure-info-buffer (buffer)
   "Create BUFFER if it does not exist.
