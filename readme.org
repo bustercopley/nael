@@ -19,7 +19,7 @@ the ~load-path~ variable. You can then ~(require 'nael-mode)~.
 
 ** Test
 
-If things are working correctly, you should see the word =Lean 4= in
+If things are working correctly, you should see the word =Nael= in
 Emacs' mode-line when you open a file with extension =.lean=. Emacs
 will ask you to identify the /project/ this file belongs to. If you
 then type
