@@ -26,7 +26,7 @@
 (require 'nael-syntax)
 
 (defgroup nael-info nil
-  "Lean Info."
+  "Nael Info."
   :group 'nael)
 
 (defcustom nael-highlight-inaccessible-names t
@@ -79,7 +79,7 @@ Also choose settings used for the *Lean Goal* buffer."
       (add-hook 'eldoc-documentation-functions
                 #'nael-info-eldoc-function nil t)
       (eldoc-mode)
-      (set-input-method "Lean")
+      (set-input-method "Nael")
       (set-syntax-table nael-mode-syntax-table)
       (setq buffer-read-only t))))
 

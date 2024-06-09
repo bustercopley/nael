@@ -132,7 +132,7 @@ watch each individually."
 \\{nael-mode-map}"
 
   ;; Input:
-  (set-input-method "Lean")
+  (set-input-method "Nael")
 
   ;; Comments:
   (setq-local comment-end
