@@ -243,6 +243,6 @@ to tell Eglot not to validate the version."
                    (setf (cl-getf textDocument :version) nil)))
                documentChanges))))))
 
-(provide 'nael-mode)
+(provide 'nael)
 
-;;; nael-mode.el ends here
+;;; nael.el ends here
