@@ -86,7 +86,7 @@ watch each individually."
       (compile "lake build")))
 
 (defun nael-execute (&optional arg)
-  "Execute Lean in the current buffer with an optional argument ARG."
+  "Execute Lean in current buffer with optional argument ARG."
   (interactive)
   ;; TODO: Move this inside the (interactive ...) form.
   (when (called-interactively-p 'any)
@@ -95,19 +95,19 @@ watch each individually."
       ((root (project-root (project-current)))
        (use-lake
         (file-exists-p (file-name-concat root "lakefile.lean")))
-       (default-directory (if use-lake root default-directory))
-       (target-file-name
+       (default-directory (if use-lake root default-directory)))
+    (compile
+     (format
+      (concat (if use-lake "lake env lean" "lean") "%s %s")
+      (or arg "")
+      (shell-quote-argument
+       (expand-file-name
         (or
          (buffer-file-name)
          (flymake-proc-init-create-temp-buffer-copy
           (lambda (file-name prefix)
             (make-temp-file (or prefix "flymake") nil
-                            (file-name-extension file-name)))))))
-    (compile
-     (format
-      (concat (if use-lake "lake env lean" "lean") "%s %s")
-      (or arg "")
-      (shell-quote-argument (expand-file-name target-file-name))))))
+                            (file-name-extension file-name)))))))))))
 
 (defvar-keymap nael-mode-map
   :parent prog-mode-map
@@ -174,7 +174,7 @@ watch each individually."
       '(nael-eglot-lsp-server . ("lake" "serve")))
 
 (defclass nael-eglot-lsp-server (eglot-lsp-server) nil
-  :documentation "Subclass of `eglot-lsp-server' specifically for Nael")
+  :documentation "Nael specific subclass of `eglot-lsp-server'")
 
 (cl-defmethod eglot-register-capability
   ((_server nael-eglot-lsp-server)
