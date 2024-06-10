@@ -17,6 +17,13 @@ To install this package, proceed as usual: Clone the repository to
 your local persistent memory and add the file-path to its location to
 the ~load-path~ variable. You can then ~(require 'nael-mode)~.
 
+#+begin_src elisp
+(add-to-list 'project-vc-extra-root-markers "lakefile.lean")
+
+(setf (alist-get "lean" markdown-code-lang-modes nil nil #'equal)
+      'nael-mode)
+#+end_src
+
 ** Test
 
 If things are working correctly, you should see the word =Nael= in
