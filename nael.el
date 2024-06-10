@@ -52,7 +52,7 @@
   :prefix "nael-"
   :group 'languages)
 
-;;;; Syntax
+;;;; Syntax table:
 
 (defvar nael-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -63,11 +63,11 @@
     (modify-syntax-entry ?\} "){" table)
 
     ;; Comments:
-    (modify-syntax-entry ?/ ". 14nb" table)
-    (modify-syntax-entry ?- ". 123" table)
-    (modify-syntax-entry ?\n ">" table)
-    (modify-syntax-entry ?« "<" table)
-    (modify-syntax-entry ?» ">" table)
+    (modify-syntax-entry ?/  ". 14nb" table)
+    (modify-syntax-entry ?-  ". 123"  table)
+    (modify-syntax-entry ?\n ">"      table)
+    (modify-syntax-entry ?«  "<"      table)
+    (modify-syntax-entry ?»  ">"      table)
 
     ;; Words:
     (mapcar
@@ -103,8 +103,7 @@
        ?ℿ ?⅀ ?⅁ ?⅂ ?⅃ ?⅄ ?ⅅ ?ⅆ ?ⅇ ?ⅈ ?ⅉ ?⅊ ?⅋ ?⅌ ?⅍ ?ⅎ ?⅏
        ;; Subscripts:
        ?₁ ?₂ ?₃ ?₄ ?₅ ?₆ ?₇ ?₈ ?₉ ?₀ ?ₐ ?ₑ ?ₒ ?ₓ ?ₔ ?ₕ ?ₖ ?ₗ ?ₘ ?ₙ ?ₚ
-       ?ₛ ?ₜ ?' ?_ ?! ??)
-     (modify-syntax-entry chr "w" table))
+       ?ₛ ?ₜ ?' ?_ ?! ??))
 
     ;; Operators:
     (mapcar
@@ -117,9 +116,11 @@
 
     ;; Strings:
     (modify-syntax-entry ?\" "\"" table)
-    (modify-syntax-entry ?\\ "/" table)
+    (modify-syntax-entry ?\\ "/"  table)
 
     table))
+
+;;;; Font lock:
 
 (defvar nael-font-lock-defaults
   (list
@@ -234,7 +235,8 @@
    ;; Warnings:
    (cons (rx word-start "sorry" word-end)
          'font-lock-warning-face)
-   (cons (rx word-start (or "assert" "dbgTrace" "panic" "unreachable"))
+   (cons (rx word-start
+             (or "assert" "dbgTrace" "panic" "unreachable"))
          'font-lock-warning-face)
 
    ;; Escaped identifiers:
@@ -251,8 +253,6 @@
   "Major mode for Lean.
 
 \\{nael-mode-map}"
-  ;; Input:
-  (set-input-method "Nael")
   ;; Comments:
   (setq-local comment-end
               "")
@@ -275,10 +275,12 @@
   ;; Flymake:
   (setq-local next-error-function #'flymake-goto-next-error))
 
-;;;; Adding to global association variables:
+;;;; File extension:
 
 (setf (alist-get "\\.lean\\'" auto-mode-alist nil nil #'equal)
       'nael-mode)
+
+;;;; Language server:
 
 (setf (alist-get 'nael-mode eglot-server-programs)
       '("lake" "serve"))
