@@ -33,25 +33,13 @@
 
 ** Roadmap
 
-(This is section lists future plans only. It does not list past
-accomplishments.)
-
-Maintenance:
-
-- Remove the JSON file for abbreviations. (WIP)
-- Add =lakefile= to ~project-vc-extra-root-markers~ or so. (WIP)
-- Rely on =project.el= rather than reimplementing some of its
-  features.
-- Evaluate if the =(cl-defmethod eglot-...)= are needed.
-- Rework indentation (=lean4-eri.el=).
-
-Features:
-
-- Fix =nael-info=, i.e. =*Nael Goal*= buffer.  (It does not work
-  right now.  I guess, I broke it.)
+- Use ElDoc and Eglot to show [[https://leanprover-community.github.io/mathlib4_docs/Lean/Widget/InteractiveGoal.html][InteractiveGoal]]. First define a function
+  that can be used as a member of
+  ~eldoc-documentation-functions~. Then define a command that toggles
+  between the described function, and the usual set of such functions.
 - Support fontification via semantic tokens from the language server,
-  based on [[https://codeberg.org/eownerdead/eglot-semantic-tokens][this]] or [[https://codeberg.org/harald/eglot-semtok][this]] package, or even help the former being [[https://github.com/joaotavora/eglot/pull/839][merged]]
-  into Eglot.
+  based on [[https://codeberg.org/eownerdead/eglot-semantic-tokens][this]] or [[https://codeberg.org/harald/eglot-semtok][this]] package, or even help them being [[https://github.com/joaotavora/eglot/pull/839][merged]] into
+  Eglot.
 
 ** License
 
