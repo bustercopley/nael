@@ -33,9 +33,9 @@
 
 ** Roadmap
 
-- Use ElDoc and Eglot to show [[https://leanprover-community.github.io/mathlib4_docs/Lean/Widget/InteractiveGoal.html][InteractiveGoal]]. First define a function
-  that can be used as a member of
-  ~eldoc-documentation-functions~. Then define a command that toggles
+- Use ElDoc and Eglot to show [[https://leanprover-community.github.io/mathlib4_docs/Lean/Widget/InteractiveGoal.html][InteractiveGoal]].  First define a
+  function that can be used as a member of
+  ~eldoc-documentation-functions~.  Then define a command that toggles
   between the described function, and the usual set of such functions.
 - Support fontification via semantic tokens from the language server,
   based on [[https://codeberg.org/eownerdead/eglot-semantic-tokens][this]] or [[https://codeberg.org/harald/eglot-semtok][this]] package, or even help them being [[https://github.com/joaotavora/eglot/pull/839][merged]] into
@@ -43,9 +43,9 @@
 
 ** License
 
-The original =nael-mode= is licensed under Apache-2.0. Additions and
-modifications made in this repository are licensed under GNU General
-Public License version 3 or later. (Yes, these licenses are compatible
-in this way.) Thus this repository contains code under both licenses.
-Since GPLv3+ is stricter than Apache2, you can simply treat the source
-code as a whole as if it were licensed under GPLv3+.
+The original =lean4-mode= is licensed under Apache-2.0.  Additions and
+modifications made in Nael repository are licensed under GNU General
+Public License version 3 or later.  (Yes, these licenses are
+compatible in this way.)  Thus this repository contains code under
+both licenses.  Since GPLv3+ is stricter than Apache2, you can simply
+treat the source code as a whole as if it were licensed under GPLv3+.
