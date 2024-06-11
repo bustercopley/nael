@@ -36,7 +36,9 @@
 
 ;;; Commentary:
 
-;;;; Setup:
+;; Major mode for Lean.
+
+;;; Setup:
 
 ;; 1. Install Lean: https://lean-lang.org/lean4/doc/setup.html
 
@@ -48,7 +50,7 @@
 ;;   (add-to-list 'project-vc-extra-root-markers "lakefile.lean")
 ;;   (add-hook 'nael-mode-hook #'eglot-ensure)
 
-;;;; History:
+;;; History:
 
 ;; 1. Original project:
 ;;    https://github.com/leanprover-community/lean4-mode
@@ -56,7 +58,7 @@
 ;;    https://github.com/bustercopley/lean4-mode
 ;; 3. Nael
 
-;;;; Roadmap:
+;;; Roadmap:
 
 ;; - Use ElDoc and Eglot to show InteractiveGoal.
 ;;   https://leanprover-community.github.io/mathlib4_docs/Lean/Widget/InteractiveGoal.html
@@ -70,7 +72,7 @@
 ;;   https://codeberg.org/harald/eglot-semtok
 ;;   https://github.com/joaotavora/eglot/pull/839
 
-;;;; License:
+;;; License:
 
 ;; The original `lean4-mode' is licensed under Apache-2.0.  Additions
 ;; and modifications made in Nael repository are licensed under GNU
@@ -371,6 +373,8 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
 
 (setf (alist-get "\\.lean\\'" auto-mode-alist nil nil #'equal)
       'nael-mode)
+
+;;;; End:
 
 (provide 'nael)
 
