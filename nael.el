@@ -28,7 +28,7 @@
 ;; Homepage: https://codeberg.org/mekeor/emacs-lean
 ;; Keywords: languages
 ;; Maintainer: Mekeor Melire <mekeor@posteo.de>
-;; Package-Requires: ((emacs "29.1") (eglot "1.15"))
+;; Package-Requires: ((emacs "29.1"))
 ;; SPDX-License-Identifier: Apache-2.0, GPL-3.0-or-later
 ;; Version: 0.0.1
 
@@ -108,7 +108,7 @@
     (modify-syntax-entry ?»  ">"      table)
 
     ;; Words:
-    (mapcar
+    (mapc
      (lambda (character) (modify-syntax-entry character "w" table))
      '(;; Latin characters:
        ?a ?b ?c ?d ?e ?f ?g ?h ?i ?j ?k ?l ?m ?n ?o ?p ?q ?r ?s ?t ?u
@@ -144,7 +144,7 @@
        ?ₛ ?ₜ ?' ?_ ?! ??))
 
     ;; Operators:
-    (mapcar
+    (mapc
      (lambda (character) (modify-syntax-entry character "." table))
      '(?# ?$ ?% ?& ?* ?+ ?< ?= ?> ?@ ?^ ?| ?~ ?:))
 
@@ -285,6 +285,58 @@
          '(2 nil t)
          '(3 font-lock-comment-face t)))))
 
+;;;; Language server:
+
+(defface nael-eldoc-title
+  ;; TODO: Remove this opinionated definition.
+  '((t (:foreground "white" :background "#333" :extend t)))
+  "Title of sections `Goal' and `Term Goal' in Eldoc buffer."
+  :group 'nael)
+
+(defun nael-eglot-plain-goal-eldoc-function (cb)
+  "`PlainGoal' for `eldoc-documentation-functions'.
+
+https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
+  (jsonrpc-async-request
+   (eglot--current-server-or-lose)
+   :$/lean/plainGoal
+   (eglot--TextDocumentPositionParams)
+   :success-fn
+   (pcase-lambda ((map :rendered))
+     ;; TODO: Can we use `pcase' PAT (and (map ...) (let ...))?
+     (let ((rendered (eglot--format-markup rendered)))
+       (funcall cb
+                (concat (propertize "Goal:\n" 'face 'nael-eldoc-title)
+                        rendered)
+                :echo rendered))))
+  t)
+
+(defun nael-eglot-plain-term-goal-eldoc-function (cb)
+  "`PlainTermGoal' for `eldoc-documentation-functions'.
+
+https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
+  (jsonrpc-async-request
+   (eglot--current-server-or-lose)
+   :$/lean/plainTermGoal
+   (eglot--TextDocumentPositionParams)
+   :success-fn
+   (pcase-lambda ((map :goal))
+     (funcall cb
+              (concat
+               (propertize "Term Goal:\n" 'face 'nael-eldoc-title)
+               goal)
+              :echo "")))
+  t)
+
+(defun nael-add-eldoc-functions ()
+  (add-hook 'eldoc-documentation-functions
+            #'nael-eglot-plain-term-goal-eldoc-function nil t)
+  (add-hook 'eldoc-documentation-functions
+            #'nael-eglot-plain-goal-eldoc-function nil t))
+
+(setf (alist-get 'nael-mode eglot-server-programs)
+      '("lake" "serve"))
+
 ;;;; Mode:
 
 (define-derived-mode nael-mode prog-mode "Nael"
@@ -311,57 +363,14 @@
   (setq-local compilation-mode-font-lock-keywords
               nil)
   ;; Flymake:
-  (setq-local next-error-function #'flymake-goto-next-error))
+  (setq-local next-error-function #'flymake-goto-next-error)
+  ;; Eglot:
+  (add-hook 'eglot-managed-mode-hook #'nael-add-eldoc-functions))
 
 ;;;; File extension:
 
 (setf (alist-get "\\.lean\\'" auto-mode-alist nil nil #'equal)
       'nael-mode)
-
-;;;; Language server:
-
-(defface nael-eldoc-title
-  ;; TODO: Remove this opinionated definition.
-  '((t (:foreground "white" :background "#333" :extend t)))
-  "Title of sections `Goal' and `Term Goal' in Eldoc buffer."
-  :group 'nael)
-
-(defun nael-eglot-plain-goal-eldoc-function (cb)
-  "`PlainGoal' for `eldoc-documentation-functions'.
-
-https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
-  (jsonrpc-async-request
-   (eglot--current-server-or-lose)
-   :$/lean/plainGoal
-   (eglot--TextDocumentPositionParams)
-   :success-fn
-   (pcase-lambda ((map :rendered))
-     (let ((rendered (eglot--format-markup rendered)))
-       (funcall cb
-                (concat (propertize "Goal:\n" 'face 'nael-eldoc-title)
-                        rendered)
-                :echo rendered))))
-  t)
-
-(defun nael-eglot-plain-term-goal-eldoc-function (cb)
-  "`PlainTermGoal' for `eldoc-documentation-functions'.
-
-https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
-  (jsonrpc-async-request
-   (eglot--current-server-or-lose)
-   :$/lean/plainTermGoal
-   (eglot--TextDocumentPositionParams)
-   :success-fn
-   (pcase-lambda ((map :goal))
-     (funcall cb
-              (concat
-               (propertize "Term Goal:\n" 'face 'nael-eldoc-title)
-               goal)
-              :echo "")))
-  t)
-
-(setf (alist-get 'nael-mode eglot-server-programs)
-      '("lake" "serve"))
 
 (provide 'nael)
 
