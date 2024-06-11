@@ -320,6 +320,46 @@
 
 ;;;; Language server:
 
+(defface nael-eldoc-title
+  ;; TODO: Remove this opinionated definition.
+  '((t (:foreground "white" :background "#333" :extend t)))
+  "Title of sections `Goal' and `Term Goal' in Eldoc buffer."
+  :group 'nael)
+
+(defun nael-eglot-plain-goal-eldoc-function (cb)
+  "`PlainGoal' for `eldoc-documentation-functions'.
+
+https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
+  (jsonrpc-async-request
+   (eglot--current-server-or-lose)
+   :$/lean/plainGoal
+   (eglot--TextDocumentPositionParams)
+   :success-fn
+   (pcase-lambda ((map :rendered))
+     (let ((rendered (eglot--format-markup rendered)))
+       (funcall cb
+                (concat (propertize "Goal:\n" 'face 'nael-eldoc-title)
+                        rendered)
+                :echo rendered))))
+  t)
+
+(defun nael-eglot-plain-term-goal-eldoc-function (cb)
+  "`PlainTermGoal' for `eldoc-documentation-functions'.
+
+https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
+  (jsonrpc-async-request
+   (eglot--current-server-or-lose)
+   :$/lean/plainTermGoal
+   (eglot--TextDocumentPositionParams)
+   :success-fn
+   (pcase-lambda ((map :goal))
+     (funcall cb
+              (concat
+               (propertize "Term Goal:\n" 'face 'nael-eldoc-title)
+               goal)
+              :echo "")))
+  t)
+
 (setf (alist-get 'nael-mode eglot-server-programs)
       '("lake" "serve"))
 
