@@ -1,6 +1,6 @@
 ;;; nael.el --- Major mode for Lean -*- lexical-binding: t; -*-
 
-;; Copyright (c) 2014 Microsoft Corporation. All rights reserved.
+;; Copyright (c) 2014 Microsoft Corporation
 ;; Copyright (C) 2024 Free Software Foundation, Inc.
 
 ;; Author:
@@ -34,13 +34,51 @@
 
 ;; This file is not part of GNU Emacs.
 
-;; Some parts of this source code are licensed under Apache-2.0,
-;; others are licensed under GNU General Public License version 3 or
-;; later.
-
 ;;; Commentary:
 
-;; Major mode for Lean.
+;;;; Setup:
+
+;; 1. Install Lean: https://lean-lang.org/lean4/doc/setup.html
+
+;; 2. Install Nael.
+
+;; 3. Configure Nael:
+;;
+;;   (require 'nael)
+;;   (add-to-list 'project-vc-extra-root-markers "lakefile.lean")
+;;   (add-hook 'nael-mode-hook #'eglot-ensure)
+
+;;;; History:
+
+;; 1. Original project:
+;;    https://github.com/leanprover-community/lean4-mode
+;; 2. Fork based on Eglot:
+;;    https://github.com/bustercopley/lean4-mode
+;; 3. Nael
+
+;;;; Roadmap:
+
+;; - Use ElDoc and Eglot to show InteractiveGoal.
+;;   https://leanprover-community.github.io/mathlib4_docs/Lean/Widget/InteractiveGoal.html
+;;   First define a function that can be used as a member of
+;;   `eldoc-documentation-functions'.  Then define a command that
+;;   toggles between the described function, and the usual set of such
+;;   functions.
+
+;; - Support fontification via semantic tokens from language server:
+;;   https://codeberg.org/eownerdead/eglot-semantic-tokens
+;;   https://codeberg.org/harald/eglot-semtok
+;;   https://github.com/joaotavora/eglot/pull/839
+
+;;;; License:
+
+;; The original `lean4-mode' is licensed under Apache-2.0.  Additions
+;; and modifications made in Nael repository are licensed under GNU
+;; General Public License version 3 or later.  (Yes, these licenses
+;; are compatible in this way.)  Thus this repository contains code
+;; under both licenses.  Since GPLv3+ is stricter than Apache2, you
+;; can simply treat the source code as a whole as if it were licensed
+;; under GPLv3+.
 
 ;;; Code:
 
@@ -138,7 +176,7 @@
                          "check_failure" "synth")))
           '(1 'font-lock-keyword-face))
 
-    ;; Mutual definitions "names":
+    ;; Mutual definitions:
     (list (rx word-start "mutual" word-end
               (zero-or-more space)
               word-start (or "inductive" "definition" "def") word-end
