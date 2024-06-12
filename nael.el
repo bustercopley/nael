@@ -59,17 +59,12 @@
 
 ;;; Roadmap:
 
-;; - Use ElDoc and Eglot to show InteractiveGoal.
-;;   https://leanprover-community.github.io/mathlib4_docs/Lean/Widget/InteractiveGoal.html
-;;   First define a function that can be used as a member of
-;;   `eldoc-documentation-functions'.  Then define a command that
-;;   toggles between the described function, and the usual set of such
-;;   functions.
-
 ;; - Support fontification via semantic tokens from language server:
 ;;   https://codeberg.org/eownerdead/eglot-semantic-tokens
 ;;   https://codeberg.org/harald/eglot-semtok
 ;;   https://github.com/joaotavora/eglot/pull/839
+
+;; - Provide an Info manual (via Org).
 
 ;;; License:
 
@@ -291,13 +286,15 @@
 ;;;; Eglot (language server):
 
 (defface nael-eldoc-title
-  ;; TODO: Remove this opinionated definition.
-  '((t (:foreground "white" :background "#333" :extend t)))
-  "Title of sections `Goal' and `Term Goal' in Eldoc buffer."
+  '((t (:extend t :inherit outline-1)))
+  "Title of sections `Goal' and `Term Goal' in ElDoc buffer."
   :group 'nael)
 
 (defun nael-eglot-plain-goal-eldoc-function (cb)
   "`PlainGoal' for `eldoc-documentation-functions'.
+
+CB is the callback provided to members of ElDoc documentation
+functions.
 
 https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
   (jsonrpc-async-request
@@ -305,23 +302,26 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
    :$/lean/plainGoal
    (eglot--TextDocumentPositionParams)
    :success-fn
-   (pcase-lambda
-     ((and (map (:rendered response))
-           ;; PNDG: These guards do not work as expected.  Let's just
-           ;; ignore this fact for now.
-           ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-06/msg00829.html
-           (guard response)
-           (guard (not (string= "" response)))
-           (guard (not (string= "no goals" response)))
-           (let doc (eglot--format-markup response))))
-     (funcall cb
-              (concat (propertize "Goal:\n" 'face 'nael-eldoc-title)
-                      doc)
-              :echo doc)))
+   ;; TODO: Use `pcase-lambda' if possible.
+   ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-06/msg00829.html
+   (lambda (o)
+     (pcase o
+       ((and (map (:rendered response))
+             (guard response)
+             (guard (not (string= "" response)))
+             (guard (not (string= "no goals" response)))
+             (let doc (eglot--format-markup response)))
+        (funcall
+         cb
+         (concat (propertize "Goal:\n" 'face 'nael-eldoc-title) doc)
+         :echo doc)))))
   t)
 
 (defun nael-eglot-plain-term-goal-eldoc-function (cb)
   "`PlainTermGoal' for `eldoc-documentation-functions'.
+
+CB is the callback provided to members of ElDoc documentation
+functions.
 
 https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
   (jsonrpc-async-request
@@ -329,16 +329,17 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
    :$/lean/plainTermGoal
    (eglot--TextDocumentPositionParams)
    :success-fn
-   (pcase-lambda
-     ((and (map (:goal response))
-           (guard response)
-           (guard (not (equal "" response)))
-           (let doc (eglot--format-markup response))))
-     (funcall cb
-              (concat
-               (propertize "Term Goal:\n" 'face 'nael-eldoc-title)
-               doc)
-              :echo "")))
+   (lambda (o)
+     (pcase o
+       ((and (map (:goal response))
+             (guard response)
+             (guard (not (equal "" response)))
+             (let doc (eglot--format-markup response)))
+        (funcall
+         cb
+         (concat (propertize "Term Goal:\n" 'face 'nael-eldoc-title)
+                 doc)
+         :echo "")))))
   t)
 
 (defun nael-add-eldoc-functions ()
@@ -380,7 +381,8 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
   ;; Flymake:
   (setq-local next-error-function #'flymake-goto-next-error)
   ;; Eglot:
-  (add-hook 'eglot-managed-mode-hook #'nael-add-eldoc-functions))
+  (add-hook 'eglot-managed-mode-hook
+            #'nael-add-eldoc-functions nil t))
 
 ;;;; Project:
 
