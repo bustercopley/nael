@@ -47,7 +47,6 @@
 ;; 3. Configure Nael:
 ;;
 ;;   (require 'nael)
-;;   (add-to-list 'project-vc-extra-root-markers "lakefile.lean")
 ;;   (add-hook 'nael-mode-hook #'eglot-ensure)
 
 ;;; History:
@@ -287,7 +286,7 @@
          '(2 nil t)
          '(3 font-lock-comment-face t)))))
 
-;;;; Language server:
+;;;; Eglot (language server):
 
 (defface nael-eldoc-title
   ;; TODO: Remove this opinionated definition.
@@ -364,10 +363,16 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
   ;; Compile:
   (setq-local compilation-mode-font-lock-keywords
               nil)
+  (setq-local compile-command
+              "lake build ")
   ;; Flymake:
   (setq-local next-error-function #'flymake-goto-next-error)
   ;; Eglot:
   (add-hook 'eglot-managed-mode-hook #'nael-add-eldoc-functions))
+
+;;;; Project:
+
+(add-to-list 'project-vc-extra-root-markers "lakefile.lean")
 
 ;;;; File extension:
 
