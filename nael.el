@@ -1,4 +1,4 @@
-;;; nael.el --- Major mode for Lean -*- lexical-binding: t; -*-
+;;; nael.el --- A humble major-mode for Lean -*- lexical-binding: t; -*-
 
 ;; Copyright (c) 2014 Microsoft Corporation
 ;; Copyright (C) 2024 Free Software Foundation, Inc.
@@ -41,8 +41,8 @@
 
 ;;; Commentary:
 
-;; Major mode for Lean.  Its documentation is given as `README.org'
-;; which is also provided as Info manual.
+;; A humble major-mode for Lean.  Its documentation is given as
+;; `README.org' which is also provided as Info manual.
 
 ;;; Code:
 

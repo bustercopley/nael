@@ -9,14 +9,14 @@ END-INFO-DIR-ENTRY
 
 File: nael.info,  Node: Top,  Next: Setup,  Up: (dir)
 
-Nael – Lean for Emacs
-*********************
+Nael – A humble Emacs major-mode for Lean
+*****************************************
 
 Nael (https://codeberg.org/mekeor/nael) is an early-stage package for
-GNU Emacs (https://www.gnu.org/software/emacs/) providing a minimal and
-unobtrusive major-mode for the Lean (https://lean-lang.org/)
-programming-language and theorem-prover based on Emacs' built-in
-LSP-client Eglot
+GNU Emacs (https://www.gnu.org/software/emacs/) providing a humble,
+minimalist and unobtrusive major-mode for the Lean
+(https://lean-lang.org/) programming-language and theorem-prover, based
+on Emacs' built-in LSP-client Eglot
 (https://www.gnu.org/software/emacs/manual/html_node/eglot/).
 
    “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
@@ -25,6 +25,7 @@ LSP-client Eglot
 
 * Setup::
 * History::
+* License::
 
 
 File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
@@ -53,7 +54,7 @@ File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
      (keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
 
 
-File: nael.info,  Node: History,  Prev: Setup,  Up: Top
+File: nael.info,  Node: History,  Next: License,  Prev: Setup,  Up: Top
 
 2 History
 *********
@@ -69,12 +70,24 @@ File: nael.info,  Node: History,  Prev: Setup,  Up: Top
      minimalist by relying Emacs' built-in facilities, like Eglot, ElDoc
      and Project.
 
+
+File: nael.info,  Node: License,  Prev: History,  Up: Top
+
+3 License
+*********
+
+This program is based on lean4-mode
+(https://github.com/bustercopley/lean4-mode) which is licensed under
+Apache-2.0.  Additions and modifications made within this repository are
+licensed under GNU General Public License version 3 or later.
+
 
 
 Tag Table:
 Node: Top198
-Node: Setup759
-Node: History1619
+Node: Setup823
+Node: History1683
+Node: License2318
 
 End Tag Table
 
