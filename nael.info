@@ -1,0 +1,81 @@
+This is nael.info, produced by .texi2any-real version 7.1 from
+nael.texi.
+
+INFO-DIR-SECTION Emacs misc features
+START-INFO-DIR-ENTRY
+* Nael: (nael).         Major mode for Lean.
+END-INFO-DIR-ENTRY
+
+
+File: nael.info,  Node: Top,  Next: Setup,  Up: (dir)
+
+Nael – Lean for Emacs
+*********************
+
+Nael is an early-stage package for GNU Emacs providing a minimal and
+unobtrusive major-mode for the Lean programming-language and
+theorem-prover based on Emacs' built-in LSP-client Eglot.
+
+   “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
+
+* Menu:
+
+* Setup::
+* History::
+
+
+File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
+
+1 Setup
+*******
+
+  1. Install Lean (https://lean-lang.org/lean4/doc/setup.html).
+  2. Install Nael.
+  3. Configure Nael:
+
+     ;; Nael does not autoload anything.  You need to load it.
+     (require 'nael)
+
+     ;; Nael works without Eglot.  But for good developer experience, it's
+     ;; recommended to enable Eglot.  (LSP-Mode is not supported.)
+     (add-hook 'nael-mode-hook #'eglot-ensure)
+
+     ;; Nael does not provide any input-method.  It's recommended to enable
+     ;; Emacs' built-in `TeX' input-method:
+     (defun my-nael-input-method-tex () (set-input-method "TeX"))
+     (add-hook 'nael-mode-hook #'my-nael-input-method-tex)
+
+     ;; Recommended key bindings:
+     (keymap-set nael-mode-map "C-c C-c" #'compile)
+     (keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
+
+
+File: nael.info,  Node: History,  Prev: Setup,  Up: Top
+
+2 History
+*********
+
+  1. _Microsoft Corporation (R)_ et al.  developed lean4-mode
+     (https://github.com/leanprover-community/lean4-mode) based on
+     lsp-mode (https://github.com/emacs-lsp/lsp-mode).
+  2. _Richard Copley_ developed a fork
+     (https://github.com/bustercopley/lean4-mode) based on Emacs'
+     built-in Eglot
+     (https://www.gnu.org/software/emacs/manual/html_node/eglot/).
+  3. _Mekeor Melire_ developed Nael.  It strives to be unobtrusive and
+     minimalist by relying Emacs' built-in facilities, like Eglot, ElDoc
+     and Project.
+
+
+
+Tag Table:
+Node: Top198
+Node: Setup600
+Node: History1460
+
+End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:

@@ -34,47 +34,15 @@
 
 ;; This file is not part of GNU Emacs.
 
+;; This program is based on `lean4-mode' which is licensed under
+;; Apache-2.0.  Additions and modifications made within this
+;; repository are licensed under GNU General Public License version 3
+;; or later.
+
 ;;; Commentary:
 
-;; Major mode for Lean.
-
-;;; Setup:
-
-;; 1. Install Lean: https://lean-lang.org/lean4/doc/setup.html
-
-;; 2. Install Nael.
-
-;; 3. Configure Nael:
-;;
-;;   (require 'nael)
-;;   (add-hook 'nael-mode-hook #'eglot-ensure)
-
-;;; History:
-
-;; 1. Original project:
-;;    https://github.com/leanprover-community/lean4-mode
-;; 2. Fork based on Eglot:
-;;    https://github.com/bustercopley/lean4-mode
-;; 3. Nael
-
-;;; Roadmap:
-
-;; - Support fontification via semantic tokens from language server:
-;;   https://codeberg.org/eownerdead/eglot-semantic-tokens
-;;   https://codeberg.org/harald/eglot-semtok
-;;   https://github.com/joaotavora/eglot/pull/839
-
-;; - Provide an Info manual (via Org).
-
-;;; License:
-
-;; The original `lean4-mode' is licensed under Apache-2.0.  Additions
-;; and modifications made in Nael repository are licensed under GNU
-;; General Public License version 3 or later.  (Yes, these licenses
-;; are compatible in this way.)  Thus this repository contains code
-;; under both licenses.  Since GPLv3+ is stricter than Apache2, you
-;; can simply treat the source code as a whole as if it were licensed
-;; under GPLv3+.
+;; Major mode for Lean.  Its documentation is given as `README.org'
+;; which is also provided as Info manual.
 
 ;;; Code:
 

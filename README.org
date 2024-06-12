@@ -1,0 +1,55 @@
+#+title: Nael – Lean for Emacs
+#+author: Mekeor Melire
+#+language: en
+#+export_file_name: nael.texi
+#+texinfo_dir_category: Emacs misc features
+#+texinfo_dir_title: Nael: (nael).
+#+texinfo_dir_desc: Major mode for Lean.
+
+Nael is an early-stage package for GNU Emacs providing a minimal and
+unobtrusive major-mode for the Lean programming-language and
+theorem-prover based on Emacs' built-in LSP-client Eglot.
+
+“Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
+
+* Setup
+
+1. [[https://lean-lang.org/lean4/doc/setup.html][Install Lean]].
+2. Install Nael.
+3. Configure Nael:
+
+#+begin_src elisp
+;; Nael does not autoload anything.  You need to load it.
+(require 'nael)
+
+;; Nael works without Eglot.  But for good developer experience, it's
+;; recommended to enable Eglot.  (LSP-Mode is not supported.)
+(add-hook 'nael-mode-hook #'eglot-ensure)
+
+;; Nael does not provide any input-method.  It's recommended to enable
+;; Emacs' built-in `TeX' input-method:
+(defun my-nael-input-method-tex () (set-input-method "TeX"))
+(add-hook 'nael-mode-hook #'my-nael-input-method-tex)
+
+;; Recommended key bindings:
+(keymap-set nael-mode-map "C-c C-c" #'compile)
+(keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
+#+end_src
+
+* History
+
+1. /Microsoft Corporation (R)/ et al. developed [[https://github.com/leanprover-community/lean4-mode][lean4-mode]] based on
+   [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
+2. /Richard Copley/ developed a [[https://github.com/bustercopley/lean4-mode][fork]] based on Emacs' built-in [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]].
+3. /Mekeor Melire/ developed Nael.  It strives to be unobtrusive and
+   minimalist by relying Emacs' built-in facilities, like Eglot, ElDoc
+   and Project.
+
+* Roadmap :noexport:
+
+- Check if we should to disable =workspace/didChangeWatchedFiles= just
+  like upstream.
+- Support fontification via semantic tokens from language server:
+  https://codeberg.org/eownerdead/eglot-semantic-tokens
+  https://codeberg.org/harald/eglot-semtok
+  https://github.com/joaotavora/eglot/pull/839
