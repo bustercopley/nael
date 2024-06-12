@@ -6,9 +6,9 @@
 #+texinfo_dir_title: Nael: (nael).
 #+texinfo_dir_desc: Major mode for Lean.
 
-Nael is an early-stage package for GNU Emacs providing a minimal and
-unobtrusive major-mode for the Lean programming-language and
-theorem-prover based on Emacs' built-in LSP-client Eglot.
+[[https://codeberg.org/mekeor/nael][Nael]] is an early-stage package for [[https://www.gnu.org/software/emacs/][GNU Emacs]] providing a minimal and
+unobtrusive major-mode for the [[https://lean-lang.org/][Lean]] programming-language and
+theorem-prover based on Emacs' built-in LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]].
 
 “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
 

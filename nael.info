@@ -12,9 +12,12 @@ File: nael.info,  Node: Top,  Next: Setup,  Up: (dir)
 Nael – Lean for Emacs
 *********************
 
-Nael is an early-stage package for GNU Emacs providing a minimal and
-unobtrusive major-mode for the Lean programming-language and
-theorem-prover based on Emacs' built-in LSP-client Eglot.
+Nael (https://codeberg.org/mekeor/nael) is an early-stage package for
+GNU Emacs (https://www.gnu.org/software/emacs/) providing a minimal and
+unobtrusive major-mode for the Lean (https://lean-lang.org/)
+programming-language and theorem-prover based on Emacs' built-in
+LSP-client Eglot
+(https://www.gnu.org/software/emacs/manual/html_node/eglot/).
 
    “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
 
@@ -70,8 +73,8 @@ File: nael.info,  Node: History,  Prev: Setup,  Up: Top
 
 Tag Table:
 Node: Top198
-Node: Setup600
-Node: History1460
+Node: Setup759
+Node: History1619
 
 End Tag Table
 
