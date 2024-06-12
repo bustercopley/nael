@@ -28,7 +28,7 @@
 ;; Homepage: https://codeberg.org/mekeor/emacs-lean
 ;; Keywords: languages
 ;; Maintainer: Mekeor Melire <mekeor@posteo.de>
-;; Package-Requires: ((emacs "29.1"))
+;; Package-Requires: ((emacs "29") (markdown-mode "2"))
 ;; SPDX-License-Identifier: Apache-2.0, GPL-3.0-or-later
 ;; Version: 0.0.1
 
@@ -85,6 +85,8 @@
 
 (require 'eglot)
 (require 'rx)
+
+(require 'markdown-mode)
 
 (defgroup nael nil
   "Major mode for Lean."
@@ -387,6 +389,9 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
 ;;;; File extension:
 
 (setf (alist-get "\\.lean\\'" auto-mode-alist nil nil #'equal)
+      'nael-mode)
+
+(setf (alist-get "lean" markdown-code-lang-modes nil nil #'equal)
       'nael-mode)
 
 ;;;; End:
