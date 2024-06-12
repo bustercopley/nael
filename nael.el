@@ -305,16 +305,16 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
    ;; TODO: Use `pcase-lambda' if possible.
    ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-06/msg00829.html
    (lambda (o)
-     (pcase o
-       ((and (map (:rendered response))
-             (guard response)
-             (guard (not (string= "" response)))
-             (guard (not (string= "no goals" response)))
-             (let doc (eglot--format-markup response)))
-        (funcall
-         cb
-         (concat (propertize "Goal:\n" 'face 'nael-eldoc-title) doc)
-         :echo doc)))))
+     (if-let*
+         ((response (cl-getf o :rendered))
+          ((not (string= "" response)))
+          ((not (string= "no goals" response)))
+          (doc (eglot--format-markup response)))
+       (funcall
+        cb
+        (concat (propertize "Goal:\n" 'face 'nael-eldoc-title) doc)
+        :echo doc)
+       (funcall cb nil))))
   t)
 
 (defun nael-eglot-plain-term-goal-eldoc-function (cb)
@@ -330,16 +330,16 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
    (eglot--TextDocumentPositionParams)
    :success-fn
    (lambda (o)
-     (pcase o
-       ((and (map (:goal response))
-             (guard response)
-             (guard (not (equal "" response)))
-             (let doc (eglot--format-markup response)))
-        (funcall
-         cb
-         (concat (propertize "Term Goal:\n" 'face 'nael-eldoc-title)
-                 doc)
-         :echo "")))))
+     (if-let*
+         ((response (cl-getf o :goal))
+          ((not (string= "" response)))
+          (doc (eglot--format-markup response)))
+       (funcall
+        cb
+        (concat (propertize "Term Goal:\n" 'face 'nael-eldoc-title)
+                doc)
+        :echo "")
+       (funcall cb nil))))
   t)
 
 (defun nael-add-eldoc-functions ()
