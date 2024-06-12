@@ -303,13 +303,19 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
    :$/lean/plainGoal
    (eglot--TextDocumentPositionParams)
    :success-fn
-   (pcase-lambda ((map :rendered))
-     ;; TODO: Can we use `pcase' PAT (and (map ...) (let ...))?
-     (let ((rendered (eglot--format-markup rendered)))
-       (funcall cb
-                (concat (propertize "Goal:\n" 'face 'nael-eldoc-title)
-                        rendered)
-                :echo rendered))))
+   (pcase-lambda
+     ((and (map (:rendered response))
+           ;; PNDG: These guards do not work as expected.  Let's just
+           ;; ignore this fact for now.
+           ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-06/msg00829.html
+           (guard response)
+           (guard (not (string= "" response)))
+           (guard (not (string= "no goals" response)))
+           (let doc (eglot--format-markup response))))
+     (funcall cb
+              (concat (propertize "Goal:\n" 'face 'nael-eldoc-title)
+                      doc)
+              :echo doc)))
   t)
 
 (defun nael-eglot-plain-term-goal-eldoc-function (cb)
@@ -321,11 +327,15 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
    :$/lean/plainTermGoal
    (eglot--TextDocumentPositionParams)
    :success-fn
-   (pcase-lambda ((map :goal))
+   (pcase-lambda
+     ((and (map (:goal response))
+           (guard response)
+           (guard (not (equal "" response)))
+           (let doc (eglot--format-markup response))))
      (funcall cb
               (concat
                (propertize "Term Goal:\n" 'face 'nael-eldoc-title)
-               goal)
+               doc)
               :echo "")))
   t)
 
