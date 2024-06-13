@@ -25,6 +25,7 @@ on Emacs' built-in LSP-client Eglot
 
 * Setup::
 * History::
+* Comparison::
 * License::
 
 
@@ -40,21 +41,30 @@ File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
      ;; Nael does not autoload anything.  You need to load it.
      (require 'nael)
 
-     ;; Nael works without Eglot.  But for good developer experience, it's
-     ;; recommended to enable Eglot.  (LSP-Mode is not supported.)
-     (add-hook 'nael-mode-hook #'eglot-ensure)
+     (defun my-nael-setup ()
+       ;; Enable Emacs' built-in `TeX' input-method.
+       (set-input-method "TeX")
 
-     ;; Nael does not provide any input-method.  It's recommended to enable
-     ;; Emacs' built-in `TeX' input-method:
-     (defun my-nael-input-method-tex () (set-input-method "TeX"))
-     (add-hook 'nael-mode-hook #'my-nael-input-method-tex)
+       ;; Enable Eglot.  (`lsp-mode' is not supported.)
+       (eglot-ensure)
 
-     ;; Recommended key bindings:
+       ;; When Nael is used with Eglot, it will add functions to
+       ;; `eldoc-documentation-functions'.  Make sure ElDoc shows the
+       ;; output of all these functions.
+       (setq-local eldoc-documentation-strategy
+         #'eldoc-documentation-compose))
+
+     (add-hook 'nael-mode-hook #'my-nael-setup)
+
+     ;; Nael buffer-locally sets `compile-command' to "lean build".
      (keymap-set nael-mode-map "C-c C-c" #'compile)
+
+     ;; Find out how to type the character at point in the current
+     ;; input-method.
      (keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
 
 
-File: nael.info,  Node: History,  Next: License,  Prev: Setup,  Up: Top
+File: nael.info,  Node: History,  Next: Comparison,  Prev: Setup,  Up: Top
 
 2 History
 *********
@@ -67,13 +77,37 @@ File: nael.info,  Node: History,  Next: License,  Prev: Setup,  Up: Top
      built-in Eglot
      (https://www.gnu.org/software/emacs/manual/html_node/eglot/).
   3. _Mekeor Melire_ developed Nael.  It strives to be unobtrusive and
-     minimalist by relying Emacs' built-in facilities, like Eglot, ElDoc
-     and Project.
+     minimalist by relying on Emacs' built-in facilities, like Eglot,
+     ElDoc and Project.
 
 
-File: nael.info,  Node: License,  Prev: History,  Up: Top
+File: nael.info,  Node: Comparison,  Next: License,  Prev: History,  Up: Top
 
-3 License
+3 Comparison
+************
+
+   • Nael does not depend on third-party lsp-mode.  Instead, you can use
+     Nael together with Emacs' built-in LSP-client Eglot.
+   • Nael does not offer anything like the ‘*Lean Goal*’ buffer
+     (‘lean4-info’).  Instead, Nael introduces two ElDoc documentation
+     functions (‘eldoc-documentation-functions’) (corresponding to
+     Lean's ‘PlainTermGoal’ and ‘PlainGoal’ LSP methods) which will show
+     up in the usual ElDoc buffer (‘*eldoc*’).
+   • Nael does not offer any special mechanism to detect the current
+     project.  Instead, it adds ‘lakefile.lean’ as a project root marker
+     (‘project-vc-extra-root-markers’) for ‘project.el’.
+   • Nael does not offer any command to build the current the current
+     project.  Instead, it buffer-locally sets the ‘compile-command’
+     variable so that you can simply call the ‘compile’ command.
+   • Nael does not offer any input-method.  Instead, you are encouraged
+     to use the built-in ‘TeX’ input-method.  Alternatively, you could
+     use the unicode-math-input
+     (https://github.com/astoff/unicode-math-input.el) package.
+
+
+File: nael.info,  Node: License,  Prev: Comparison,  Up: Top
+
+4 License
 *********
 
 This program is based on lean4-mode
@@ -85,9 +119,10 @@ licensed under GNU General Public License version 3 or later.
 
 Tag Table:
 Node: Top198
-Node: Setup823
-Node: History1683
-Node: License2318
+Node: Setup838
+Node: History1895
+Node: Comparison2536
+Node: License3797
 
 End Tag Table
 

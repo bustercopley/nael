@@ -1,6 +1,6 @@
-;;; nael.el --- A humble major-mode for Lean -*- lexical-binding: t; -*-
+;;; nael.el --- A humble major-mode for Lean  -*- lexical-binding: t; -*-
 
-;; Copyright (c) 2014 Microsoft Corporation
+;; Copyright (C) 2014 Microsoft Corp. (R)
 ;; Copyright (C) 2024 Free Software Foundation, Inc.
 
 ;; Author:
@@ -47,12 +47,13 @@
 ;;; Code:
 
 (require 'eglot)
+(require 'project)
 (require 'rx)
 
 (require 'markdown-mode)
 
 (defgroup nael nil
-  "Major mode for Lean."
+  "A humble major-mode for Lean."
   :prefix "nael-"
   :group 'languages)
 
@@ -253,6 +254,9 @@
 
 ;;;; Eglot (language server):
 
+(setf (alist-get 'nael-mode eglot-server-programs)
+      '("lake" "serve"))
+
 (defface nael-eldoc-title
   '((t (:extend t :inherit outline-1)))
   "Title of sections `Goal' and `Term Goal' in ElDoc buffer."
@@ -319,13 +323,10 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
   (add-hook 'eldoc-documentation-functions
             #'nael-eglot-plain-goal-eldoc-function nil t))
 
-(setf (alist-get 'nael-mode eglot-server-programs)
-      '("lake" "serve"))
-
 ;;;; Mode:
 
 (define-derived-mode nael-mode prog-mode "Nael"
-  "Major mode for Lean.
+  "A humble major-mode for Lean.
 
 \\{nael-mode-map}"
   ;; Comments:
@@ -351,13 +352,14 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
               "lake build ")
   ;; Flymake:
   (setq-local next-error-function #'flymake-goto-next-error)
-  ;; Eglot:
+  ;; Eglot and ElDoc:
   (add-hook 'eglot-managed-mode-hook
             #'nael-add-eldoc-functions nil t))
 
 ;;;; Project:
 
-(add-to-list 'project-vc-extra-root-markers "lakefile.lean")
+(add-to-list 'project-vc-extra-root-markers
+             "lakefile.lean")
 
 ;;;; File extension:
 
