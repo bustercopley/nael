@@ -38,7 +38,7 @@ LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]]
 
 (add-hook 'nael-mode-hook #'my-nael-setup)
 
-;; Nael buffer-locally sets `compile-command' to "lean build".
+;; Nael buffer-locally sets `compile-command' to "lake build".
 (keymap-set nael-mode-map "C-c C-c" #'compile)
 
 ;; Find out how to type the character at point in the current
@@ -57,8 +57,8 @@ LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]]
 
 * Comparison
 
-- Nael does not depend on third-party lsp-mode.  Instead, you can use
-  Nael together with Emacs' built-in LSP-client Eglot.
+- Nael does not depend on third-party [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].  Instead, you can use
+  Nael together with Emacs' built-in LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]].
 - Nael does not offer anything like the =*Lean Goal*= buffer
   (~lean4-info~).  Instead, Nael introduces two ElDoc documentation
   functions (~eldoc-documentation-functions~) (corresponding to Lean's

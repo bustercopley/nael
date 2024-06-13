@@ -318,6 +318,7 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
   t)
 
 (defun nael-add-eldoc-functions ()
+  "Add Nael ElDoc documentations functions."
   (add-hook 'eldoc-documentation-functions
             #'nael-eglot-plain-term-goal-eldoc-function nil t)
   (add-hook 'eldoc-documentation-functions
