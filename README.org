@@ -17,45 +17,47 @@ LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]]
 
 1. [[https://lean-lang.org/lean4/doc/setup.html][Install Lean]].
 2. Install Nael.
-3. Configure Nael:
+   1. Clone the Git repository.
+      #+begin_src sh
+      git clone https://codeberg.org/mekeor/nael.git ~/path/to/nael
+      #+end_src
+   2. Set up ~load-path~.
+      #+begin_src elisp
+      (add-to-list 'load-path "~/path/to/nael")
+      #+end_src
+3. Load Nael.  (This is required because Nael does not [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Autoload.html][autoload]]
+   anything.)
+   #+begin_src elisp
+   (require 'nael)
+   #+end_src
+4. Optionally, configure Nael.
+   #+begin_src elisp
+   (defun my-nael-setup ()
+     ;; Enable Emacs' built-in `TeX' input-method.
+     (set-input-method "TeX")
+     ;; Enable Emacs' built-in LSP-client Eglot.  (lsp-mode is not
+     ;; supported.)
+     (eglot-ensure))
 
-#+begin_src elisp
-;; Nael does not autoload anything.  You need to load it.
-(require 'nael)
+   (add-hook 'nael-mode-hook #'my-nael-setup)
 
-(defun my-nael-setup ()
-  ;; Enable Emacs' built-in `TeX' input-method.
-  (set-input-method "TeX")
+   ;; Nael buffer-locally sets `compile-command' to "lake build".
+   (keymap-set nael-mode-map "C-c C-c" #'compile)
 
-  ;; Enable Eglot.  (`lsp-mode' is not supported.)
-  (eglot-ensure)
-
-  ;; When Nael is used with Eglot, it will add functions to
-  ;; `eldoc-documentation-functions'.  Make sure ElDoc shows the
-  ;; output of all these functions.
-  (setq-local eldoc-documentation-strategy
-    #'eldoc-documentation-compose))
-
-(add-hook 'nael-mode-hook #'my-nael-setup)
-
-;; Nael buffer-locally sets `compile-command' to "lake build".
-(keymap-set nael-mode-map "C-c C-c" #'compile)
-
-;; Find out how to type the character at point in the current
-;; input-method.
-(keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
-#+end_src
+   ;; Find out how to type the character at point in the current
+   ;; input-method.
+   (keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
+   #+end_src
 
 * History
 
-1. /Microsoft Corporation (R)/ et al. developed [[https://github.com/leanprover-community/lean4-mode][lean4-mode]] based on
-   [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
+1. /Microsoft Corp.®/ et al. developed [[https://github.com/leanprover-community/lean4-mode][lean4-mode]] based on [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].
 2. /Richard Copley/ developed a [[https://github.com/bustercopley/lean4-mode][fork]] based on Emacs' built-in [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]].
-3. /Mekeor Melire/ developed Nael.  It strives to be unobtrusive and
-   minimalist by relying on Emacs' built-in facilities, like Eglot,
-   ElDoc and Project.
+3. /Mekeor Melire/ developed Nael which strives to be more humble by
+   relying on Emacs' built-in facilities, like Eglot, ElDoc and
+   Project.
 
-* Comparison
+* Technical Comparison
 
 - Nael does not depend on third-party [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].  Instead, you can use
   Nael together with Emacs' built-in LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]].
@@ -68,8 +70,9 @@ LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]]
   project.  Instead, it adds =lakefile.lean= as a project root marker
   (~project-vc-extra-root-markers~) for =project.el=.
 - Nael does not offer any command to build the current the current
-  project.  Instead, it buffer-locally sets the ~compile-command~
-  variable so that you can simply call the ~compile~ command.
+  project.  Instead, it buffer-locally sets the built-in
+  ~compile-command~ variable so that you can simply call the ~compile~
+  command.
 - Nael does not offer any input-method.  Instead, you are encouraged
   to use the built-in =TeX= input-method.  Alternatively, you could
   use the [[https://github.com/astoff/unicode-math-input.el][unicode-math-input]] package.
@@ -86,6 +89,9 @@ are licensed under GNU General Public License version 3 or later.
   like upstream.
 - Check if we should to disable =workspace/didChangeWatchedFiles= just
   like upstream.
+- Check if it's okay for a package to modify the
+  ~project-vc-extra-root-markers~ variable (or if it is rather meant
+  to be modified by users only).
 - Support fontification via semantic tokens from language server:
   https://codeberg.org/eownerdead/eglot-semantic-tokens
   https://codeberg.org/harald/eglot-semtok

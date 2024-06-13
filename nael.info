@@ -25,7 +25,7 @@ on Emacs' built-in LSP-client Eglot
 
 * Setup::
 * History::
-* Comparison::
+* Technical Comparison::
 * License::
 
 
@@ -36,58 +36,58 @@ File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
 
   1. Install Lean (https://lean-lang.org/lean4/doc/setup.html).
   2. Install Nael.
-  3. Configure Nael:
+       1. Clone the Git repository.
+               git clone https://codeberg.org/mekeor/nael.git ~/path/to/nael
+       2. Set up ‘load-path’.
+               (add-to-list 'load-path "~/path/to/nael")
+  3. Load Nael.  (This is required because Nael does not autoload
+     (https://www.gnu.org/software/emacs/manual/html_node/elisp/Autoload.html)
+     anything.)
+          (require 'nael)
+  4. Optionally, configure Nael.
+          (defun my-nael-setup ()
+            ;; Enable Emacs' built-in `TeX' input-method.
+            (set-input-method "TeX")
+            ;; Enable Emacs' built-in LSP-client Eglot.  (lsp-mode is not
+            ;; supported.)
+            (eglot-ensure))
 
-     ;; Nael does not autoload anything.  You need to load it.
-     (require 'nael)
+          (add-hook 'nael-mode-hook #'my-nael-setup)
 
-     (defun my-nael-setup ()
-       ;; Enable Emacs' built-in `TeX' input-method.
-       (set-input-method "TeX")
+          ;; Nael buffer-locally sets `compile-command' to "lake build".
+          (keymap-set nael-mode-map "C-c C-c" #'compile)
 
-       ;; Enable Eglot.  (`lsp-mode' is not supported.)
-       (eglot-ensure)
-
-       ;; When Nael is used with Eglot, it will add functions to
-       ;; `eldoc-documentation-functions'.  Make sure ElDoc shows the
-       ;; output of all these functions.
-       (setq-local eldoc-documentation-strategy
-         #'eldoc-documentation-compose))
-
-     (add-hook 'nael-mode-hook #'my-nael-setup)
-
-     ;; Nael buffer-locally sets `compile-command' to "lean build".
-     (keymap-set nael-mode-map "C-c C-c" #'compile)
-
-     ;; Find out how to type the character at point in the current
-     ;; input-method.
-     (keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
+          ;; Find out how to type the character at point in the current
+          ;; input-method.
+          (keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
 
 
-File: nael.info,  Node: History,  Next: Comparison,  Prev: Setup,  Up: Top
+File: nael.info,  Node: History,  Next: Technical Comparison,  Prev: Setup,  Up: Top
 
 2 History
 *********
 
-  1. _Microsoft Corporation (R)_ et al.  developed lean4-mode
+  1. _Microsoft Corp.®_ et al.  developed lean4-mode
      (https://github.com/leanprover-community/lean4-mode) based on
      lsp-mode (https://github.com/emacs-lsp/lsp-mode).
   2. _Richard Copley_ developed a fork
      (https://github.com/bustercopley/lean4-mode) based on Emacs'
      built-in Eglot
      (https://www.gnu.org/software/emacs/manual/html_node/eglot/).
-  3. _Mekeor Melire_ developed Nael.  It strives to be unobtrusive and
-     minimalist by relying on Emacs' built-in facilities, like Eglot,
-     ElDoc and Project.
+  3. _Mekeor Melire_ developed Nael which strives to be more humble by
+     relying on Emacs' built-in facilities, like Eglot, ElDoc and
+     Project.
 
 
-File: nael.info,  Node: Comparison,  Next: License,  Prev: History,  Up: Top
+File: nael.info,  Node: Technical Comparison,  Next: License,  Prev: History,  Up: Top
 
-3 Comparison
-************
+3 Technical Comparison
+**********************
 
-   • Nael does not depend on third-party lsp-mode.  Instead, you can use
-     Nael together with Emacs' built-in LSP-client Eglot.
+   • Nael does not depend on third-party lsp-mode
+     (https://github.com/emacs-lsp/lsp-mode).  Instead, you can use Nael
+     together with Emacs' built-in LSP-client Eglot
+     (https://www.gnu.org/software/emacs/manual/html_node/eglot/).
    • Nael does not offer anything like the ‘*Lean Goal*’ buffer
      (‘lean4-info’).  Instead, Nael introduces two ElDoc documentation
      functions (‘eldoc-documentation-functions’) (corresponding to
@@ -97,15 +97,16 @@ File: nael.info,  Node: Comparison,  Next: License,  Prev: History,  Up: Top
      project.  Instead, it adds ‘lakefile.lean’ as a project root marker
      (‘project-vc-extra-root-markers’) for ‘project.el’.
    • Nael does not offer any command to build the current the current
-     project.  Instead, it buffer-locally sets the ‘compile-command’
-     variable so that you can simply call the ‘compile’ command.
+     project.  Instead, it buffer-locally sets the built-in
+     ‘compile-command’ variable so that you can simply call the
+     ‘compile’ command.
    • Nael does not offer any input-method.  Instead, you are encouraged
      to use the built-in ‘TeX’ input-method.  Alternatively, you could
      use the unicode-math-input
      (https://github.com/astoff/unicode-math-input.el) package.
 
 
-File: nael.info,  Node: License,  Prev: Comparison,  Up: Top
+File: nael.info,  Node: License,  Prev: Technical Comparison,  Up: Top
 
 4 License
 *********
@@ -119,10 +120,10 @@ licensed under GNU General Public License version 3 or later.
 
 Tag Table:
 Node: Top198
-Node: Setup838
-Node: History1895
-Node: Comparison2536
-Node: License3797
+Node: Setup848
+Node: History2051
+Node: Technical Comparison2680
+Node: License4096
 
 End Tag Table
 

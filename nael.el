@@ -317,12 +317,19 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
         (list nil)))))
   t)
 
-(defun nael-add-eldoc-functions ()
-  "Add Nael ElDoc documentations functions."
+(defun nael-eldoc-setup ()
+  "Buffer-locally setup ElDoc for Nael.
+
+Add `nael-eglot-plain-goal-eldoc-function' and
+`nael-eglot-plain-term-goal-eldoc-function' to
+`eldoc-documentation-functions'.  And use compose-strategy for ElDoc,
+see `eldoc-documentation-strategy'."
+  (setq-local eldoc-documentation-strategy
+              #'eldoc-documentation-compose)
   (add-hook 'eldoc-documentation-functions
-            #'nael-eglot-plain-term-goal-eldoc-function nil t)
+            #'nael-eglot-plain-goal-eldoc-function nil t)
   (add-hook 'eldoc-documentation-functions
-            #'nael-eglot-plain-goal-eldoc-function nil t))
+            #'nael-eglot-plain-term-goal-eldoc-function nil t))
 
 ;;;; Mode:
 
@@ -353,9 +360,9 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
               "lake build ")
   ;; Flymake:
   (setq-local next-error-function #'flymake-goto-next-error)
-  ;; Eglot and ElDoc:
+  ;; ElDoc for Eglot:
   (add-hook 'eglot-managed-mode-hook
-            #'nael-add-eldoc-functions nil t))
+            #'nael-eldoc-setup nil t))
 
 ;;;; Project:
 
