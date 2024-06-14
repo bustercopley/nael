@@ -42,7 +42,7 @@ LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]]
    (add-hook 'nael-mode-hook #'my-nael-setup)
 
    ;; Nael buffer-locally sets `compile-command' to "lake build".
-   (keymap-set nael-mode-map "C-c C-c" #'compile)
+   (keymap-set nael-mode-map "C-c C-c" #'project-compile)
 
    ;; Find out how to type the character at point in the current
    ;; input-method.
@@ -85,6 +85,9 @@ are licensed under GNU General Public License version 3 or later.
 
 * Roadmap :noexport:
 
+- Introduce some customizable user-options regarding how goals and
+  term-goals are displayed in the ElDoc buffer and how they are
+  echoed.
 - Check if we need to handle LSP code-actions in a special way, just
   like upstream.
 - Check if we should to disable =workspace/didChangeWatchedFiles= just

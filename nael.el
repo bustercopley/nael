@@ -274,16 +274,14 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
    :$/lean/plainGoal
    (eglot--TextDocumentPositionParams)
    :success-fn
-   ;; TODO: Use `pcase-lambda' if possible.
-   ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2024-06/msg00829.html
-   (lambda (o)
+   (lambda (response)
      (apply
       cb
       (if-let*
-          ((response (cl-getf o :rendered))
-           ((not (string= "" response)))
-           ((not (string= "no goals" response)))
-           (doc (eglot--format-markup response)))
+          ((rendered (cl-getf response :rendered))
+           ((not (string= "" rendered)))
+           ((not (string= "no goals" rendered)))
+           (doc (eglot--format-markup rendered)))
           (list
            (concat (propertize "Goal:\n" 'face 'nael-eldoc-title) doc)
            :echo doc)
@@ -302,13 +300,13 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
    :$/lean/plainTermGoal
    (eglot--TextDocumentPositionParams)
    :success-fn
-   (lambda (o)
+   (lambda (response)
      (apply
       cb
       (if-let*
-          ((response (cl-getf o :goal))
-           ((not (string= "" response)))
-           (doc (eglot--format-markup response)))
+          ((goal (cl-getf response :goal))
+           ((not (string= "" goal)))
+           (doc (eglot--format-markup goal)))
           (list
            (concat
             (propertize "Term Goal:\n" 'face 'nael-eldoc-title)

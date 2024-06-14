@@ -55,7 +55,7 @@ File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
           (add-hook 'nael-mode-hook #'my-nael-setup)
 
           ;; Nael buffer-locally sets `compile-command' to "lake build".
-          (keymap-set nael-mode-map "C-c C-c" #'compile)
+          (keymap-set nael-mode-map "C-c C-c" #'project-compile)
 
           ;; Find out how to type the character at point in the current
           ;; input-method.
@@ -121,9 +121,9 @@ licensed under GNU General Public License version 3 or later.
 Tag Table:
 Node: Top198
 Node: Setup848
-Node: History2051
-Node: Technical Comparison2680
-Node: License4096
+Node: History2059
+Node: Technical Comparison2688
+Node: License4104
 
 End Tag Table
 
