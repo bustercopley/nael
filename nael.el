@@ -322,6 +322,7 @@ Add `nael-eglot-plain-goal-eldoc-function' and
 `nael-eglot-plain-term-goal-eldoc-function' to
 `eldoc-documentation-functions'.  And use compose-strategy for ElDoc,
 see `eldoc-documentation-strategy'."
+  (interactive)
   (setq-local eldoc-documentation-strategy
               #'eldoc-documentation-compose)
   (add-hook 'eldoc-documentation-functions
