@@ -28,7 +28,7 @@
 ;; Homepage: https://codeberg.org/mekeor/emacs-lean
 ;; Keywords: languages
 ;; Maintainer: Mekeor Melire <mekeor@posteo.de>
-;; Package-Requires: ((emacs "29") (markdown-mode "2"))
+;; Package-Requires: ((emacs "29.1") (markdown-mode "2"))
 ;; SPDX-License-Identifier: Apache-2.0, GPL-3.0-or-later
 ;; Version: 0.1.1
 
