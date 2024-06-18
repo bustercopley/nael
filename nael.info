@@ -7,7 +7,7 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: nael.info,  Node: Top,  Next: Setup,  Up: (dir)
+File: nael.info,  Node: Top,  Next: Status,  Up: (dir)
 
 Nael – A humble Emacs major-mode for Lean
 *****************************************
@@ -23,15 +23,27 @@ on Emacs' built-in LSP-client Eglot
 
 * Menu:
 
+* Status::
 * Setup::
 * History::
 * Technical Comparison::
 * License::
 
 
-File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
+File: nael.info,  Node: Status,  Next: Setup,  Prev: Top,  Up: Top
 
-1 Setup
+1 Status
+********
+
+Nael is at early stage!  For me personally, I have to set the
+‘eglot-sync-connect’ variable to ‘nil’ to make it work.  Otherwise, the
+connection to the Lean language server gets lost.  I'm currently
+investigating the reason for this.
+
+
+File: nael.info,  Node: Setup,  Next: History,  Prev: Status,  Up: Top
+
+2 Setup
 *******
 
   1. Install Lean (https://lean-lang.org/lean4/doc/setup.html).
@@ -64,7 +76,7 @@ File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
 
 File: nael.info,  Node: History,  Next: Technical Comparison,  Prev: Setup,  Up: Top
 
-2 History
+3 History
 *********
 
   1. _Microsoft Corp.®_ et al.  developed lean4-mode
@@ -81,7 +93,7 @@ File: nael.info,  Node: History,  Next: Technical Comparison,  Prev: Setup,  Up:
 
 File: nael.info,  Node: Technical Comparison,  Next: License,  Prev: History,  Up: Top
 
-3 Technical Comparison
+4 Technical Comparison
 **********************
 
    • Nael does not depend on third-party lsp-mode
@@ -108,7 +120,7 @@ File: nael.info,  Node: Technical Comparison,  Next: License,  Prev: History,  U
 
 File: nael.info,  Node: License,  Prev: Technical Comparison,  Up: Top
 
-4 License
+5 License
 *********
 
 This program is based on lean4-mode
@@ -120,10 +132,11 @@ licensed under GNU General Public License version 3 or later.
 
 Tag Table:
 Node: Top198
-Node: Setup848
-Node: History2059
-Node: Technical Comparison2688
-Node: License4104
+Node: Status860
+Node: Setup1192
+Node: History2406
+Node: Technical Comparison3035
+Node: License4451
 
 End Tag Table
 

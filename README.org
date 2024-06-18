@@ -13,6 +13,13 @@ LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]]
 
 “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
 
+* Status
+
+Nael is at early stage!  For me personally, I have to set the
+~eglot-sync-connect~ variable to =nil= to make it work.  Otherwise,
+the connection to the Lean language server gets lost.  I'm currently
+investigating the reason for this.
+
 * Setup
 
 1. [[https://lean-lang.org/lean4/doc/setup.html][Install Lean]].
