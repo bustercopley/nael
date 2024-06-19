@@ -46,6 +46,7 @@
 
 ;;; Code:
 
+(require 'jsonrpc)
 (require 'eglot)
 (require 'project)
 (require 'rx)
@@ -278,12 +279,16 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
      (apply
       cb
       (if-let*
-          ((rendered (cl-getf response :rendered))
+          ((rendered (plist-get response :rendered))
            ((not (string= "" rendered)))
            ((not (string= "no goals" rendered)))
            (doc (eglot--format-markup rendered)))
           (list
-           (concat (propertize "Goal:\n" 'face 'nael-eldoc-title) doc)
+           (concat
+            ;; Use wording from Lean documentation:
+            ;; https://github.com/leanprover/lean4/blob/6fce8f7d5cd18a4419bca7fd51780c71c9b1cc5a/src/Lean/Data/Lsp/Extra.lean#L84
+            (propertize "Current goals:\n" 'face 'nael-eldoc-title)
+            doc)
            :echo doc)
         (list nil)))))
   t)
@@ -294,7 +299,7 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
 CB is the callback provided to members of ElDoc documentation
 functions.
 
-https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
+https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainTermGoal"
   (jsonrpc-async-request
    (eglot--current-server-or-lose)
    :$/lean/plainTermGoal
@@ -304,18 +309,28 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
      (apply
       cb
       (if-let*
-          ((goal (cl-getf response :goal))
+          ((goal (plist-get response :goal))
            ((not (string= "" goal)))
            (doc (eglot--format-markup goal)))
           (list
            (concat
-            (propertize "Term Goal:\n" 'face 'nael-eldoc-title)
+            ;; Use wording from Lean documentation:
+            ;; https://github.com/leanprover/lean4/blob/6fce8f7d5cd18a4419bca7fd51780c71c9b1cc5a/src/Lean/Data/Lsp/Extra.lean#L99
+            (propertize "Expected type:\n" 'face 'nael-eldoc-title)
             doc)
            :echo "")
         (list nil)))))
   t)
 
-(defun nael-eldoc-setup ()
+(defun nael-eglot-when-server-initialized (_)
+  "Disable the `workspace/didChangeConfiguration' notification.
+
+Because it makes Lean language server error."
+  (interactive)
+  (remove-hook 'eglot-connect-hook
+               'eglot-signal-didChangeConfiguration 'local))
+
+(defun nael-eglot-when-managed ()
   "Buffer-locally setup ElDoc for Nael.
 
 Add `nael-eglot-plain-goal-eldoc-function' and
@@ -326,9 +341,9 @@ see `eldoc-documentation-strategy'."
   (setq-local eldoc-documentation-strategy
               #'eldoc-documentation-compose)
   (add-hook 'eldoc-documentation-functions
-            #'nael-eglot-plain-goal-eldoc-function nil t)
+            #'nael-eglot-plain-goal-eldoc-function nil 'local)
   (add-hook 'eldoc-documentation-functions
-            #'nael-eglot-plain-term-goal-eldoc-function nil t))
+            #'nael-eglot-plain-term-goal-eldoc-function nil 'local))
 
 ;;;; Mode:
 
@@ -358,10 +373,13 @@ see `eldoc-documentation-strategy'."
   (setq-local compile-command
               "lake build ")
   ;; Flymake:
-  (setq-local next-error-function #'flymake-goto-next-error)
-  ;; ElDoc for Eglot:
+  (setq-local next-error-function
+              #'flymake-goto-next-error)
+  ;; Eglot:
+  (add-hook 'eglot-server-initialized-hook
+            #'nael-eglot-when-server-initialized nil 'local)
   (add-hook 'eglot-managed-mode-hook
-            #'nael-eldoc-setup nil t))
+            #'nael-eglot-when-managed nil 'local))
 
 ;;;; Project:
 
