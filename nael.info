@@ -7,7 +7,7 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: nael.info,  Node: Top,  Next: Status,  Up: (dir)
+File: nael.info,  Node: Top,  Next: Status Broken (but there's a work-around),  Up: (dir)
 
 Nael – A humble Emacs major-mode for Lean
 *****************************************
@@ -23,25 +23,25 @@ on Emacs' built-in LSP-client Eglot
 
 * Menu:
 
-* Status::
+* Status Broken (but there's a work-around)::
 * Setup::
 * History::
 * Technical Comparison::
 * License::
 
 
-File: nael.info,  Node: Status,  Next: Setup,  Prev: Top,  Up: Top
+File: nael.info,  Node: Status Broken (but there's a work-around),  Next: Setup,  Prev: Top,  Up: Top
 
-1 Status
-********
+1 Status: Broken (but there's a work-around)
+********************************************
 
-Nael is at early stage!  For me personally, I have to set the
-‘eglot-sync-connect’ variable to ‘nil’ to make it work.  Otherwise, the
-connection to the Lean language server gets lost.  I'm currently
-investigating the reason for this.
+For me, Nael does does not work unless I set ‘eglot-sync-connect’
+variable to ‘nil’.  Otherwise, the connection to the Lean language
+server gets lost.  Please let me know if you have an idea about the
+reason for this issue (https://codeberg.org/mekeor/nael/issues/1).
 
 
-File: nael.info,  Node: Setup,  Next: History,  Prev: Status,  Up: Top
+File: nael.info,  Node: Setup,  Next: History,  Prev: Status Broken (but there's a work-around),  Up: Top
 
 2 Setup
 *******
@@ -132,11 +132,11 @@ licensed under GNU General Public License version 3 or later.
 
 Tag Table:
 Node: Top198
-Node: Status860
-Node: Setup1192
-Node: History2406
-Node: Technical Comparison3035
-Node: License4451
+Node: Status Broken (but there's a work-around)930
+Node: Setup1403
+Node: History2652
+Node: Technical Comparison3281
+Node: License4697
 
 End Tag Table
 
