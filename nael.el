@@ -325,10 +325,8 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
 (defun nael-eglot-when-managed ()
   "Buffer-locally setup ElDoc for Nael.
 
-Add `nael-eglot-plain-goal-eldoc-function' and
-`nael-eglot-plain-term-goal-eldoc-function' to
-`eldoc-documentation-functions'.  And use compose-strategy for ElDoc,
-see `eldoc-documentation-strategy'."
+Use ElDoc documentation strategy `compose' and add ElDoc documentation
+functions for `plain-goal' and `plain-term-goal'."
   (interactive)
   (setq-local eldoc-documentation-strategy
               #'eldoc-documentation-compose)
