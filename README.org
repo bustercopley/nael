@@ -1,22 +1,20 @@
-#+title: Nael – A humble Emacs major-mode for Lean
-#+author: Mekeor Melire
-#+language: en
-#+export_file_name: nael.texi
+#+title:                Nael – A humble Emacs major-mode for Lean
+#+author:               Mekeor Melire
+#+language:             en
 #+texinfo_dir_category: Emacs misc features
-#+texinfo_dir_title: Nael: (nael).
-#+texinfo_dir_desc: Major mode for Lean.
+#+texinfo_dir_desc:     Major mode for Lean.
+#+texinfo_dir_title:    Nael: (nael).
+#+export_file_name:     nael.texi
 
-[[https://codeberg.org/mekeor/nael][Nael]] is an *early-stage* package for [[https://www.gnu.org/software/emacs/][GNU Emacs]] providing a humble,
-minimalist and unobtrusive major-mode for the [[https://lean-lang.org/][Lean]]
-programming-language and theorem-prover, based on Emacs' built-in
-LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]].
+Nael is an *early-stage* package for GNU Emacs providing a humble
+major-mode for the [[https://lean-lang.org/][Lean]] programming-language and theorem-prover.
 
 “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
 
 * Setup
 
 1. [[https://lean-lang.org/lean4/doc/setup.html][Install Lean]].
-2. Install Nael.
+2. Install Nael. For example, manually:
    1. Clone the Git repository.
       #+begin_src sh
       git clone https://codeberg.org/mekeor/nael.git ~/path/to/nael
@@ -25,18 +23,19 @@ LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]]
       #+begin_src elisp
       (add-to-list 'load-path "~/path/to/nael")
       #+end_src
-3. Load Nael.  (This is required because Nael does not [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Autoload.html][autoload]]
-   anything.)
+3. Load Nael.  (Nael does not autoload anything.)
    #+begin_src elisp
    (require 'nael)
    #+end_src
 4. Optionally, configure Nael.
    #+begin_src elisp
    (defun my-nael-setup ()
-     ;; Enable Emacs' built-in `TeX' input-method.
+     (interactive)
+     ;; Enable Emacs' built-in `TeX' input-method.  Alternatively, you
+     ;; could install the external `unicode-math-input' package and
+     ;; use the `unicode-math' input-method.
      (set-input-method "TeX")
-     ;; Enable Emacs' built-in LSP-client Eglot.  (lsp-mode is not
-     ;; supported.)
+     ;; Enable Emacs' built-in LSP-client Eglot.
      (eglot-ensure))
 
    (add-hook 'nael-mode-hook #'my-nael-setup)
@@ -59,32 +58,31 @@ LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]]
 
 * Technical Comparison
 
-- Nael does not depend on third-party [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]].  Instead, you can use
-  Nael together with Emacs' built-in LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]].
-- Nael does not offer anything like the =*Lean Goal*= buffer
-  (~lean4-info~).  Instead, Nael introduces two ElDoc documentation
-  functions (~eldoc-documentation-functions~) (corresponding to Lean's
-  =PlainTermGoal= and =PlainGoal= LSP methods) which will show up in
+- Nael does not depend on third-party lsp-mode.  Instead, you can
+  optionally use Nael together with Emacs' built-in LSP-client Eglot.
+- Nael does not introduce a =*Lean Goal*= buffer.  Instead, Nael
+  introduces two ElDoc documentation functions which will show up in
   the usual ElDoc buffer (=*eldoc*=).
 - Nael does not offer any special mechanism to detect the current
   project.  Instead, it adds =lakefile.lean= as a project root marker
-  (~project-vc-extra-root-markers~) for =project.el=.
-- Nael does not offer any command to build the current the current
-  project.  Instead, it buffer-locally sets the built-in
-  ~compile-command~ variable so that you can simply call the ~compile~
-  command.
+  for =project.el=.
+- Nael does not offer any command to build the current project.
+  Instead, it buffer-locally sets the built-in ~compile-command~
+  variable so that you can simply call the ~project-compile~ command.
 - Nael does not offer any input-method.  Instead, you are encouraged
   to use the built-in =TeX= input-method.  Alternatively, you could
-  use the [[https://github.com/astoff/unicode-math-input.el][unicode-math-input]] package.
+  use the external [[https://github.com/astoff/unicode-math-input.el][unicode-math-input]] package.
 
 * License
 
-This program is based on [[https://github.com/bustercopley/lean4-mode][lean4-mode]] which is licensed under
+This program is based on lean4-mode which is licensed under
 Apache-2.0.  Additions and modifications made within this repository
 are licensed under GNU General Public License version 3 or later.
 
 * Roadmap :noexport:
 
+- For =PlainGoal=, consider accessing =:goals= array rather than
+  =:rendered= string in order to render it more prettily in Emacs.
 - Introduce some customizable user-options regarding how goals and
   term-goals are displayed in the ElDoc buffer and how they are
   echoed.

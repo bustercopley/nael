@@ -12,12 +12,9 @@ File: nael.info,  Node: Top,  Next: Setup,  Up: (dir)
 Nael – A humble Emacs major-mode for Lean
 *****************************************
 
-Nael (https://codeberg.org/mekeor/nael) is an *early-stage* package for
-GNU Emacs (https://www.gnu.org/software/emacs/) providing a humble,
-minimalist and unobtrusive major-mode for the Lean
-(https://lean-lang.org/) programming-language and theorem-prover, based
-on Emacs' built-in LSP-client Eglot
-(https://www.gnu.org/software/emacs/manual/html_node/eglot/).
+Nael is an *early-stage* package for GNU Emacs providing a humble
+major-mode for the Lean (https://lean-lang.org/) programming-language
+and theorem-prover.
 
    “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
 
@@ -35,21 +32,21 @@ File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
 *******
 
   1. Install Lean (https://lean-lang.org/lean4/doc/setup.html).
-  2. Install Nael.
+  2. Install Nael.  For example, manually:
        1. Clone the Git repository.
                git clone https://codeberg.org/mekeor/nael.git ~/path/to/nael
        2. Set up ‘load-path’.
                (add-to-list 'load-path "~/path/to/nael")
-  3. Load Nael.  (This is required because Nael does not autoload
-     (https://www.gnu.org/software/emacs/manual/html_node/elisp/Autoload.html)
-     anything.)
+  3. Load Nael.  (Nael does not autoload anything.)
           (require 'nael)
   4. Optionally, configure Nael.
           (defun my-nael-setup ()
-            ;; Enable Emacs' built-in `TeX' input-method.
+            (interactive)
+            ;; Enable Emacs' built-in `TeX' input-method.  Alternatively, you
+            ;; could install the external `unicode-math-input' package and
+            ;; use the `unicode-math' input-method.
             (set-input-method "TeX")
-            ;; Enable Emacs' built-in LSP-client Eglot.  (lsp-mode is not
-            ;; supported.)
+            ;; Enable Emacs' built-in LSP-client Eglot.
             (eglot-ensure))
 
           (add-hook 'nael-mode-hook #'my-nael-setup)
@@ -84,25 +81,20 @@ File: nael.info,  Node: Technical Comparison,  Next: License,  Prev: History,  U
 3 Technical Comparison
 **********************
 
-   • Nael does not depend on third-party lsp-mode
-     (https://github.com/emacs-lsp/lsp-mode).  Instead, you can use Nael
-     together with Emacs' built-in LSP-client Eglot
-     (https://www.gnu.org/software/emacs/manual/html_node/eglot/).
-   • Nael does not offer anything like the ‘*Lean Goal*’ buffer
-     (‘lean4-info’).  Instead, Nael introduces two ElDoc documentation
-     functions (‘eldoc-documentation-functions’) (corresponding to
-     Lean's ‘PlainTermGoal’ and ‘PlainGoal’ LSP methods) which will show
-     up in the usual ElDoc buffer (‘*eldoc*’).
+   • Nael does not depend on third-party lsp-mode.  Instead, you can
+     optionally use Nael together with Emacs' built-in LSP-client Eglot.
+   • Nael does not introduce a ‘*Lean Goal*’ buffer.  Instead, Nael
+     introduces two ElDoc documentation functions which will show up in
+     the usual ElDoc buffer (‘*eldoc*’).
    • Nael does not offer any special mechanism to detect the current
      project.  Instead, it adds ‘lakefile.lean’ as a project root marker
-     (‘project-vc-extra-root-markers’) for ‘project.el’.
-   • Nael does not offer any command to build the current the current
-     project.  Instead, it buffer-locally sets the built-in
-     ‘compile-command’ variable so that you can simply call the
-     ‘compile’ command.
+     for ‘project.el’.
+   • Nael does not offer any command to build the current project.
+     Instead, it buffer-locally sets the built-in ‘compile-command’
+     variable so that you can simply call the ‘project-compile’ command.
    • Nael does not offer any input-method.  Instead, you are encouraged
      to use the built-in ‘TeX’ input-method.  Alternatively, you could
-     use the unicode-math-input
+     use the external unicode-math-input
      (https://github.com/astoff/unicode-math-input.el) package.
 
 
@@ -111,19 +103,18 @@ File: nael.info,  Node: License,  Prev: Technical Comparison,  Up: Top
 4 License
 *********
 
-This program is based on lean4-mode
-(https://github.com/bustercopley/lean4-mode) which is licensed under
-Apache-2.0.  Additions and modifications made within this repository are
-licensed under GNU General Public License version 3 or later.
+This program is based on lean4-mode which is licensed under Apache-2.0.
+Additions and modifications made within this repository are licensed
+under GNU General Public License version 3 or later.
 
 
 
 Tag Table:
 Node: Top198
-Node: Setup850
-Node: History2061
-Node: Technical Comparison2690
-Node: License4106
+Node: Setup645
+Node: History1899
+Node: Technical Comparison2528
+Node: License3648
 
 End Tag Table
 
