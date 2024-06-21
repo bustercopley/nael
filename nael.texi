@@ -1,0 +1,137 @@
+\input texinfo    @c -*- texinfo -*-
+@c %**start of header
+@setfilename nael.info
+@settitle Nael – A humble Emacs major-mode for Lean
+@documentencoding UTF-8
+@documentlanguage en
+@c %**end of header
+
+@dircategory Emacs misc features
+@direntry
+* Nael: (nael).         Major mode for Lean.
+@end direntry
+
+@finalout
+@titlepage
+@title Nael – A humble Emacs major-mode for Lean
+@author Mekeor Melire
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top
+@top Nael – A humble Emacs major-mode for Lean
+
+@uref{https://codeberg.org/mekeor/nael, Nael} is an @strong{early-stage} package for @uref{https://www.gnu.org/software/emacs/, GNU Emacs} providing a humble,
+minimalist and unobtrusive major-mode for the @uref{https://lean-lang.org/, Lean}
+programming-language and theorem-prover, based on Emacs' built-in
+LSP-client @uref{https://www.gnu.org/software/emacs/manual/html_node/eglot/, Eglot}.
+
+“Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
+@end ifnottex
+
+@menu
+* Setup::
+* History::
+* Technical Comparison::
+* License::
+@end menu
+
+@node Setup
+@chapter Setup
+
+@enumerate
+@item
+@uref{https://lean-lang.org/lean4/doc/setup.html, Install Lean}.
+@item
+Install Nael.
+@enumerate
+@item
+Clone the Git repository.
+@example
+git clone https://codeberg.org/mekeor/nael.git ~/path/to/nael
+@end example
+@item
+Set up @code{load-path}.
+@lisp
+(add-to-list 'load-path "~/path/to/nael")
+@end lisp
+@end enumerate
+@item
+Load Nael.  (This is required because Nael does not @uref{https://www.gnu.org/software/emacs/manual/html_node/elisp/Autoload.html, autoload}
+anything.)
+@lisp
+(require 'nael)
+@end lisp
+@item
+Optionally, configure Nael.
+@lisp
+(defun my-nael-setup ()
+  ;; Enable Emacs' built-in `TeX' input-method.
+  (set-input-method "TeX")
+  ;; Enable Emacs' built-in LSP-client Eglot.  (lsp-mode is not
+  ;; supported.)
+  (eglot-ensure))
+
+(add-hook 'nael-mode-hook #'my-nael-setup)
+
+;; Nael buffer-locally sets `compile-command' to "lake build".
+(keymap-set nael-mode-map "C-c C-c" #'project-compile)
+
+;; Find out how to type the character at point in the current
+;; input-method.
+(keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
+@end lisp
+@end enumerate
+
+@node History
+@chapter History
+
+@enumerate
+@item
+@emph{Microsoft Corp.®} et al. developed @uref{https://github.com/leanprover-community/lean4-mode, lean4-mode} based on @uref{https://github.com/emacs-lsp/lsp-mode, lsp-mode}.
+@item
+@emph{Richard Copley} developed a @uref{https://github.com/bustercopley/lean4-mode, fork} based on Emacs' built-in @uref{https://www.gnu.org/software/emacs/manual/html_node/eglot/, Eglot}.
+@item
+@emph{Mekeor Melire} developed Nael which strives to be more humble by
+relying on Emacs' built-in facilities, like Eglot, ElDoc and
+Project.
+@end enumerate
+
+@node Technical Comparison
+@chapter Technical Comparison
+
+@itemize
+@item
+Nael does not depend on third-party @uref{https://github.com/emacs-lsp/lsp-mode, lsp-mode}.  Instead, you can use
+Nael together with Emacs' built-in LSP-client @uref{https://www.gnu.org/software/emacs/manual/html_node/eglot/, Eglot}.
+@item
+Nael does not offer anything like the @samp{*Lean Goal*} buffer
+(@code{lean4-info}).  Instead, Nael introduces two ElDoc documentation
+functions (@code{eldoc-documentation-functions}) (corresponding to Lean's
+@samp{PlainTermGoal} and @samp{PlainGoal} LSP methods) which will show up in
+the usual ElDoc buffer (@samp{*eldoc*}).
+@item
+Nael does not offer any special mechanism to detect the current
+project.  Instead, it adds @samp{lakefile.lean} as a project root marker
+(@code{project-vc-extra-root-markers}) for @samp{project.el}.
+@item
+Nael does not offer any command to build the current the current
+project.  Instead, it buffer-locally sets the built-in
+@code{compile-command} variable so that you can simply call the @code{compile}
+command.
+@item
+Nael does not offer any input-method.  Instead, you are encouraged
+to use the built-in @samp{TeX} input-method.  Alternatively, you could
+use the @uref{https://github.com/astoff/unicode-math-input.el, unicode-math-input} package.
+@end itemize
+
+@node License
+@chapter License
+
+This program is based on @uref{https://github.com/bustercopley/lean4-mode, lean4-mode} which is licensed under
+Apache-2.0.  Additions and modifications made within this repository
+are licensed under GNU General Public License version 3 or later.
+
+@bye

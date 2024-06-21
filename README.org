@@ -6,19 +6,12 @@
 #+texinfo_dir_title: Nael: (nael).
 #+texinfo_dir_desc: Major mode for Lean.
 
-[[https://codeberg.org/mekeor/nael][Nael]] is an early-stage package for [[https://www.gnu.org/software/emacs/][GNU Emacs]] providing a humble,
+[[https://codeberg.org/mekeor/nael][Nael]] is an *early-stage* package for [[https://www.gnu.org/software/emacs/][GNU Emacs]] providing a humble,
 minimalist and unobtrusive major-mode for the [[https://lean-lang.org/][Lean]]
 programming-language and theorem-prover, based on Emacs' built-in
 LSP-client [[https://www.gnu.org/software/emacs/manual/html_node/eglot/][Eglot]].
 
 “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
-
-* Status: Broken (but there's a work-around)
-
-For me, Nael does does not work unless I set ~eglot-sync-connect~
-variable to =nil=.  Otherwise, the connection to the Lean language
-server gets lost.  Please let me know if you have an idea about the
-reason for [[https://codeberg.org/mekeor/nael/issues/1][this issue]].
 
 * Setup
 

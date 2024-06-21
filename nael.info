@@ -7,12 +7,12 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: nael.info,  Node: Top,  Next: Status Broken (but there's a work-around),  Up: (dir)
+File: nael.info,  Node: Top,  Next: Setup,  Up: (dir)
 
 Nael – A humble Emacs major-mode for Lean
 *****************************************
 
-Nael (https://codeberg.org/mekeor/nael) is an early-stage package for
+Nael (https://codeberg.org/mekeor/nael) is an *early-stage* package for
 GNU Emacs (https://www.gnu.org/software/emacs/) providing a humble,
 minimalist and unobtrusive major-mode for the Lean
 (https://lean-lang.org/) programming-language and theorem-prover, based
@@ -23,27 +23,15 @@ on Emacs' built-in LSP-client Eglot
 
 * Menu:
 
-* Status Broken (but there's a work-around)::
 * Setup::
 * History::
 * Technical Comparison::
 * License::
 
 
-File: nael.info,  Node: Status Broken (but there's a work-around),  Next: Setup,  Prev: Top,  Up: Top
+File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
 
-1 Status: Broken (but there's a work-around)
-********************************************
-
-For me, Nael does does not work unless I set ‘eglot-sync-connect’
-variable to ‘nil’.  Otherwise, the connection to the Lean language
-server gets lost.  Please let me know if you have an idea about the
-reason for this issue (https://codeberg.org/mekeor/nael/issues/1).
-
-
-File: nael.info,  Node: Setup,  Next: History,  Prev: Status Broken (but there's a work-around),  Up: Top
-
-2 Setup
+1 Setup
 *******
 
   1. Install Lean (https://lean-lang.org/lean4/doc/setup.html).
@@ -76,7 +64,7 @@ File: nael.info,  Node: Setup,  Next: History,  Prev: Status Broken (but there's
 
 File: nael.info,  Node: History,  Next: Technical Comparison,  Prev: Setup,  Up: Top
 
-3 History
+2 History
 *********
 
   1. _Microsoft Corp.®_ et al.  developed lean4-mode
@@ -93,7 +81,7 @@ File: nael.info,  Node: History,  Next: Technical Comparison,  Prev: Setup,  Up:
 
 File: nael.info,  Node: Technical Comparison,  Next: License,  Prev: History,  Up: Top
 
-4 Technical Comparison
+3 Technical Comparison
 **********************
 
    • Nael does not depend on third-party lsp-mode
@@ -120,7 +108,7 @@ File: nael.info,  Node: Technical Comparison,  Next: License,  Prev: History,  U
 
 File: nael.info,  Node: License,  Prev: Technical Comparison,  Up: Top
 
-5 License
+4 License
 *********
 
 This program is based on lean4-mode
@@ -132,11 +120,10 @@ licensed under GNU General Public License version 3 or later.
 
 Tag Table:
 Node: Top198
-Node: Status Broken (but there's a work-around)930
-Node: Setup1403
-Node: History2652
-Node: Technical Comparison3281
-Node: License4697
+Node: Setup850
+Node: History2061
+Node: Technical Comparison2690
+Node: License4106
 
 End Tag Table
 
