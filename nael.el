@@ -390,3 +390,7 @@ functions for `plain-goal' and `plain-term-goal'."
 (provide 'nael)
 
 ;;; nael.el ends here
+
+;; Local Variables:
+;; bug-reference-url-format: "https://codeberg.org/mekeor/nael/issues/%s"
+;; End:
