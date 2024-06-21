@@ -30,7 +30,7 @@
 ;; Maintainer: Mekeor Melire <mekeor@posteo.de>
 ;; Package-Requires: ((emacs "29.1") (markdown-mode "2"))
 ;; SPDX-License-Identifier: Apache-2.0, GPL-3.0-or-later
-;; Version: 0.2
+;; Version: 0.2.1
 
 ;; This file is not part of GNU Emacs.
 
