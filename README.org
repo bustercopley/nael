@@ -60,15 +60,14 @@ major-mode for the [[https://lean-lang.org/][Lean]] programming-language and the
 
 - Nael does not depend on third-party lsp-mode.  Instead, you can
   optionally use Nael together with Emacs' built-in LSP-client Eglot.
-- Nael does not introduce a special buffer for information on the
+- Nael does not offer any special buffer for information on the
   current goal etc.  Instead, Nael introduces two ElDoc documentation
   functions which will show up in the usual ElDoc buffer.
 - Nael does not offer any special mechanism to detect the current
-  project.  Instead, it introduces Lakefiles as a Project root
-  markers.
-- Nael does not offer any command to build the current project.
-  Instead, it buffer-locally sets the built-in ~compile-command~
-  variable.
+  project.  Instead, it introduces Lakefiles as Project root markers.
+- Nael does not offer any special command to build the current
+  project.  Instead, it configures the built-in ~project-compile~
+  command to work.
 - Nael does not offer any special input-method.  Instead, you may use
   the built-in =TeX= input-method or the =unicode-math= from the
   external [[https://github.com/astoff/unicode-math-input.el][unicode-math-input]] package.

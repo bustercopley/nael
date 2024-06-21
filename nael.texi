@@ -106,17 +106,16 @@ Project.
 Nael does not depend on third-party lsp-mode.  Instead, you can
 optionally use Nael together with Emacs' built-in LSP-client Eglot.
 @item
-Nael does not introduce a special buffer for information on the
+Nael does not offer any special buffer for information on the
 current goal etc.  Instead, Nael introduces two ElDoc documentation
 functions which will show up in the usual ElDoc buffer.
 @item
 Nael does not offer any special mechanism to detect the current
-project.  Instead, it introduces Lakefiles as a Project root
-markers.
+project.  Instead, it introduces Lakefiles as Project root markers.
 @item
-Nael does not offer any command to build the current project.
-Instead, it buffer-locally sets the built-in @code{compile-command}
-variable.
+Nael does not offer any special command to build the current
+project.  Instead, it configures the built-in @code{project-compile}
+command to work.
 @item
 Nael does not offer any special input-method.  Instead, you may use
 the built-in @samp{TeX} input-method or the @samp{unicode-math} from the
