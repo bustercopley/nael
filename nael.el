@@ -322,14 +322,6 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
         (list nil)))))
   t)
 
-(defun nael-eglot-when-server-initialized (_)
-  "Disable the `workspace/didChangeConfiguration' notification.
-
-Because it makes Lean language server error."
-  (interactive)
-  (remove-hook 'eglot-connect-hook
-               'eglot-signal-didChangeConfiguration 'local))
-
 (defun nael-eglot-when-managed ()
   "Buffer-locally setup ElDoc for Nael.
 
@@ -375,9 +367,10 @@ see `eldoc-documentation-strategy'."
   ;; Flymake:
   (setq-local next-error-function
               #'flymake-goto-next-error)
-  ;; Eglot:
-  (add-hook 'eglot-server-initialized-hook
-            #'nael-eglot-when-server-initialized nil 'local)
+  ;; Eglot: Don't wait for "lake serve" to output anything when
+  ;; launched because it won't. (bug#1)
+  (setq-local eglot-sync-connect
+              nil)
   (add-hook 'eglot-managed-mode-hook
             #'nael-eglot-when-managed nil 'local))
 
