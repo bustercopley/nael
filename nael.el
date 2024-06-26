@@ -41,15 +41,16 @@
 
 ;;; Commentary:
 
-;; A humble major-mode for Lean.  Its documentation is given as
-;; `README.org' which is also provided as Info manual.
+;; Nael is a humble major-mode for Lean.  Its documentation is given
+;; as `README.org' which is also provided as Info manual.
 
 ;;; Code:
 
-(require 'jsonrpc)
 (require 'eglot)
+(require 'jsonrpc)
 (require 'project)
 (require 'rx)
+(require 'seq)
 
 (require 'markdown-mode)
 
@@ -255,15 +256,24 @@
 
 ;;;; Eglot (language server):
 
+;; Use "lake serve" as language-server.
 (setf (alist-get 'nael-mode eglot-server-programs)
       '("lake" "serve"))
 
-(defface nael-eldoc-title
-  '((t (:extend t :inherit outline-1)))
-  "Title of sections `Goal' and `Term Goal' in ElDoc buffer."
+(defface nael-eglot-eldoc-header
+  '((t (:extend t :inherit markdown-header-face-1)))
+  "Face for headers of Nael-specific in ElDoc documentation functions."
   :group 'nael)
 
-(defun nael-eglot-plain-goal-eldoc-function (cb)
+(defun nael-eglot-eldoc-fontify (string)
+  "Apply Nael font-lock rules to STRING."
+  (with-temp-buffer
+    (setq-local font-lock-defaults nael-font-lock-defaults)
+    (insert string)
+    (font-lock-ensure)
+    (buffer-string)))
+
+(defun nael-eglot-eldoc-plain-goal (cb)
   "`PlainGoal' for `eldoc-documentation-functions'.
 
 CB is the callback provided to members of ElDoc documentation
@@ -279,21 +289,33 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
      (apply
       cb
       (if-let*
-          ((rendered (plist-get response :rendered))
-           ((not (string= "" rendered)))
-           ((not (string= "no goals" rendered)))
-           (doc (eglot--format-markup rendered)))
-          (list
-           (concat
-            ;; Use wording from Lean documentation:
-            ;; https://github.com/leanprover/lean4/blob/6fce8f7d5cd18a4419bca7fd51780c71c9b1cc5a/src/Lean/Data/Lsp/Extra.lean#L84
-            (propertize "Current goals:\n" 'face 'nael-eldoc-title)
-            doc)
-           :echo doc)
+          ((goals (plist-get response :goals))
+           ;; Since `goals' is not a list, we separately need to
+           ;; ensure it's not empty.
+           ((not (seq-empty-p goals)))
+           (first-goal (seq-first goals))
+           (first-goal (nael-eglot-eldoc-fontify first-goal)))
+          (list (concat
+                 ;; Propertize the first newline so that a potential
+                 ;; t-valued `:extend' face-attribute works correctly.
+                 (propertize "Tactic state:\n"
+                             'face 'nael-eglot-eldoc-header)
+                 "\n"
+                 ;; Re-use the previously rendered documentation of
+                 ;; the first goal rather than rendering it again.
+                 (replace-regexp-in-string "^" "  " first-goal)
+                 (seq-mapcat
+                  (lambda (goal)
+                    (concat "\n\n" (replace-regexp-in-string
+                                    "^" "  "
+                                    (nael-eglot-eldoc-fontify goal))))
+                  (seq-drop goals 1) 'string)
+                 "\n")
+                :echo first-goal)
         (list nil)))))
   t)
 
-(defun nael-eglot-plain-term-goal-eldoc-function (cb)
+(defun nael-eglot-eldoc-plain-term-goal (cb)
   "`PlainTermGoal' for `eldoc-documentation-functions'.
 
 CB is the callback provided to members of ElDoc documentation
@@ -312,17 +334,18 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
           ((goal (plist-get response :goal))
            ((not (string= "" goal)))
            (doc (eglot--format-markup goal)))
-          (list
-           (concat
-            ;; Use wording from Lean documentation:
-            ;; https://github.com/leanprover/lean4/blob/6fce8f7d5cd18a4419bca7fd51780c71c9b1cc5a/src/Lean/Data/Lsp/Extra.lean#L99
-            (propertize "Expected type:\n" 'face 'nael-eldoc-title)
-            doc)
-           :echo "")
+          (list (concat
+                 (propertize "Expected type:\n"
+                             'face 'nael-eglot-eldoc-header)
+                 "\n"
+                 (replace-regexp-in-string "^" "  " doc)
+                 "\n")
+                ;; Don't echo any docstring at all.
+                :echo 'skip)
         (list nil)))))
   t)
 
-(defun nael-eglot-when-managed ()
+(defun nael-eglot-managed-setup ()
   "Buffer-locally setup ElDoc for Nael.
 
 Use ElDoc documentation strategy `compose' and add ElDoc documentation
@@ -331,9 +354,9 @@ functions for `plain-goal' and `plain-term-goal'."
   (setq-local eldoc-documentation-strategy
               #'eldoc-documentation-compose)
   (add-hook 'eldoc-documentation-functions
-            #'nael-eglot-plain-goal-eldoc-function nil 'local)
+            #'nael-eglot-eldoc-plain-goal -90 'local)
   (add-hook 'eldoc-documentation-functions
-            #'nael-eglot-plain-term-goal-eldoc-function nil 'local))
+            #'nael-eglot-eldoc-plain-term-goal -80 'local))
 
 ;;;; Mode:
 
@@ -370,18 +393,24 @@ functions for `plain-goal' and `plain-term-goal'."
   (setq-local eglot-sync-connect
               nil)
   (add-hook 'eglot-managed-mode-hook
-            #'nael-eglot-when-managed nil 'local))
+            #'nael-eglot-managed-setup nil 'local))
 
 ;;;; Project:
 
+;; Use Lakefiles as Project root-markers.  In particular, this will
+;; make "lake serve" (the language-server associated with Nael) and
+;; "lake build" (the `compile-command' in Nael) work.
 (add-to-list 'project-vc-extra-root-markers
              "lakefile.lean")
 
 ;;;; File extension:
 
+;; Associate the ".lean" file-extension with Nael.
 (setf (alist-get "\\.lean\\'" auto-mode-alist nil nil #'equal)
       'nael-mode)
 
+;; Associate the "lean" language-specification in markdown code-fences
+;; with Nael.
 (setf (alist-get "lean" markdown-code-lang-modes nil nil #'equal)
       'nael-mode)
 
