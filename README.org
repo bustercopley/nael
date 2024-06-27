@@ -80,8 +80,6 @@ are licensed under GNU General Public License version 3 or later.
 
 * Roadmap :noexport:
 
-- For =PlainGoal=, consider accessing =:goals= array rather than
-  =:rendered= string in order to render it more prettily in Emacs.
 - Introduce some customizable user-options regarding how goals and
   term-goals are displayed in the ElDoc buffer and how they are
   echoed.
