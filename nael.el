@@ -335,6 +335,8 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
            ((not (string= "" goal)))
            (doc (eglot--format-markup goal)))
           (list (concat
+                 ;; Propertize the first newline so that a potential
+                 ;; t-valued `:extend' face-attribute works correctly.
                  (propertize "Expected type:\n"
                              'face 'nael-eglot-eldoc-header)
                  "\n"
