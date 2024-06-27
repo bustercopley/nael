@@ -56,8 +56,17 @@
 
 (defgroup nael nil
   "A humble major-mode for Lean."
+  :group 'languages
+  :link '(emacs-library-link
+          :tag "Source Lisp File"
+          "nael.el")
+  :link '(info-link
+          :tag "Info manual"
+          "(nael)Top")
+  :link '(url-link :tag "Homepage"
+                   "https://codeberg.org/mekeor/nael")
   :prefix "nael-"
-  :group 'languages)
+  :tag "Nael")
 
 ;;;; Syntax table:
 
