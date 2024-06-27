@@ -25,7 +25,7 @@
 ;;   Wojciech Nawrocki <wjnawrocki@protonmail.com>
 ;;   Yael Dillies <yael.dillies@gmail.com>
 ;;   Yury G. Kudryashov <urkud@urkud.name>
-;; Homepage: https://codeberg.org/mekeor/emacs-lean
+;; Homepage: https://codeberg.org/mekeor/nael
 ;; Keywords: languages
 ;; Maintainer: Mekeor Melire <mekeor@posteo.de>
 ;; Package-Requires: ((emacs "29.1") (markdown-mode "2"))
