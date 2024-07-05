@@ -300,11 +300,17 @@ This is only in effect when Eglot is not enabled.")
   "Face for section-headers of Nael-specific ElDoc documentations."
   :group 'nael)
 
+(defvar nael-eglot-eldoc-fontify-buffer-name
+  "*Nael Eglot ElDoc Fontify*"
+  "Name of buffer that is reused in order to fontify Nael code.")
+
 (defun nael-eglot-eldoc-fontify (string)
   "Apply Nael font-lock rules to STRING."
-  (with-temp-buffer
-    (setq-local font-lock-defaults nael-font-lock-defaults)
+  (with-current-buffer
+      (get-buffer-create nael-eglot-eldoc-fontify-buffer-name)
+    (erase-buffer)
     (insert string)
+    (setq-local font-lock-defaults nael-font-lock-defaults)
     (font-lock-ensure)
     (buffer-string)))
 
