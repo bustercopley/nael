@@ -167,12 +167,12 @@
     ;; Declarations:
     (list (rx word-start
               (group
-               (or "inductive"
+               (or "axiom" "class" "constant" "def" "definition"
+                   "inductive" "instance" "lemma" "opaque"
+                   "structure" "theorem"
                    (group "class"
                           (zero-or-more space)
-                          "inductive")
-                   "instance" "structure" "class" "theorem"
-                   "axiom" "lemma" "definition" "def" "constant"))
+                          "inductive")))
               word-end
               (zero-or-more space)
               (group (zero-or-more
@@ -211,57 +211,84 @@
                "using_well_founded" "variable" "variables" "where"
                "with")
               word-end)
-    'font-lock-keyword-face)
-   (list (rx word-start (group "example") ".")
-         '(1 'font-lock-keyword-face))
-   (cons (rx (or "∎"))
-         'font-lock-keyword-face)
+          'font-lock-keyword-face)
+    (list (rx word-start (group "example") ".")
+          '(1 'font-lock-keyword-face))
+    (cons (rx (or "∎"))
+          'font-lock-keyword-face)
 
-   ;; Types:
-   (cons (rx word-start
-             (or "Prop" "Type" "Type*" "Sort" "Sort*")
-             symbol-end)
-         'font-lock-type-face)
-   (list (rx word-start (group (or "Prop" "Type" "Sort")) ".")
-         '(1 'font-lock-type-face))
+    ;; Types:
+    (cons (rx word-start
+              (or "Prop" "Type" "Type*" "Sort" "Sort*")
+              symbol-end)
+          'font-lock-type-face)
+    (list (rx word-start (group (or "Prop" "Type" "Sort")) ".")
+          '(1 'font-lock-type-face))
 
-   ;; Strings:
-   (cons "\"[^\"]*\"" 'font-lock-string-face)
+    ;; Strings:
+    (cons "\"[^\"]*\"" 'font-lock-string-face)
 
-   ;; Constants:
-   (cons (regexp-opt
-          '("!" "#" "$" "&&" "*" "+" "+c" "+f" "+n" "-" "->" "/" "/"
-            "/\\" ":=" "<" "<->" "<=" "=" "==" ">" ">=" "@" "\\/" "^c"
-            "||" "~" "¬" "×" "×c" "×f" "×n" "Π" "Σ" "λ" "⁻¹" "ℂ" "ℕ"
-            "ℕ₋₂" "ℚ" "ℝ" "ℤ" "→" "↔" "∀" "∃" "∘" "∘1nf" "∘f" "∘f1n"
-            "∘fi" "∘fn" "∘fn1" "∘n" "∘n1f" "∘nf" "∧" "∨" "∼" "≃" "≃c"
-            "≅" "≅c" "≠" "≡" "≤" "≥" "▸" "◾" "◾o" "⬝" "⬝e" "⬝h" "⬝hp"
-            "⬝i" "⬝o" "⬝op" "⬝ph" "⬝po" "⬝pv" "⬝r" "⬝v" "⬝vp" "𝔸"))
-         'font-lock-constant-face)
-   (cons (rx word-start
-             (one-or-more digit)
-             (optional (and "." (zero-or-more digit)))
-             word-end)
-         'font-lock-constant-face)
+    ;; Constants:
+    (cons (regexp-opt
+           '("!" "#" "$" "&&" "*" "+" "+c" "+f" "+n" "-" "->" "/" "/"
+             "/\\" ":=" "<" "<->" "<=" "=" "==" ">" ">=" "@" "\\/"
+             "^c" "||" "~" "¬" "×" "×c" "×f" "×n" "Π" "Σ" "λ" "⁻¹" "ℂ"
+             "ℕ" "ℕ₋₂" "ℚ" "ℝ" "ℤ" "→" "↔" "∀" "∃" "∘" "∘1nf" "∘f"
+             "∘f1n" "∘fi" "∘fn" "∘fn1" "∘n" "∘n1f" "∘nf" "∧" "∨" "∼"
+             "≃" "≃c" "≅" "≅c" "≠" "≡" "≤" "≥" "▸" "◾" "◾o" "⬝" "⬝e"
+             "⬝h" "⬝hp" "⬝i" "⬝o" "⬝op" "⬝ph" "⬝po" "⬝pv" "⬝r" "⬝v"
+             "⬝vp" "𝔸"))
+          'font-lock-constant-face)
+    (cons (rx word-start
+              (one-or-more digit)
+              (optional (and "." (zero-or-more digit)))
+              word-end)
+          'font-lock-constant-face)
 
-   ;; Place holder:
-   (cons (rx symbol-start "_" symbol-end)
-         'font-lock-preprocessor-face)
+    ;; Place holder:
+    (cons (rx symbol-start "_" symbol-end)
+          'font-lock-preprocessor-face)
 
-   ;; Warnings:
-   (cons (rx word-start "sorry" word-end)
-         'font-lock-warning-face)
-   (cons (rx word-start
-             (or "assert" "dbgTrace" "panic" "unreachable"))
-         'font-lock-warning-face)
+    ;; Warnings:
+    (cons (rx word-start "sorry" word-end)
+          'font-lock-warning-face)
+    (cons (rx word-start
+              (or "assert" "dbgTrace" "panic" "unreachable"))
+          'font-lock-warning-face)
 
-   ;; Escaped identifiers:
-   (list (rx (group "«")
-             (group (one-or-more (not (any "»"))))
-             (group "»"))
-         '(1 font-lock-comment-face t)
-         '(2 nil t)
-         '(3 font-lock-comment-face t)))))
+    ;; Escaped identifiers:
+    (list (rx (group "«")
+              (group (one-or-more (not (any "»"))))
+              (group "»"))
+          '(1 font-lock-comment-face t)
+          '(2 nil t)
+          '(3 font-lock-comment-face t))))
+  "Defaults for Font Lock mode used by Nael mode.")
+
+(defvar nael-imenu-generic-expression
+  (list (list nil
+              ;; The following `rx'-expression is duplicated from
+              ;; definition of `nael-font-lock-defaults'.
+              (rx line-start ;; Use `line-start' rather than
+                             ;; `word-start' for speed.
+                  (group
+                   (or "axiom" "class" "constant" "def" "definition"
+                       "inductive" "instance" "lemma" "opaque"
+                       "structure" "theorem"
+                       (group "class"
+                              (zero-or-more space)
+                              "inductive")))
+                  word-end
+                  (zero-or-more space)
+                  (group (zero-or-more
+                          "{" (zero-or-more (not (any "}"))) "}"
+                          (zero-or-more space)))
+                  (zero-or-more space)
+                  (group (zero-or-more (not (any " \t\n\r{([")))))
+              4))
+  "`imenu-generic-expression' for Nael mode.
+
+This is only in effect when Eglot is not enabled.")
 
 ;;;; Eglot (language server):
 
@@ -396,6 +423,9 @@ functions for `plain-goal' and `plain-term-goal'."
               nil)
   (setq-local compile-command
               "lake build ")
+  ;; Imenu:
+  (setq-local imenu-generic-expression
+              nael-imenu-generic-expression)
   ;; Flymake:
   (setq-local next-error-function
               #'flymake-goto-next-error)
