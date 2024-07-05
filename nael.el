@@ -397,6 +397,12 @@ functions for `plain-goal' and `plain-term-goal'."
 
 ;;;; Mode:
 
+(defcustom nael-mode-hook nil
+  "Hook run when entering Nael mode."
+  :options '(eglot-ensure imenu-add-menubar-index)
+  :type 'hook
+  :group 'nael)
+
 (define-derived-mode nael-mode prog-mode "Nael"
   "A humble major-mode for Lean.
 
