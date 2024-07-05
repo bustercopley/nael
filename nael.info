@@ -23,7 +23,15 @@ and theorem-prover.
 * Setup::
 * History::
 * Technical Comparison::
+* Changelog::
 * License::
+
+-- The Detailed Node Listing --
+
+Changelog
+
+* Version 0.2.2 released on _<2024-07-05 Fri>_: Version 022 released on _<2024-07-05 Fri>_.
+
 
 
 File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
@@ -76,7 +84,7 @@ File: nael.info,  Node: History,  Next: Technical Comparison,  Prev: Setup,  Up:
      Project.
 
 
-File: nael.info,  Node: Technical Comparison,  Next: License,  Prev: History,  Up: Top
+File: nael.info,  Node: Technical Comparison,  Next: Changelog,  Prev: History,  Up: Top
 
 3 Technical Comparison
 **********************
@@ -97,9 +105,32 @@ File: nael.info,  Node: Technical Comparison,  Next: License,  Prev: History,  U
      (https://github.com/astoff/unicode-math-input.el) package.
 
 
-File: nael.info,  Node: License,  Prev: Technical Comparison,  Up: Top
+File: nael.info,  Node: Changelog,  Next: License,  Prev: Technical Comparison,  Up: Top
 
-4 License
+4 Changelog
+***********
+
+This changelog only deals with user-facing changes.
+
+* Menu:
+
+* Version 0.2.2 released on _<2024-07-05 Fri>_: Version 022 released on _<2024-07-05 Fri>_.
+
+
+File: nael.info,  Node: Version 022 released on _<2024-07-05 Fri>_,  Up: Changelog
+
+4.1 Version 0.2.2 released on _<2024-07-05 Fri>_
+================================================
+
+   • Fix link to homepage (<https://codeberg.org/mekeor/nael>).
+   • Add links to Nael customization group.
+   • Support Imenu even if Eglot is not enabled.
+   • When customizing Nael mode hook, suggest functions.
+
+
+File: nael.info,  Node: License,  Prev: Changelog,  Up: Top
+
+5 License
 *********
 
 This program is based on lean4-mode which is licensed under Apache-2.0.
@@ -110,10 +141,12 @@ under GNU General Public License version 3 or later.
 
 Tag Table:
 Node: Top198
-Node: Setup645
-Node: History1899
-Node: Technical Comparison2528
-Node: License3568
+Node: Setup797
+Node: History2051
+Node: Technical Comparison2680
+Node: Changelog3722
+Node: Version 022 released on _<2024-07-05 Fri>_3994
+Node: License4402
 
 End Tag Table
 

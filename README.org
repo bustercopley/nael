@@ -72,6 +72,17 @@ major-mode for the [[https://lean-lang.org/][Lean]] programming-language and the
   the built-in =TeX= input-method or the =unicode-math= from the
   external [[https://github.com/astoff/unicode-math-input.el][unicode-math-input]] package.
 
+* Changelog
+
+This changelog only deals with user-facing changes.
+
+** Version 0.2.2 released on <2024-07-05 Fri>
+
+- Fix link to homepage (https://codeberg.org/mekeor/nael).
+- Add links to Nael customization group.
+- Support Imenu even if Eglot is not enabled.
+- When customizing Nael mode hook, suggest functions.
+
 * License
 
 This program is based on lean4-mode which is licensed under

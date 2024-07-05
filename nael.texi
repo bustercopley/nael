@@ -33,7 +33,17 @@ major-mode for the @uref{https://lean-lang.org/, Lean} programming-language and 
 * Setup::
 * History::
 * Technical Comparison::
+* Changelog::
 * License::
+
+@detailmenu
+--- The Detailed Node Listing ---
+
+Changelog
+
+* Version 0.2.2 released on @emph{<2024-07-05 Fri>}: Version 022 released on @emph{<2024-07-05 Fri>}. 
+
+@end detailmenu
 @end menu
 
 @node Setup
@@ -120,6 +130,29 @@ command to work.
 Nael does not offer any special input-method.  Instead, you may use
 the built-in @samp{TeX} input-method or the @samp{unicode-math} from the
 external @uref{https://github.com/astoff/unicode-math-input.el, unicode-math-input} package.
+@end itemize
+
+@node Changelog
+@chapter Changelog
+
+This changelog only deals with user-facing changes.
+
+@menu
+* Version 0.2.2 released on @emph{<2024-07-05 Fri>}: Version 022 released on @emph{<2024-07-05 Fri>}. 
+@end menu
+
+@node Version 022 released on @emph{<2024-07-05 Fri>}
+@section Version 0.2.2 released on @emph{<2024-07-05 Fri>}
+
+@itemize
+@item
+Fix link to homepage (@uref{https://codeberg.org/mekeor/nael}).
+@item
+Add links to Nael customization group.
+@item
+Support Imenu even if Eglot is not enabled.
+@item
+When customizing Nael mode hook, suggest functions.
 @end itemize
 
 @node License
