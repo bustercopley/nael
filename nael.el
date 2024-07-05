@@ -68,7 +68,7 @@
   :prefix "nael-"
   :tag "Nael")
 
-;;;; Syntax table:
+;;;; Syntax:
 
 (defvar nael-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -134,9 +134,8 @@
     (modify-syntax-entry ?\" "\"" table)
     (modify-syntax-entry ?\\ "/"  table)
 
-    table))
-
-;;;; Font lock:
+    table)
+  "Syntax table used in Nael mode.")
 
 (defvar nael-font-lock-defaults
   (list
@@ -298,7 +297,7 @@ This is only in effect when Eglot is not enabled.")
 
 (defface nael-eglot-eldoc-header
   '((t (:extend t :inherit markdown-header-face-1)))
-  "Face for headers of Nael-specific in ElDoc documentation functions."
+  "Face for section-headers of Nael-specific ElDoc documentations."
   :group 'nael)
 
 (defun nael-eglot-eldoc-fontify (string)
