@@ -23,21 +23,30 @@
 @node Top
 @top Nael – A humble Emacs major-mode for Lean
 
-Nael is an @strong{early-stage} package for GNU Emacs providing a humble
-major-mode for the @uref{https://lean-lang.org/, Lean} programming-language and theorem-prover.
+Nael is a package for GNU Emacs providing a humble major-mode for the
+@uref{https://lean-lang.org/, Lean} programming-language and theorem-prover.
 
 “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
 @end ifnottex
 
 @menu
-* Setup::
-* History::
-* Technical Comparison::
+* Usage::
+* About::
+* Alternatives::
 * Changelog::
-* License::
 
 @detailmenu
 --- The Detailed Node Listing ---
+
+About
+
+* Status::
+* License::
+
+Alternatives
+
+* History::
+* Comparison::
 
 Changelog
 
@@ -46,8 +55,8 @@ Changelog
 @end detailmenu
 @end menu
 
-@node Setup
-@chapter Setup
+@node Usage
+@chapter Usage
 
 @enumerate
 @item
@@ -94,8 +103,38 @@ Optionally, configure Nael.
 @end lisp
 @end enumerate
 
+@node About
+@chapter About
+
+@menu
+* Status::
+* License::
+@end menu
+
+@node Status
+@section Status
+
+Nael is actively maintained but still in rather early stage of
+development.  Thus, it is not as fully featured as @samp{lean4-mode} and
+may of course contain severe bugs.
+
+@node License
+@section License
+
+This program is based on lean4-mode which is licensed under
+Apache-2.0.  Additions and modifications made within this repository
+are licensed under GNU General Public License version 3 or later.
+
+@node Alternatives
+@chapter Alternatives
+
+@menu
+* History::
+* Comparison::
+@end menu
+
 @node History
-@chapter History
+@section History
 
 @enumerate
 @item
@@ -103,13 +142,13 @@ Optionally, configure Nael.
 @item
 @emph{Richard Copley} developed a @uref{https://github.com/bustercopley/lean4-mode, fork} based on Emacs' built-in @uref{https://www.gnu.org/software/emacs/manual/html_node/eglot/, Eglot}.
 @item
-@emph{Mekeor Melire} developed Nael which strives to be more humble by
-relying on Emacs' built-in facilities, like Eglot, ElDoc and
-Project.
+@emph{Mekeor Melire} developed a fork based on Richard Copley's fork.
+It is called Nael and strives to be more humble by relying on
+Emacs' built-in facilities, like Eglot, ElDoc and Project.
 @end enumerate
 
-@node Technical Comparison
-@chapter Technical Comparison
+@node Comparison
+@section Comparison
 
 @itemize
 @item
@@ -130,12 +169,17 @@ command to work.
 Nael does not offer any special input-method.  Instead, you may use
 the built-in @samp{TeX} input-method or the @samp{unicode-math} from the
 external @uref{https://github.com/astoff/unicode-math-input.el, unicode-math-input} package.
+@item
+Nael does not solely use the Apache-2 license.  Instead, it is
+licensed partly under Apache-2, and partly under GPLv3+.
+Altogether, you can treat Nael as if it was under GPLv3+ since
+that's the stricter license.
 @end itemize
 
 @node Changelog
 @chapter Changelog
 
-This changelog only deals with user-facing changes.
+This changelog only describes user-facing changes.
 
 @menu
 * Version 0.2.2 released on @emph{<2024-07-05 Fri>}: Version 022 released on @emph{<2024-07-05 Fri>}. 
@@ -154,12 +198,5 @@ Support Imenu even if Eglot is not enabled.
 @item
 When customizing Nael mode hook, suggest functions.
 @end itemize
-
-@node License
-@chapter License
-
-This program is based on lean4-mode which is licensed under
-Apache-2.0.  Additions and modifications made within this repository
-are licensed under GNU General Public License version 3 or later.
 
 @bye

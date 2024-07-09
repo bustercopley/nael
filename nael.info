@@ -7,26 +7,34 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: nael.info,  Node: Top,  Next: Setup,  Up: (dir)
+File: nael.info,  Node: Top,  Next: Usage,  Up: (dir)
 
 Nael – A humble Emacs major-mode for Lean
 *****************************************
 
-Nael is an *early-stage* package for GNU Emacs providing a humble
-major-mode for the Lean (https://lean-lang.org/) programming-language
-and theorem-prover.
+Nael is a package for GNU Emacs providing a humble major-mode for the
+Lean (https://lean-lang.org/) programming-language and theorem-prover.
 
    “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
 
 * Menu:
 
-* Setup::
-* History::
-* Technical Comparison::
+* Usage::
+* About::
+* Alternatives::
 * Changelog::
-* License::
 
 -- The Detailed Node Listing --
+
+About
+
+* Status::
+* License::
+
+Alternatives
+
+* History::
+* Comparison::
 
 Changelog
 
@@ -34,9 +42,9 @@ Changelog
 
 
 
-File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
+File: nael.info,  Node: Usage,  Next: About,  Prev: Top,  Up: Top
 
-1 Setup
+1 Usage
 *******
 
   1. Install Lean (https://lean-lang.org/lean4/doc/setup.html).
@@ -67,10 +75,52 @@ File: nael.info,  Node: Setup,  Next: History,  Prev: Top,  Up: Top
           (keymap-set nael-mode-map "C-c C-k" #'quail-show-key)
 
 
-File: nael.info,  Node: History,  Next: Technical Comparison,  Prev: Setup,  Up: Top
+File: nael.info,  Node: About,  Next: Alternatives,  Prev: Usage,  Up: Top
 
-2 History
-*********
+2 About
+*******
+
+* Menu:
+
+* Status::
+* License::
+
+
+File: nael.info,  Node: Status,  Next: License,  Up: About
+
+2.1 Status
+==========
+
+Nael is actively maintained but still in rather early stage of
+development.  Thus, it is not as fully featured as ‘lean4-mode’ and may
+of course contain severe bugs.
+
+
+File: nael.info,  Node: License,  Prev: Status,  Up: About
+
+2.2 License
+===========
+
+This program is based on lean4-mode which is licensed under Apache-2.0.
+Additions and modifications made within this repository are licensed
+under GNU General Public License version 3 or later.
+
+
+File: nael.info,  Node: Alternatives,  Next: Changelog,  Prev: About,  Up: Top
+
+3 Alternatives
+**************
+
+* Menu:
+
+* History::
+* Comparison::
+
+
+File: nael.info,  Node: History,  Next: Comparison,  Up: Alternatives
+
+3.1 History
+===========
 
   1. _Microsoft Corp.®_ et al.  developed lean4-mode
      (https://github.com/leanprover-community/lean4-mode) based on
@@ -79,15 +129,15 @@ File: nael.info,  Node: History,  Next: Technical Comparison,  Prev: Setup,  Up:
      (https://github.com/bustercopley/lean4-mode) based on Emacs'
      built-in Eglot
      (https://www.gnu.org/software/emacs/manual/html_node/eglot/).
-  3. _Mekeor Melire_ developed Nael which strives to be more humble by
-     relying on Emacs' built-in facilities, like Eglot, ElDoc and
-     Project.
+  3. _Mekeor Melire_ developed a fork based on Richard Copley's fork.
+     It is called Nael and strives to be more humble by relying on
+     Emacs' built-in facilities, like Eglot, ElDoc and Project.
 
 
-File: nael.info,  Node: Technical Comparison,  Next: Changelog,  Prev: History,  Up: Top
+File: nael.info,  Node: Comparison,  Prev: History,  Up: Alternatives
 
-3 Technical Comparison
-**********************
+3.2 Comparison
+==============
 
    • Nael does not depend on third-party lsp-mode.  Instead, you can
      optionally use Nael together with Emacs' built-in LSP-client Eglot.
@@ -103,14 +153,18 @@ File: nael.info,  Node: Technical Comparison,  Next: Changelog,  Prev: History, 
      the built-in ‘TeX’ input-method or the ‘unicode-math’ from the
      external unicode-math-input
      (https://github.com/astoff/unicode-math-input.el) package.
+   • Nael does not solely use the Apache-2 license.  Instead, it is
+     licensed partly under Apache-2, and partly under GPLv3+.
+     Altogether, you can treat Nael as if it was under GPLv3+ since
+     that's the stricter license.
 
 
-File: nael.info,  Node: Changelog,  Next: License,  Prev: Technical Comparison,  Up: Top
+File: nael.info,  Node: Changelog,  Prev: Alternatives,  Up: Top
 
 4 Changelog
 ***********
 
-This changelog only deals with user-facing changes.
+This changelog only describes user-facing changes.
 
 * Menu:
 
@@ -127,26 +181,19 @@ File: nael.info,  Node: Version 022 released on _<2024-07-05 Fri>_,  Up: Changel
    • Support Imenu even if Eglot is not enabled.
    • When customizing Nael mode hook, suggest functions.
 
-
-File: nael.info,  Node: License,  Prev: Changelog,  Up: Top
-
-5 License
-*********
-
-This program is based on lean4-mode which is licensed under Apache-2.0.
-Additions and modifications made within this repository are licensed
-under GNU General Public License version 3 or later.
-
 
 
 Tag Table:
 Node: Top198
-Node: Setup797
-Node: History2051
-Node: Technical Comparison2680
-Node: Changelog3722
-Node: Version 022 released on _<2024-07-05 Fri>_3994
-Node: License4402
+Node: Usage833
+Node: About2085
+Node: Status2213
+Node: License2469
+Node: Alternatives2751
+Node: History2901
+Node: Comparison3569
+Node: Changelog4810
+Node: Version 022 released on _<2024-07-05 Fri>_5057
 
 End Tag Table
 
