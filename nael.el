@@ -200,15 +200,15 @@
                "infix" "infixl" "infixr" "init_quot" "initialize"
                "instance" "lemma" "let" "local" "macro" "macro_rules"
                "match" "match_syntax" "mut" "mutual" "namespace"
-               "nomatch" "noncomputable" "notation" "open" "partial"
-               "postfix" "precedence" "prefix" "prelude" "private"
-               "protected" "raw" "rec" "register_builtin_option"
-               "renaming" "return" "run_cmd" "scoped" "section"
-               "set_option" "show" "structure" "suffices" "syntax"
-               "then" "theorem" "this" "try" "unif_hint" "universe"
-               "universes" "unless" "unsafe" "using"
-               "using_well_founded" "variable" "variables" "where"
-               "with")
+               "nomatch" "noncomputable" "notation" "open" "opaque"
+               "partial" "postfix" "precedence" "prefix" "prelude"
+               "private" "protected" "raw" "rec"
+               "register_builtin_option" "renaming" "return" "run_cmd"
+               "scoped" "section" "set_option" "show" "structure"
+               "suffices" "syntax" "then" "theorem" "this" "try"
+               "unif_hint" "universe" "universes" "unless" "unsafe"
+               "using" "using_well_founded" "variable" "variables"
+               "where" "with")
               word-end)
           'font-lock-keyword-face)
     (list (rx word-start (group "example") ".")
