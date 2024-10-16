@@ -25,11 +25,11 @@
 ;;   Wojciech Nawrocki <wjnawrocki@protonmail.com>
 ;;   Yael Dillies <yael.dillies@gmail.com>
 ;;   Yury G. Kudryashov <urkud@urkud.name>
-;; Homepage: https://codeberg.org/mekeor/nael
 ;; Keywords: languages
 ;; Maintainer: Mekeor Melire <mekeor@posteo.de>
 ;; Package-Requires: ((emacs "29.1") (markdown-mode "2"))
-;; SPDX-License-Identifier: Apache-2.0, GPL-3.0-or-later
+;; SPDX-License-Identifier: Apache-2.0 AND GPL-3.0-or-later
+;; URL: https://codeberg.org/mekeor/nael
 ;; Version: 0.2.2
 
 ;; This file is not part of GNU Emacs.
@@ -63,7 +63,7 @@
   :link '(info-link
           :tag "Info manual"
           "(nael)Top")
-  :link '(url-link :tag "Homepage"
+  :link '(url-link :tag "Website"
                    "https://codeberg.org/mekeor/nael")
   :prefix "nael-"
   :tag "Nael")
