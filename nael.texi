@@ -27,6 +27,7 @@ Nael is a package for GNU Emacs providing a humble major-mode for the
 @uref{https://lean-lang.org/, Lean} programming-language and theorem-prover.
 
 “Nael” is “Lean” reversed and ends in “el” as in Emacs-Lisp.
+
 @end ifnottex
 
 @menu
