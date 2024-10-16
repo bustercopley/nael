@@ -426,6 +426,8 @@ functions for `plain-goal' and `plain-term-goal'."
               "[-/]-[ \t]*")
   (setq-local comment-use-syntax
               t)
+  (setq-local parse-sexp-ignore-comments
+              t)
   ;; Font-lock:
   (setq-local font-lock-defaults
               nael-font-lock-defaults)
