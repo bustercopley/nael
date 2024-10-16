@@ -105,6 +105,15 @@ This changelog only describes user-facing changes.
 
 * Roadmap :noexport:
 
+- Consider Emacs' built-in SMIE for indentation.
+- Consider setting variables:
+  - ~comment-quote-nested~
+  - ~prettify-symbols-alist~
+  - ~outline-regexp~
+  - ~add-log-current-defun-function~
+  - ~paragraph-separate~
+  - ~electric-indent-chars~
+  - ~electric-layout-rules~
 - Introduce some customizable user-options regarding how goals and
   term-goals are displayed in the ElDoc buffer and how they are
   echoed.
