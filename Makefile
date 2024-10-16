@@ -3,11 +3,19 @@
 # But MELPA does not.  That's why we generate the nael.info file by
 # ourselves.
 
-# When using GNU Guix, you may want to run:
-# guix shell emacs make texinfo -- make info
+# This Makefile depends on:
+#   - GNU Emacs
+#   - GNU Make
+#   - GNU Texinfo
+# E.g. when using GNU Guix, you may want to run:
+#   $ guix shell emacs make texinfo -- make
 
-info:
-	emacs --batch \
-		"--eval=(require 'ox-texinfo)" \
-		"--eval=(find-file \"README.org\")" \
-		"--eval=(org-texinfo-export-to-info)"
+SHELL = emacs
+.SHELLFLAGS = -Q --batch --eval
+.ONESHELL:
+
+manual: README.org
+	@(progn
+		(require 'ox-texinfo)
+		(find-file "README.org")
+		(org-texinfo-export-to-info))
