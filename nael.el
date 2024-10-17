@@ -320,7 +320,8 @@ This is only in effect when Eglot is not enabled.")
 CB is the callback provided to members of ElDoc documentation
 functions.
 
-https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainGoal"
+https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/\
+Extra.html#Lean.Lsp.PlainGoal"
   (jsonrpc-async-request
    (eglot--current-server-or-lose)
    :$/lean/plainGoal
@@ -362,7 +363,8 @@ https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Le
 CB is the callback provided to members of ElDoc documentation
 functions.
 
-https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/Extra.html#Lean.Lsp.PlainTermGoal"
+https://leanprover-community.github.io/mathlib4_docs/Lean/Data/Lsp/\
+Extra.html#Lean.Lsp.PlainTermGoal"
   (jsonrpc-async-request
    (eglot--current-server-or-lose)
    :$/lean/plainTermGoal
@@ -473,7 +475,3 @@ functions for `plain-goal' and `plain-term-goal'."
 (provide 'nael)
 
 ;;; nael.el ends here
-
-;; Local Variables:
-;; bug-reference-url-format: "https://codeberg.org/mekeor/nael/issues/%s"
-;; End:

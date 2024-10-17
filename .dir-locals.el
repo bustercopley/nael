@@ -1,3 +1,7 @@
-;; -*- no-byte-compile: t -*-
+;; -*- no-byte-compile: t; -*-
 
-((nil (sentence-end-double-space . t)))
+((nil
+  (bug-reference-url-format
+   . "https://codeberg.org/mekeor/nael/issues/%s")
+  (sentence-end-double-space
+   . t)))
